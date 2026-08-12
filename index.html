@@ -2294,45 +2294,30 @@
 
         function togglePushNotifications() {
             if (!("Notification" in window)) {
-                if(typeof showToast === 'function') showToast("Il tuo browser non supporta le notifiche Desktop", "error");
+                if (typeof showToast === 'function') showToast("Non supportato", "error");
                 return;
             }
 
-            if (pushNotificationsEnabled) {
+            if (Notification.permission === "granted" && pushNotificationsEnabled) {
+                // Toggle off manually
                 pushNotificationsEnabled = false;
-                if(typeof showToast === 'function') showToast("Notifiche Push disattivate", "info");
                 updatePushButtonUI();
-            } else {
-                if (Notification.permission === "granted") {
-                    pushNotificationsEnabled = true;
-                    if(typeof showToast === 'function') showToast("Notifiche Push attivate!", "success");
-                    updatePushButtonUI();
-                } else if (Notification.permission !== "denied") {
-                    const handlePermission = (permission) => {
-                        if (!Notification.permission) {
-                            Notification.permission = permission;
-                        }
-                        if (permission === "granted") {
-                            pushNotificationsEnabled = true;
-                            if(typeof showToast === 'function') showToast("Notifiche Push attivate!", "success");
-                            updatePushButtonUI();
-                        } else {
-                            if(typeof showToast === 'function') showToast("Permesso negato per le notifiche", "error");
-                        }
-                    };
-                    
-                    try {
-                        let promise = Notification.requestPermission(handlePermission);
-                        if (promise && typeof promise.then === 'function') {
-                            promise.then(handlePermission).catch((e) => console.error(e));
-                        }
-                    } catch (e) {
-                        console.error("Errore requestPermission", e);
-                    }
-                } else {
-                    if(typeof showToast === 'function') showToast("Devi sbloccare le notifiche dalle impostazioni del browser", "error");
-                }
+                if (typeof showToast === 'function') showToast("Push disattivate", "info");
+                return;
             }
+
+            // Toggle on / Request permission
+            Notification.requestPermission().then(function (permission) {
+                if (permission === "granted") {
+                    pushNotificationsEnabled = true;
+                    updatePushButtonUI();
+                    if (typeof showToast === 'function') showToast("Push attivate!", "success");
+                } else {
+                    if (typeof showToast === 'function') showToast("Permesso negato", "error");
+                }
+            }).catch(function(e) {
+                console.error("Push API error", e);
+            });
         }
 
         function sendPushNotification(title, body) {

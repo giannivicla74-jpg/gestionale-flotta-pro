@@ -1,4 +1,4 @@
-const CACHE_NAME = 'fleet-deadline-v2.0.11';
+const CACHE_NAME = 'fleet-deadline-v2.0.12';
 const ASSETS_TO_CACHE = [
   './',
   'index.html',
