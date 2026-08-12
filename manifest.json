@@ -8,12 +8,12 @@
   "theme_color": "#1e3a8a",
   "icons": [
     {
-      "src": "https://img.icons8.com/color/192/semi-truck.png",
+      "src": "./logo-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "https://img.icons8.com/color/512/semi-truck.png",
+      "src": "./logo-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }

@@ -1,0 +1,38 @@
+[
+  {
+    "line": 1974,
+    "text": "let isAudioEnabled = true;"
+  },
+  {
+    "line": 2378,
+    "text": "let isAudioEnabled = true;"
+  },
+  {
+    "line": 2618,
+    "text": "if (!isAudioEnabled || !('speechSynthesis' in window)) return;"
+  },
+  {
+    "line": 2715,
+    "text": "isAudioEnabled = !isAudioEnabled;"
+  },
+  {
+    "line": 2718,
+    "text": "if (isAudioEnabled) {"
+  },
+  {
+    "line": 3979,
+    "text": "if (isAudioEnabled) speakText(\"Scadenza aggiornata correttamente.\");"
+  },
+  {
+    "line": 4006,
+    "text": "if (isAudioEnabled) speakText(\"Scarico progressivo registrato.\");"
+  },
+  {
+    "line": 4050,
+    "text": "if (isAudioEnabled) speakText(`Rinnovo ${friendlyName} completato.`);"
+  },
+  {
+    "line": 4060,
+    "text": "if ((hasExpiredVehicle || hasExpiredOperator) && isAudioEnabled && !isBannerDismissed) {"
+  }
+]

@@ -1,6 +1,8 @@
 const CACHE_NAME = 'fleet-deadline-v2.0.1';
 const ASSETS_TO_CACHE = [
-  './manifest.json'
+  './manifest.json',
+  './logo-192.png',
+  './logo-512.png'
 ];
 
 self.addEventListener('install', (event) => {

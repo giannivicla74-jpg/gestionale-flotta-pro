@@ -1,0 +1,50 @@
+[
+  {
+    "line": 109,
+    "text": "<button onclick=\"speakDeadlines()\" class=\"text-[10px] text-brand-600 dark:text-brand-400 font-bold flex items-center gap-1 hover:underline\">"
+  },
+  {
+    "line": 137,
+    "text": "<button onclick=\"speakDeadlines()\" class=\"bg-white text-red-700 hover:bg-red-50 px-4 py-2 rounded-xl text-xs font-bold shadow-md transition flex items-center space-x-1.5\">"
+  },
+  {
+    "line": 2617,
+    "text": "function speakText(text) {"
+  },
+  {
+    "line": 2669,
+    "text": "speakText(msg);"
+  },
+  {
+    "line": 2672,
+    "text": "function speakDeadlines() {"
+  },
+  {
+    "line": 2701,
+    "text": "speakText(\"Tutte le scadenze ed i mezzi della flotta sono perfettamente in regola.\");"
+  },
+  {
+    "line": 2711,
+    "text": "speakText(msg);"
+  },
+  {
+    "line": 3979,
+    "text": "if (isAudioEnabled) speakText(\"Scadenza aggiornata correttamente.\");"
+  },
+  {
+    "line": 4006,
+    "text": "if (isAudioEnabled) speakText(\"Scarico progressivo registrato.\");"
+  },
+  {
+    "line": 4050,
+    "text": "if (isAudioEnabled) speakText(`Rinnovo ${friendlyName} completato.`);"
+  },
+  {
+    "line": 4573,
+    "text": "speakText(\"Avvio lettura report di diagnosi per vicla future.\");"
+  },
+  {
+    "line": 4575,
+    "text": "speakText(txtArea.value.replace(/[*#=🔴🟡🟢]/g, \"\"));"
+  }
+]
