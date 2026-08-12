@@ -2282,7 +2282,7 @@
         function updatePushButtonUI() {
             const btn = document.getElementById('pushStatusBtn');
             if(!btn) return;
-            if (pushNotificationsEnabled && Notification.permission === "granted") {
+            if (pushNotificationsEnabled) {
                 btn.className = "hidden sm:flex items-center space-x-1.5 bg-brand-50 dark:bg-brand-950/40 text-brand-700 dark:text-brand-400 px-3 py-2 rounded-xl text-xs font-semibold border border-brand-200 dark:border-brand-800 hover:bg-brand-100 dark:hover:bg-brand-900/40 transition";
                 btn.innerHTML = `<i data-lucide="bell-ring" class="w-4 h-4"></i><span>Push Attive</span>`;
             } else {
