@@ -2351,21 +2351,43 @@
         }
 
         function testPushNotification() {
-            if (Notification.permission !== "granted") {
-                if (typeof showToast === 'function') showToast("Prima attiva le Push cliccando il pulsante Push Off", "error");
+            const perm = ("Notification" in window) ? Notification.permission : "unsupported";
+            
+            // Se il permesso non è ancora stato chiesto, chiedilo e poi invia il test
+            if (perm === "default") {
+                Notification.requestPermission().then(function(p) {
+                    if (p === "granted") {
+                        pushNotificationsEnabled = true;
+                        updatePushButtonUI();
+                        _sendTestNotif();
+                    } else {
+                        if (typeof showToast === 'function') showToast("Permesso notifiche negato dal browser", "error");
+                    }
+                });
                 return;
             }
+            
+            if (perm !== "granted") {
+                if (typeof showToast === 'function') showToast("Notifiche bloccate. Sblocca dalle impostazioni di Chrome (🔒 accanto all'URL → Notifiche → Consenti)", "error");
+                return;
+            }
+            
+            _sendTestNotif();
+        }
+
+        function _sendTestNotif() {
             try {
                 new Notification("🔔 Test — Gestionale Flotta VI.CLA", {
                     body: "Le notifiche Push funzionano correttamente! ✅",
                     icon: 'logo-192.png'
                 });
-                if (typeof showToast === 'function') showToast("Notifica di test inviata!", "success");
+                if (typeof showToast === 'function') showToast("✅ Notifica di test inviata! Controlla in basso a destra", "success");
             } catch(e) {
-                if (typeof showToast === 'function') showToast("Errore test push: " + e.message, "error");
+                if (typeof showToast === 'function') showToast("Errore: " + e.message, "error");
                 console.error("Test Push error:", e);
             }
         }
+
 
         // Trigger UI update on load
         document.addEventListener('DOMContentLoaded', () => {
