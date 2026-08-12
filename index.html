@@ -1085,6 +1085,96 @@
             </div>
         </div>
     </div>
+
+    <!-- DIARIO DI BORDO MODAL -->
+    <div id="diaryModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="closeDiaryModal()"></div>
+        <div class="bg-white dark:bg-slate-800 rounded-3xl w-full max-w-2xl relative z-10 shadow-2xl border border-slate-200 dark:border-slate-700 flex flex-col max-h-[90vh]">
+            
+            <!-- Header -->
+            <div class="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-700 flex-shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-teal-50 dark:bg-teal-950/50 flex items-center justify-center">
+                        <i data-lucide="book-open" class="w-5 h-5 text-teal-600 dark:text-teal-400"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-extrabold text-slate-900 dark:text-white" id="diaryModalTitle">Diario di Bordo</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400" id="diaryModalSubtitle">Storico manutenzioni e interventi</p>
+                    </div>
+                </div>
+                <button onclick="closeDiaryModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Stats bar -->
+            <div id="diaryStatsBar" class="flex items-center gap-4 px-6 py-3 bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700 flex-shrink-0 text-xs text-slate-600 dark:text-slate-400">
+                <span class="flex items-center gap-1.5"><i data-lucide="file-text" class="w-3.5 h-3.5 text-teal-500"></i><span id="diaryStatCount">0 interventi</span></span>
+                <span class="text-slate-300 dark:text-slate-600">|</span>
+                <span class="flex items-center gap-1.5"><i data-lucide="euro" class="w-3.5 h-3.5 text-emerald-500"></i><span id="diaryStatCost">€ 0,00 totale</span></span>
+                <span class="text-slate-300 dark:text-slate-600">|</span>
+                <span class="flex items-center gap-1.5"><i data-lucide="calendar" class="w-3.5 h-3.5 text-brand-500"></i><span id="diaryStatLast">Nessun intervento</span></span>
+            </div>
+
+            <!-- Add new entry form -->
+            <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700 bg-teal-50/50 dark:bg-teal-950/20 flex-shrink-0">
+                <p class="text-xs font-bold text-teal-700 dark:text-teal-400 uppercase tracking-wide mb-3 flex items-center gap-1.5">
+                    <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> Aggiungi intervento
+                </p>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-2">
+                    <div>
+                        <label class="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Data</label>
+                        <input type="date" id="diaryNewDate" class="w-full mt-1 px-2 py-1.5 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white text-xs focus:ring-2 focus:ring-teal-400 outline-none">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Categoria</label>
+                        <select id="diaryNewCategory" class="w-full mt-1 px-2 py-1.5 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white text-xs focus:ring-2 focus:ring-teal-400 outline-none">
+                            <option value="manutenzione">🔧 Manutenzione</option>
+                            <option value="riparazione">🔨 Riparazione</option>
+                            <option value="pneumatici">🔄 Pneumatici</option>
+                            <option value="revisione">✅ Revisione/Collaudo</option>
+                            <option value="nota">📋 Nota generica</option>
+                            <option value="costo">💰 Costo straordinario</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Km veicolo</label>
+                        <input type="number" id="diaryNewKm" placeholder="es. 150000" class="w-full mt-1 px-2 py-1.5 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white text-xs focus:ring-2 focus:ring-teal-400 outline-none">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Costo €</label>
+                        <input type="number" id="diaryNewCost" placeholder="es. 450" step="0.01" class="w-full mt-1 px-2 py-1.5 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white text-xs focus:ring-2 focus:ring-teal-400 outline-none">
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <textarea id="diaryNewDescription" rows="2" placeholder="Descrizione intervento (es. Cambio cinghia distribuzione, Sostituzione freni anteriori...)" class="flex-1 px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white text-xs focus:ring-2 focus:ring-teal-400 outline-none resize-none"></textarea>
+                    <button onclick="addDiaryEntry()" class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 self-end">
+                        <i data-lucide="plus" class="w-3.5 h-3.5"></i> Aggiungi
+                    </button>
+                </div>
+            </div>
+
+            <!-- Diary entries list -->
+            <div id="diaryEntriesList" class="overflow-y-auto flex-1 divide-y divide-slate-100 dark:divide-slate-700">
+                <!-- entries rendered by JS -->
+            </div>
+
+            <!-- Empty state -->
+            <div id="diaryEmptyState" class="hidden flex-1 flex flex-col items-center justify-center py-12 text-center px-6">
+                <div class="w-16 h-16 rounded-2xl bg-teal-50 dark:bg-teal-950/50 flex items-center justify-center mb-4">
+                    <i data-lucide="book-open" class="w-8 h-8 text-teal-400"></i>
+                </div>
+                <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Nessun intervento registrato</p>
+                <p class="text-slate-400 dark:text-slate-500 text-xs mt-1">Aggiungi il primo intervento usando il form sopra</p>
+            </div>
+
+            <!-- Footer -->
+            <div class="px-6 py-4 border-t border-slate-200 dark:border-slate-700 flex justify-end flex-shrink-0">
+                <button onclick="closeDiaryModal()" class="px-5 py-2.5 rounded-xl text-sm font-bold bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 transition">Chiudi</button>
+            </div>
+        </div>
+    </div>
+
 <!-- TOAST ALERTS SYSTEM -->
     <div id="toast" class="fixed bottom-5 right-5 z-50 bg-slate-900 text-white py-3 px-5 rounded-2xl shadow-xl flex items-center space-x-3 transition-all duration-300 transform translate-y-20 opacity-0 pointer-events-none border border-slate-800">
         <div id="toastIcon">
@@ -3778,6 +3868,9 @@ let isAudioEnabled = true;
                                 <button onclick="quickRenewDialog('${v.id}')" class="text-xs bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800 px-2.5 py-2 rounded-xl font-bold flex items-center gap-1 hover:bg-amber-100 dark:hover:bg-amber-900/40 transition shadow-sm" title="Aggiorna Scadenze Rapide">
                                     <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-500"></i> Rinnovi Veloci
                                 </button>
+                                <button onclick="openDiaryModal('${v.id}')" class="text-xs bg-teal-50 dark:bg-teal-950/40 text-teal-700 dark:text-teal-400 border border-teal-200 dark:border-teal-800 px-2.5 py-2 rounded-xl font-bold flex items-center gap-1 hover:bg-teal-100 dark:hover:bg-teal-900/40 transition shadow-sm" title="Diario di Bordo">
+                                    <i data-lucide="book-open" class="w-3.5 h-3.5 text-teal-500"></i> Diario ${(v.diary && v.diary.length > 0) ? `<span class="bg-teal-500 text-white text-[9px] font-extrabold rounded-full px-1.5 py-0">${v.diary.length}</span>` : ''}
+                                </button>
                                 <button onclick="editVehicle('${v.id}')" class="text-brand-600 dark:text-brand-400 hover:bg-brand-50 dark:hover:bg-brand-950 p-2 rounded-xl transition border border-transparent hover:border-brand-200 dark:hover:border-brand-800" title="Modifica completa">
                                     <i data-lucide="edit-3" class="w-4 h-4"></i>
                                 </button>
@@ -5436,6 +5529,123 @@ let isAudioEnabled = true;
 
             doc.save("Report_Scadenziario_Flotta.pdf");
             showToast("Report PDF generato con successo!", "success");
+        }
+
+        // ========================================================
+        // DIARIO DI BORDO
+        // ========================================================
+        let currentDiaryVehicleId = null;
+
+        function openDiaryModal(vehicleId) {
+            const v = vehicles.find(x => x.id === vehicleId);
+            if (!v) return;
+            currentDiaryVehicleId = vehicleId;
+            document.getElementById('diaryNewDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('diaryNewDescription').value = '';
+            document.getElementById('diaryNewKm').value = '';
+            document.getElementById('diaryNewCost').value = '';
+            document.getElementById('diaryNewCategory').value = 'manutenzione';
+            document.getElementById('diaryModalTitle').textContent = '\u{1F4CB} Diario \u2014 ' + (v.plate || v.model);
+            document.getElementById('diaryModalSubtitle').textContent = v.model + (v.plate ? ' | ' + v.plate : '');
+            renderDiaryEntries(v);
+            updateDiaryStats(v);
+            document.getElementById('diaryModal').classList.remove('hidden');
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function closeDiaryModal() {
+            document.getElementById('diaryModal').classList.add('hidden');
+            currentDiaryVehicleId = null;
+        }
+
+        function renderDiaryEntries(v) {
+            const list = document.getElementById('diaryEntriesList');
+            const empty = document.getElementById('diaryEmptyState');
+            const diary = v.diary || [];
+            if (diary.length === 0) {
+                list.innerHTML = '';
+                list.classList.add('hidden');
+                empty.classList.remove('hidden');
+                return;
+            }
+            list.classList.remove('hidden');
+            empty.classList.add('hidden');
+            const catMap = {
+                manutenzione: { icon: '\u{1F527}', label: 'Manutenzione' },
+                riparazione:  { icon: '\u{1F528}', label: 'Riparazione' },
+                pneumatici:   { icon: '\u{1F504}', label: 'Pneumatici' },
+                revisione:    { icon: '\u2705',     label: 'Revisione' },
+                nota:         { icon: '\u{1F4CB}', label: 'Nota' },
+                costo:        { icon: '\u{1F4B0}', label: 'Costo' }
+            };
+            const sorted = [...diary].sort((a, b) => new Date(b.date) - new Date(a.date));
+            list.innerHTML = sorted.map(entry => {
+                const cat = catMap[entry.category] || catMap['nota'];
+                const dateFmt = entry.date ? new Date(entry.date + 'T00:00:00').toLocaleDateString('it-IT', { day: '2-digit', month: 'short', year: 'numeric' }) : '\u2014';
+                const kmText = entry.km ? `<span class="text-slate-400">\u2022</span> ${Number(entry.km).toLocaleString('it-IT')} km` : '';
+                const costText = entry.cost ? `<span class="text-slate-400">\u2022</span> <span class="font-semibold text-emerald-600 dark:text-emerald-400">\u20AC ${Number(entry.cost).toLocaleString('it-IT',{minimumFractionDigits:2})}</span>` : '';
+                return `<div class="flex items-start gap-3 px-6 py-4 hover:bg-slate-50 dark:hover:bg-slate-900/40 transition group">
+                    <div class="text-xl flex-shrink-0 mt-0.5">${cat.icon}</div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 flex-wrap mb-1">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">${dateFmt}</span>
+                            <span class="text-[10px] font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded">${cat.label}</span>
+                            <span class="text-[11px] text-slate-500 flex items-center gap-1">${kmText} ${costText}</span>
+                        </div>
+                        <p class="text-sm text-slate-800 dark:text-white font-medium">${entry.description || '\u2014'}</p>
+                    </div>
+                    <button onclick="deleteDiaryEntry('${v.id}','${entry.id}')" class="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/40 transition flex-shrink-0" title="Elimina">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>`;
+            }).join('');
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function updateDiaryStats(v) {
+            const diary = v.diary || [];
+            const totalCost = diary.reduce((s, e) => s + (parseFloat(e.cost) || 0), 0);
+            const sorted = [...diary].sort((a, b) => new Date(b.date) - new Date(a.date));
+            const lastDate = sorted.length ? new Date(sorted[0].date + 'T00:00:00').toLocaleDateString('it-IT', { day:'2-digit', month:'long', year:'numeric' }) : null;
+            document.getElementById('diaryStatCount').textContent = diary.length + (diary.length === 1 ? ' intervento' : ' interventi');
+            document.getElementById('diaryStatCost').textContent = '\u20AC ' + totalCost.toLocaleString('it-IT', { minimumFractionDigits: 2 });
+            document.getElementById('diaryStatLast').textContent = lastDate ? 'Ultimo: ' + lastDate : 'Nessun intervento';
+        }
+
+        function addDiaryEntry() {
+            if (!currentDiaryVehicleId) return;
+            const desc = document.getElementById('diaryNewDescription').value.trim();
+            if (!desc) { showToast('Inserisci una descrizione', 'error'); return; }
+            const v = vehicles.find(x => x.id === currentDiaryVehicleId);
+            if (!v) return;
+            if (!v.diary) v.diary = [];
+            const entry = {
+                id: Date.now().toString(36) + Math.random().toString(36).slice(2),
+                date: document.getElementById('diaryNewDate').value || new Date().toISOString().split('T')[0],
+                category: document.getElementById('diaryNewCategory').value,
+                description: desc,
+                km: document.getElementById('diaryNewKm').value ? parseInt(document.getElementById('diaryNewKm').value) : null,
+                cost: document.getElementById('diaryNewCost').value ? parseFloat(document.getElementById('diaryNewCost').value) : null,
+                addedAt: new Date().toISOString()
+            };
+            v.diary.push(entry);
+            saveToStorage();
+            document.getElementById('diaryNewDescription').value = '';
+            document.getElementById('diaryNewKm').value = '';
+            document.getElementById('diaryNewCost').value = '';
+            renderDiaryEntries(v);
+            updateDiaryStats(v);
+            showToast('Intervento aggiunto al diario!', 'success');
+        }
+
+        function deleteDiaryEntry(vehicleId, entryId) {
+            const v = vehicles.find(x => x.id === vehicleId);
+            if (!v || !v.diary) return;
+            v.diary = v.diary.filter(e => e.id !== entryId);
+            saveToStorage();
+            renderDiaryEntries(v);
+            updateDiaryStats(v);
+            showToast('Voce eliminata', 'info');
         }
 
         // PWA Service Worker Registration
