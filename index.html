@@ -2274,10 +2274,10 @@
 
         // Check if permission was already granted previously
         if ("Notification" in window && Notification.permission === "granted") {
-            // We can implicitly enable them or wait for user to click
-            // For now let's keep it manual toggle per session, or auto-enable:
             pushNotificationsEnabled = true;
         }
+        // Aggiorna il pulsante dopo che il DOM è pronto (DOMContentLoaded potrebbe già essere scattato)
+        setTimeout(updatePushButtonUI, 300);
 
         function updatePushButtonUI() {
             const btn = document.getElementById('pushStatusBtn');
@@ -2294,26 +2294,39 @@
 
         function togglePushNotifications() {
             if (!("Notification" in window)) {
-                if (typeof showToast === 'function') showToast("Non supportato", "error");
+                if (typeof showToast === 'function') showToast("Notifiche non supportate dal browser", "error");
                 return;
             }
 
-            if (Notification.permission === "granted" && pushNotificationsEnabled) {
-                // Toggle off manually
+            // Se le push sono già attive → disattivale
+            if (pushNotificationsEnabled) {
                 pushNotificationsEnabled = false;
                 updatePushButtonUI();
-                if (typeof showToast === 'function') showToast("Push disattivate", "info");
+                if (typeof showToast === 'function') showToast("Notifiche Push disattivate", "info");
                 return;
             }
 
-            // Toggle on / Request permission
+            // Se il permesso è già concesso → riattiva direttamente senza richiedere di nuovo
+            if (Notification.permission === "granted") {
+                pushNotificationsEnabled = true;
+                updatePushButtonUI();
+                if (typeof showToast === 'function') showToast("Notifiche Push attivate!", "success");
+                return;
+            }
+
+            // Permesso non ancora chiesto → chiedi al browser
+            if (Notification.permission === "denied") {
+                if (typeof showToast === 'function') showToast("Sblocca le notifiche dalle impostazioni di Chrome", "error");
+                return;
+            }
+
             Notification.requestPermission().then(function (permission) {
                 if (permission === "granted") {
                     pushNotificationsEnabled = true;
                     updatePushButtonUI();
-                    if (typeof showToast === 'function') showToast("Push attivate!", "success");
+                    if (typeof showToast === 'function') showToast("Notifiche Push attivate!", "success");
                 } else {
-                    if (typeof showToast === 'function') showToast("Permesso negato", "error");
+                    if (typeof showToast === 'function') showToast("Permesso negato dal browser", "error");
                 }
             }).catch(function(e) {
                 console.error("Push API error", e);
