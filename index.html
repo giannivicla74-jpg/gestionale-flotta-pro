@@ -123,6 +123,10 @@
                         <i data-lucide="volume-2" class="w-4 h-4"></i>
                         <span>Audio Attivo</span>
                     </button>
+                    <button onclick="togglePushNotifications()" id="pushStatusBtn" class="hidden sm:flex items-center space-x-1.5 bg-slate-50 dark:bg-slate-900/40 text-slate-600 dark:text-slate-400 px-3 py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                        <i data-lucide="bell-off" id="pushStatusIcon" class="w-4 h-4"></i>
+                        <span id="pushStatusText">Push Off</span>
+                    </button>
                     
                     <div class="relative">
                         <button onclick="toggleNotificationPanel()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-600 transition relative">
@@ -2262,6 +2266,93 @@
             
             document.getElementById('dayModal').classList.remove('hidden');
         }
+
+        // --- NOTIFICHE PUSH ---
+        let pushNotificationsEnabled = false;
+        let lastNotifiedExpiredCount = 0;
+        let lastNotifiedExpiringCount = 0;
+
+        // Check if permission was already granted previously
+        if ("Notification" in window && Notification.permission === "granted") {
+            // We can implicitly enable them or wait for user to click
+            // For now let's keep it manual toggle per session, or auto-enable:
+            pushNotificationsEnabled = true;
+        }
+
+        function updatePushButtonUI() {
+            const btn = document.getElementById('pushStatusBtn');
+            const icon = document.getElementById('pushStatusIcon');
+            const text = document.getElementById('pushStatusText');
+            if(!btn) return;
+            if (pushNotificationsEnabled && Notification.permission === "granted") {
+                btn.className = "hidden sm:flex items-center space-x-1.5 bg-brand-50 dark:bg-brand-950/40 text-brand-700 dark:text-brand-400 px-3 py-2 rounded-xl text-xs font-semibold border border-brand-200 dark:border-brand-800 hover:bg-brand-100 dark:hover:bg-brand-900/40 transition";
+                icon.setAttribute('data-lucide', 'bell-ring');
+                text.innerText = "Push Attive";
+            } else {
+                btn.className = "hidden sm:flex items-center space-x-1.5 bg-slate-50 dark:bg-slate-900/40 text-slate-600 dark:text-slate-400 px-3 py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition";
+                icon.setAttribute('data-lucide', 'bell-off');
+                text.innerText = "Push Off";
+            }
+            if(window.lucide) lucide.createIcons();
+        }
+
+        function togglePushNotifications() {
+            if (!("Notification" in window)) {
+                showToast("Il tuo browser non supporta le notifiche Desktop", "error");
+                return;
+            }
+
+            if (pushNotificationsEnabled) {
+                pushNotificationsEnabled = false;
+                showToast("Notifiche Push disattivate", "info");
+                updatePushButtonUI();
+            } else {
+                if (Notification.permission === "granted") {
+                    pushNotificationsEnabled = true;
+                    showToast("Notifiche Push attivate!", "success");
+                    updatePushButtonUI();
+                } else if (Notification.permission !== "denied") {
+                    Notification.requestPermission().then(permission => {
+                        if (permission === "granted") {
+                            pushNotificationsEnabled = true;
+                            showToast("Notifiche Push attivate!", "success");
+                            updatePushButtonUI();
+                        } else {
+                            showToast("Permesso negato per le notifiche", "error");
+                        }
+                    });
+                } else {
+                    showToast("Devi sbloccare le notifiche dalle impostazioni del browser", "error");
+                }
+            }
+        }
+
+        function sendPushNotification(title, body) {
+            if (pushNotificationsEnabled && Notification.permission === "granted") {
+                try {
+                    new Notification(title, { 
+                        body: body, 
+                        icon: 'logo-192.png' // assuming this exists, or can be null
+                    });
+                } catch(e) {
+                    console.error("Push Notification error: ", e);
+                }
+            }
+        }
+
+        // Trigger UI update on load
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(updatePushButtonUI, 500);
+            
+            // Check time passage every 1 hour to recalculate states
+            setInterval(() => {
+                console.log("Periodic background check...");
+                if(typeof updateStatsPanel === "function") updateStatsPanel();
+                if(typeof renderVehicles === "function") renderVehicles();
+                if(typeof renderOperators === "function") renderOperators();
+            }, 60 * 60 * 1000);
+        });
+
 // --- STATO GLOBALIZZATO ---
         let vehicles = [];
         let operators = [];
@@ -4220,6 +4311,20 @@ let isAudioEnabled = true;
 
             buildNotificationPanelList(expired, expiring);
             if (typeof updateCharts === "function") updateCharts();
+            
+            // Push Notification trigger
+            if (typeof pushNotificationsEnabled !== 'undefined' && pushNotificationsEnabled) {
+                if (expired > lastNotifiedExpiredCount || expiring > lastNotifiedExpiringCount) {
+                    let msg = "";
+                    if (expired > 0) msg += `${expired} risorse SCADUTE. `;
+                    if (expiring > 0) msg += `${expiring} risorse IN SCADENZA.`;
+                    if (msg !== "") {
+                        sendPushNotification("Allerta Flotta", msg);
+                    }
+                }
+                lastNotifiedExpiredCount = expired;
+                lastNotifiedExpiringCount = expiring;
+            }
         }
 
         function buildNotificationPanelList(expired, expiring) {
