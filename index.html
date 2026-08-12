@@ -27,6 +27,10 @@
     </script>
     <!-- Caricamento delle icone Lucide per una visualizzazione vettoriale pulita -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <style>
         @keyframes pulse-ring {
             0% { transform: scale(0.95); opacity: 1; }
@@ -78,6 +82,16 @@
                 </div>
                 
                 <div class="flex items-center space-x-2">
+                    <!-- Export Buttons -->
+                    <button onclick="exportToPDF()" class="hidden md:flex items-center space-x-1.5 p-2.5 rounded-xl bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition dark:bg-red-900/30 dark:text-red-400 dark:border-red-800/50 dark:hover:bg-red-900/50" title="Esporta Report PDF">
+                        <i data-lucide="file-text" class="w-4 h-4"></i>
+                        <span class="text-xs font-bold">PDF</span>
+                    </button>
+                    <button onclick="exportToExcel()" class="hidden md:flex items-center space-x-1.5 p-2.5 rounded-xl bg-green-50 text-green-600 border border-green-200 hover:bg-green-100 transition dark:bg-green-900/30 dark:text-green-400 dark:border-green-800/50 dark:hover:bg-green-900/50" title="Esporta Report Excel">
+                        <i data-lucide="sheet" class="w-4 h-4"></i>
+                        <span class="text-xs font-bold">Excel</span>
+                    </button>
+
                     <!-- Bottone Licenza d'Uso -->
                     <button onclick="openLicenseModal()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-600 transition" title="Dettagli Sviluppatore e Licenza">
                         <i data-lucide="award" class="w-4 h-4 text-brand-600 dark:text-brand-400"></i>
@@ -152,8 +166,8 @@
                 <div class="lg:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div id="cardScaduti" onclick="filterByStatusStat('expired')" class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between transition-all duration-300 cursor-pointer hover:scale-[1.02] active:scale-[0.98]" title="Clicca per filtrare solo le scadenze critiche">
                         <div>
-                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Risorse con Scadenze Critiche</p>
-                            <h3 id="statExpired" class="text-3xl font-black text-slate-900 dark:text-white mt-1">0</h3>
+                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Risorse con Scadenze Critiche</p>
+                            <h3 id="statExpired" class="text-3xl font-extrabold text-slate-900 dark:text-white mt-1">0</h3>
                             <span class="text-[10px] text-red-500 font-bold flex items-center gap-1 mt-1 hidden" id="expiredWarningLabel">
                                 <i data-lucide="alert-circle" class="w-3 h-3"></i> Intervenire subito!
                             </span>
@@ -165,8 +179,8 @@
 
                     <div onclick="filterByStatusStat('expiring')" class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between cursor-pointer hover:scale-[1.02] active:scale-[0.98]" title="Clicca per filtrare solo le scadenze imminenti">
                         <div>
-                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">In Scadenza imminente</p>
-                            <h3 id="statExpiring" class="text-3xl font-black text-amber-500 dark:text-amber-400 mt-1">0</h3>
+                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide">In Scadenza imminente</p>
+                            <h3 id="statExpiring" class="text-3xl font-extrabold text-amber-500 dark:text-amber-400 mt-1">0</h3>
                             <span class="text-[10px] text-slate-400 font-medium mt-1 block">Prossimi <span class="thresholdLabel text-amber-500 font-bold">30</span> giorni</span>
                         </div>
                         <div class="bg-amber-50 dark:bg-amber-950/40 p-3.5 rounded-xl text-amber-500">
@@ -176,8 +190,8 @@
 
                     <div onclick="filterByStatusStat('ok')" class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between cursor-pointer hover:scale-[1.02] active:scale-[0.98]" title="Clicca per filtrare solo i record in regola">
                         <div>
-                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Risorse 100% OK</p>
-                            <h3 id="statOk" class="text-3xl font-black text-emerald-500 dark:text-emerald-400 mt-1">0</h3>
+                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Risorse 100% OK</p>
+                            <h3 id="statOk" class="text-3xl font-extrabold text-emerald-500 dark:text-emerald-400 mt-1">0</h3>
                             <span class="text-[10px] text-slate-400 font-medium mt-1 block" id="statTotalLabel">0 risorse totali</span>
                         </div>
                         <div class="bg-emerald-50 dark:bg-emerald-950/40 p-3.5 rounded-xl text-emerald-500">
@@ -193,7 +207,7 @@
                             <h4 class="font-bold text-sm text-slate-900 dark:text-white">Indice Conformità Flotta</h4>
                             <p class="text-[11px] text-slate-400">Calcolato su VI.CLA FUTURE S.R.L.</p>
                         </div>
-                        <span id="healthScorePercentage" class="text-2xl font-black text-brand-600 dark:text-brand-400">100%</span>
+                        <span id="healthScorePercentage" class="text-2xl font-extrabold text-brand-600 dark:text-brand-400">100%</span>
                     </div>
                     
                     <div class="w-full bg-slate-100 dark:bg-slate-700 h-3.5 rounded-full overflow-hidden my-3">
@@ -211,6 +225,89 @@
                 </div>
             </div>
 
+
+            <!-- ADVANCED DASHBOARD (CHARTS) -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                <!-- Fleet Chart -->
+                <div class="bg-gradient-to-br from-white to-slate-50 dark:from-slate-800 dark:to-slate-800/80 p-5 rounded-3xl border border-slate-200/60 dark:border-slate-700/60 shadow-lg flex flex-col relative overflow-hidden">
+                    <div class="absolute -right-10 -top-10 w-64 h-64 bg-brand-500/30 dark:bg-brand-500/20 rounded-full blur-3xl mix-blend-multiply dark:mix-blend-lighten pointer-events-none"></div>
+                    <h4 class="font-semibold text-base text-slate-700 dark:text-slate-200 mb-6 flex items-center gap-2 tracking-wide z-10"><i data-lucide="truck" class="w-5 h-5 text-brand-500"></i> Stato Flotta Mezzi</h4>
+                    
+                    <div class="flex flex-col md:flex-row items-center justify-between gap-8 z-10">
+                        <div class="relative w-44 h-24 flex-shrink-0 flex items-end justify-center">
+                            <canvas id="fleetStatusChart" style="position:absolute; top:0; left:0; width:100%; height:200%;"></canvas>
+                            <div class="absolute bottom-0 left-0 right-0 flex flex-col items-center justify-end pointer-events-none" style="padding-bottom: 5px;">
+                                <span class="text-3xl font-extrabold text-slate-800 dark:text-white leading-none" id="fleetTotalCenter">0</span>
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Totali</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex-1 w-full grid grid-cols-1 gap-2.5">
+                            <div class="flex justify-between items-center bg-white dark:bg-slate-900/60 border border-emerald-100 dark:border-emerald-900/30 p-2.5 rounded-xl shadow-sm transition hover:scale-[1.02] cursor-pointer hover:border-emerald-400 dark:hover:border-emerald-500" onclick="switchTab('vehicles'); filterByStatusStat('ok')">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center text-emerald-500"><i data-lucide="check-circle" class="w-4 h-4"></i></div>
+                                    <span class="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wide">In Regola</span>
+                                </div>
+                                <span class="text-lg font-bold text-emerald-500" id="fleetGreenCount">0</span>
+                            </div>
+                            <div class="flex justify-between items-center bg-white dark:bg-slate-900/60 border border-amber-100 dark:border-amber-900/30 p-2.5 rounded-xl shadow-sm transition hover:scale-[1.02] cursor-pointer hover:border-amber-400 dark:hover:border-amber-500" onclick="switchTab('vehicles'); filterByStatusStat('expiring')">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center text-amber-500 pulse-amber-slow"><i data-lucide="clock" class="w-4 h-4"></i></div>
+                                    <span class="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wide">In Scadenza</span>
+                                </div>
+                                <span class="text-lg font-bold text-amber-500" id="fleetAmberCount">0</span>
+                            </div>
+                            <div class="flex justify-between items-center bg-white dark:bg-slate-900/60 border border-red-100 dark:border-red-900/30 p-2.5 rounded-xl shadow-sm transition hover:scale-[1.02] cursor-pointer hover:border-red-400 dark:hover:border-red-500" onclick="switchTab('vehicles'); filterByStatusStat('expired')">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-500/10 flex items-center justify-center text-red-500 pulse-alert"><i data-lucide="alert-triangle" class="w-4 h-4"></i></div>
+                                    <span class="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wide">Scaduti</span>
+                                </div>
+                                <span class="text-lg font-bold text-red-500" id="fleetRedCount">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Operators Chart -->
+                <div class="bg-gradient-to-br from-white to-slate-50 dark:from-slate-800 dark:to-slate-800/80 p-5 rounded-3xl border border-slate-200/60 dark:border-slate-700/60 shadow-lg flex flex-col relative overflow-hidden">
+                    <div class="absolute -left-10 -bottom-10 w-64 h-64 bg-emerald-500/30 dark:bg-emerald-500/20 rounded-full blur-3xl mix-blend-multiply dark:mix-blend-lighten pointer-events-none"></div>
+                    <h4 class="font-semibold text-base text-slate-700 dark:text-slate-200 mb-6 flex items-center gap-2 tracking-wide z-10"><i data-lucide="users" class="w-5 h-5 text-emerald-500"></i><i data-lucide="credit-card" class="w-5 h-5 text-emerald-500"></i> Card Tachigrafiche & Card Conducente</h4>
+                    
+                    <div class="flex flex-col md:flex-row items-center justify-between gap-8 z-10">
+                        <div class="relative w-44 h-24 flex-shrink-0 flex items-end justify-center">
+                            <canvas id="operatorStatusChart" style="position:absolute; top:0; left:0; width:100%; height:200%;"></canvas>
+                            <div class="absolute bottom-0 left-0 right-0 flex flex-col items-center justify-end pointer-events-none" style="padding-bottom: 5px;">
+                                <span class="text-3xl font-extrabold text-slate-800 dark:text-white leading-none" id="operatorTotalCenter">0</span>
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Totali</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex-1 w-full grid grid-cols-1 gap-2.5">
+                            <div class="flex justify-between items-center bg-white dark:bg-slate-900/60 border border-emerald-100 dark:border-emerald-900/30 p-2.5 rounded-xl shadow-sm transition hover:scale-[1.02] cursor-pointer hover:border-emerald-400 dark:hover:border-emerald-500" onclick="switchTab('operators'); filterByStatusStat('ok')">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center text-emerald-500"><i data-lucide="check-circle" class="w-4 h-4"></i></div>
+                                    <span class="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wide">In Regola</span>
+                                </div>
+                                <span class="text-lg font-bold text-emerald-500" id="operatorGreenCount">0</span>
+                            </div>
+                            <div class="flex justify-between items-center bg-white dark:bg-slate-900/60 border border-amber-100 dark:border-amber-900/30 p-2.5 rounded-xl shadow-sm transition hover:scale-[1.02] cursor-pointer hover:border-amber-400 dark:hover:border-amber-500" onclick="switchTab('operators'); filterByStatusStat('expiring')">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center text-amber-500 pulse-amber-slow"><i data-lucide="clock" class="w-4 h-4"></i></div>
+                                    <span class="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wide">In Scadenza</span>
+                                </div>
+                                <span class="text-lg font-bold text-amber-500" id="operatorAmberCount">0</span>
+                            </div>
+                            <div class="flex justify-between items-center bg-white dark:bg-slate-900/60 border border-red-100 dark:border-red-900/30 p-2.5 rounded-xl shadow-sm transition hover:scale-[1.02] cursor-pointer hover:border-red-400 dark:hover:border-red-500" onclick="switchTab('operators'); filterByStatusStat('expired')">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-500/10 flex items-center justify-center text-red-500 pulse-alert"><i data-lucide="alert-triangle" class="w-4 h-4"></i></div>
+                                    <span class="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wide">Scaduti</span>
+                                </div>
+                                <span class="text-lg font-bold text-red-500" id="operatorRedCount">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- CHRONOLOGICAL TIMELINE -->
             <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm mb-6">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-3">
@@ -229,8 +326,8 @@
                     <span>Flotta Automezzi (<span id="badgeVehiclesCount">0</span>)</span>
                 </button>
                 <button onclick="switchTab('operators')" id="tabOperatorsBtn" class="flex-1 py-3 px-4 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition duration-200 bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
-                    <i data-lucide="contact" class="w-5 h-5"></i>
-                    <span>Card Tachigrafiche & Operai (<span id="badgeOperatorsCount">0</span>)</span>
+                    <div class="flex items-center gap-1"><i data-lucide="users" class="w-5 h-5"></i><i data-lucide="credit-card" class="w-5 h-5"></i></div>
+                    <span>Card Tachigrafiche & Card Conducente (<span id="badgeOperatorsCount">0</span>)</span>
                 </button>
             </div>
 
@@ -362,7 +459,7 @@
                     <i data-lucide="shield-check" class="w-10 h-10"></i>
                 </div>
                 <div>
-                    <h4 class="text-base font-black text-slate-900 dark:text-white">Fleet Deadline Manager</h4>
+                    <h4 class="text-base font-extrabold text-slate-900 dark:text-white">Fleet Deadline Manager</h4>
                     <p class="text-xs text-brand-600 dark:text-brand-400 font-extrabold uppercase tracking-widest mt-0.5">Pro Edition - v1.9.6</p>
                 </div>
                 <div class="border-t border-b dark:border-slate-700 py-4 text-xs text-slate-600 dark:text-slate-300 text-left space-y-2.5">
@@ -538,7 +635,7 @@
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Tipo di Card *</label>
                         <select id="operatorType" onchange="toggleOperatorFormLabels()" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors">
-                            <option value="driver">Carta del Conducente (Operaio)</option>
+                            <option value="driver">Carta del Conducente</option>
                             <option value="company">Card Aziendale (Scarico 3 mesi)</option>
                             <option value="vehicle_company">Scarico Dati Mezzi</option>
                         </select>
@@ -556,7 +653,7 @@
                         <input type="date" id="operatorExpiration" required class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors">
                     </div>
                     <div id="divOperatorDownload">
-                        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Ultimo Scarico Dati Effettuato *</label>
+                        <label id="lblOperatorDownload" class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Data ULTIMO Scarico Dati Effettuato *</label>
                         <input type="date" id="operatorDownload" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors">
                     </div>
 
@@ -705,7 +802,7 @@
                     <select id="printTarget" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white rounded-xl text-sm">
                         <option value="all">Tutto (Veicoli e Operatori)</option>
                         <option value="vehicles">Solo Flotta Automezzi</option>
-                        <option value="operators">Solo Card Tachigrafiche & Operai</option>
+                        <option value="operators">Solo Card Tachigrafiche & Card Conducente</option>
                     </select>
                 </div>
 
@@ -813,12 +910,12 @@
             <div class="p-6 space-y-4">
                 <div class="bg-slate-50 dark:bg-slate-900/60 p-3.5 rounded-xl border border-slate-100 dark:border-slate-750">
                     <p class="text-xs text-slate-400 font-bold uppercase">Veicolo Selezionato</p>
-                    <h4 id="quickRenewPlate" class="text-xl font-black text-slate-800 dark:text-white tracking-wide mt-0.5">--</h4>
+                    <h4 id="quickRenewPlate" class="text-xl font-extrabold text-slate-800 dark:text-white tracking-wide mt-0.5">--</h4>
                     <p id="quickRenewModel" class="text-xs text-slate-500 dark:text-slate-400">--</p>
                 </div>
 
                 <div class="space-y-2.5">
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Seleziona Scadenza da Rinnovare Oggi:</p>
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Seleziona Scadenza da Rinnovare Oggi:</p>
                     
                     <button onclick="performQuickRenew('scaricoTachigrafo', 90)" class="w-full text-left p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-755 transition flex items-center justify-between group">
                         <div>
@@ -885,17 +982,17 @@
 
             <!-- Tastierino Numerico Premium -->
             <div class="grid grid-cols-3 gap-2 max-w-[210px] mx-auto mb-4">
-                <button onclick="pressPinKey('1')" class="py-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-2xl text-base font-black transition active:scale-95 shadow-sm">1</button>
-                <button onclick="pressPinKey('2')" class="py-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-2xl text-base font-black transition active:scale-95 shadow-sm">2</button>
-                <button onclick="pressPinKey('3')" class="py-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-2xl text-base font-black transition active:scale-95 shadow-sm">3</button>
-                <button onclick="pressPinKey('4')" class="py-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-2xl text-base font-black transition active:scale-95 shadow-sm">4</button>
-                <button onclick="pressPinKey('5')" class="py-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-2xl text-base font-black transition active:scale-95 shadow-sm">5</button>
-                <button onclick="pressPinKey('6')" class="py-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-2xl text-base font-black transition active:scale-95 shadow-sm">6</button>
-                <button onclick="pressPinKey('7')" class="py-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-2xl text-base font-black transition active:scale-95 shadow-sm">7</button>
-                <button onclick="pressPinKey('8')" class="py-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-2xl text-base font-black transition active:scale-95 shadow-sm">8</button>
-                <button onclick="pressPinKey('9')" class="py-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-2xl text-base font-black transition active:scale-95 shadow-sm">9</button>
+                <button onclick="pressPinKey('1')" class="py-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-2xl text-base font-extrabold transition active:scale-95 shadow-sm">1</button>
+                <button onclick="pressPinKey('2')" class="py-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-2xl text-base font-extrabold transition active:scale-95 shadow-sm">2</button>
+                <button onclick="pressPinKey('3')" class="py-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-2xl text-base font-extrabold transition active:scale-95 shadow-sm">3</button>
+                <button onclick="pressPinKey('4')" class="py-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-2xl text-base font-extrabold transition active:scale-95 shadow-sm">4</button>
+                <button onclick="pressPinKey('5')" class="py-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-2xl text-base font-extrabold transition active:scale-95 shadow-sm">5</button>
+                <button onclick="pressPinKey('6')" class="py-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-2xl text-base font-extrabold transition active:scale-95 shadow-sm">6</button>
+                <button onclick="pressPinKey('7')" class="py-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-2xl text-base font-extrabold transition active:scale-95 shadow-sm">7</button>
+                <button onclick="pressPinKey('8')" class="py-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-2xl text-base font-extrabold transition active:scale-95 shadow-sm">8</button>
+                <button onclick="pressPinKey('9')" class="py-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-2xl text-base font-extrabold transition active:scale-95 shadow-sm">9</button>
                 <button onclick="clearPin()" class="py-3 bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40 rounded-2xl text-xs font-bold transition active:scale-95 shadow-sm">C</button>
-                <button onclick="pressPinKey('0')" class="py-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-2xl text-base font-black transition active:scale-95 shadow-sm">0</button>
+                <button onclick="pressPinKey('0')" class="py-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-2xl text-base font-extrabold transition active:scale-95 shadow-sm">0</button>
                 <button onclick="backspacePin()" class="py-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-2xl text-base transition flex items-center justify-center active:scale-95 shadow-sm">
                     <i data-lucide="delete" class="w-4 h-4"></i>
                 </button>
@@ -1887,7 +1984,7 @@
         let vehicles = [];
         let operators = [];
         let activeTab = 'vehicles';
-// let isAudioEnabled = true; (unified variable)
+let isAudioEnabled = true;
         let isBannerDismissed = false;
         let visiblePins = {}; 
         let audioCtx = null;  
@@ -2202,7 +2299,7 @@
                 tabVehiclesBtn.className = "flex-1 py-3 px-4 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition duration-200 bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800";
                 tabVehiclesContent.classList.add('hidden');
                 tabOperatorsContent.classList.remove('hidden');
-                mainAddBtnText.innerText = "Nuova Card / Operaio";
+                mainAddBtnText.innerText = "Nuova Card / Conducente";
             }
             applyFilters();
         }
@@ -2291,7 +2388,7 @@
             lucide.createIcons();
         }
 
-        let isAudioEnabled = true;
+
         let activeVoiceGender = localStorage.getItem('fleet_voice_gender_vicla') || 'female';
 
         function setVoiceGenderFilter(gender) {
@@ -2586,6 +2683,10 @@
         }
 
         function speakDeadlines() {
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                return;
+            }
             let expiredVehicles = [];
             let expiringVehicles = [];
             vehicles.forEach(v => {
@@ -2617,7 +2718,7 @@
                 speakText("Tutte le scadenze ed i mezzi della flotta sono perfettamente in regola.");
                 return;
             }
-            let msg = `Attenzione, riepilogo scadenze flotta ${companyName}. `;
+            let msg = `Attenzione, riepilogo scadenze flotta. `;
             if (expiredVehicles.length > 0) {
                 msg += `Ci sono ${expiredVehicles.length} scadenze già superate. ` + expiredVehicles.slice(0, 3).join(', ') + '. ';
             }
@@ -3040,6 +3141,18 @@
             return checkDeadlineState(nextDate);
         }
 
+        function calculateNextCompanyDownloadDate(lastDownloadStr) {
+            if (!lastDownloadStr) return '';
+            const lastDownload = new Date(lastDownloadStr);
+            lastDownload.setDate(lastDownload.getDate() + 90);
+            return lastDownload.toISOString().split('T')[0];
+        }
+
+        function checkCompanyDownloadDeadlineState(lastDownloadStr) {
+            const nextDate = calculateNextCompanyDownloadDate(lastDownloadStr);
+            return checkDeadlineState(nextDate);
+        }
+
         function getVehicleOverallStatus(vehicle) {
             let statuses = [];
             for (let d in vehicle.deadlines) {
@@ -3061,7 +3174,12 @@
                 if (stateExp === 'amber' || stateDl === 'amber') return 'amber';
                 return 'emerald';
             } else {
-                return checkDeadlineState(op.expiration);
+                const stateExp = checkDeadlineState(op.expiration);
+                const stateDl = checkCompanyDownloadDeadlineState(op.lastDownload);
+                if (stateExp === 'red' || stateDl === 'red') return 'red';
+                if (stateExp === 'amber' || stateDl === 'amber') return 'amber';
+                if (!op.expiration && !op.lastDownload) return 'none';
+                return 'emerald';
             }
         }
 
@@ -3103,7 +3221,6 @@
                 if (statusFilter !== 'all') {
                     let hasRed = false;
                     let hasAmber = false;
-                    let hasEmerald = false;
                     let hasAnyDeadline = false;
 
                     for (let key in v.deadlines) {
@@ -3112,7 +3229,6 @@
                             const state = checkDeadlineState(v.deadlines[key]);
                             if (state === 'red') hasRed = true;
                             if (state === 'amber') hasAmber = true;
-                            if (state === 'emerald') hasEmerald = true;
                         }
                     }
 
@@ -3124,7 +3240,7 @@
                         statusMatch = (!hasRed && !hasAmber && hasAnyDeadline); 
                     }
                 }
-
+                
                 return textMatch && statusMatch;
             });
 
@@ -3149,7 +3265,7 @@
 
             emptyState.classList.add('hidden');
 
-            container.innerHTML = filtered.map(v => {
+            container.innerHTML = filtered.map((v, index) => {
                 const overallStatus = getVehicleOverallStatus(v);
                 let borderClass = "border-slate-200 dark:border-slate-700 hover:border-brand-400 dark:hover:border-brand-500";
                 if (overallStatus === 'red') {
@@ -3172,6 +3288,7 @@
                     <div class="bg-white dark:bg-slate-800 rounded-2xl border-2 ${borderClass} p-5 shadow-sm transition duration-150 relative">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-slate-100 dark:border-slate-700 pb-3">
                             <div class="flex items-center space-x-3">
+                                <div class="text-sm font-black text-slate-300 dark:text-slate-600">#${index + 1}</div>
                                 <div class="bg-brand-100 dark:bg-brand-950/60 text-brand-700 dark:text-brand-300 font-extrabold px-3 py-1.5 rounded-lg text-lg tracking-wider border border-brand-200/40 dark:border-brand-800/60 shadow-sm uppercase">
                                     ${v.plate}
                                 </div>
@@ -3196,7 +3313,7 @@
 
                         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-4">
                             <div class="${colSpanLogistics} space-y-3 bg-slate-50/50 dark:bg-slate-900/50 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
-                                <h5 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1">
+                                <h5 class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-1">
                                     <i data-lucide="credit-card" class="w-3.5 h-3.5 text-slate-500"></i> Servizi Autostradali & Carte
                                 </h5>
 
@@ -3243,12 +3360,43 @@
                     op.name.toLowerCase().includes(searchTerm) || 
                     op.cardNum.toLowerCase().includes(searchTerm);
 
-                const opState = getOperatorOverallStatus(op);
                 let statusMatch = true;
-                if (statusFilter === 'expired') statusMatch = (opState === 'red');
-                else if (statusFilter === 'expiring') statusMatch = (opState === 'amber');
-                else if (statusFilter === 'ok') statusMatch = (opState === 'emerald');
+                if (statusFilter !== 'all') {
+                    let hasRed = false;
+                    let hasAmber = false;
+                    let hasAnyDeadline = false;
+                    
+                    if (op.type === 'driver') {
+                        if (op.expiration) {
+                            hasAnyDeadline = true;
+                            const s = checkDeadlineState(op.expiration);
+                            if (s === 'red') hasRed = true;
+                            if (s === 'amber') hasAmber = true;
+                        }
+                        if (op.lastDownload) {
+                            hasAnyDeadline = true;
+                            const s = checkDownloadDeadlineState(op.lastDownload);
+                            if (s === 'red') hasRed = true;
+                            if (s === 'amber') hasAmber = true;
+                        }
+                    } else {
+                        if (op.expiration) {
+                            hasAnyDeadline = true;
+                            const s = checkDeadlineState(op.expiration);
+                            if (s === 'red') hasRed = true;
+                            if (s === 'amber') hasAmber = true;
+                        }
+                    }
 
+                    if (statusFilter === 'expired') {
+                        statusMatch = hasRed; 
+                    } else if (statusFilter === 'expiring') {
+                        statusMatch = hasAmber; 
+                    } else if (statusFilter === 'ok') {
+                        statusMatch = (!hasRed && !hasAmber && hasAnyDeadline); 
+                    }
+                }
+                
                 return textMatch && statusMatch;
             });
 
@@ -3273,7 +3421,7 @@
 
             emptyState.classList.add('hidden');
 
-            container.innerHTML = filtered.map(op => {
+            container.innerHTML = filtered.map((op, index) => {
                 const isCompany = op.type === 'company';
                 const isVehicleCompany = op.type === 'vehicle_company';
                 const isDriver = op.type === 'driver';
@@ -3294,15 +3442,15 @@
                     statusText = "IN SCADENZA";
                 } else if (opState === 'emerald') {
                     borderClass = "border-emerald-200 dark:border-emerald-800 hover:border-emerald-400";
-                    statusBadge = "bg-emerald-600 text-white font-bold";
+                    statusBadge = "bg-emerald-100 text-emerald-800 font-bold dark:bg-emerald-900/60 dark:text-emerald-400";
                     statusText = "IN REGOLA";
                 }
 
-                let cardIcon = 'contact';
-                let iconBg = 'bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-300';
+                let cardIcon = 'credit-card';
+                let iconBg = 'bg-blue-100 dark:bg-blue-900/60 text-blue-600 dark:text-blue-400';
                 if (isCompany) {
-                    cardIcon = 'building';
-                    iconBg = 'bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-400';
+                    cardIcon = 'building-2';
+                    iconBg = 'bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-400';
                 } else if (isVehicleCompany) {
                     cardIcon = 'truck';
                     iconBg = 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400';
@@ -3351,10 +3499,30 @@
                     `;
                 } else {
                     const labelStr = (isCompany || isVehicleCompany) ? 'Scarico Obbligatorio' : 'Scadenza Card';
+                    let sColor = 'text-slate-900 dark:text-white';
+                    let sDaysStr = '';
+                    if (op.expiration) {
+                        const sState = checkDeadlineState(op.expiration);
+                        const days = calculateDaysRemaining(op.expiration);
+                        if (sState === 'red') {
+                            sColor = 'text-red-500 font-bold';
+                            sDaysStr = `<span class="text-red-500">Scaduto da ${Math.abs(days)} giorni ⚠️</span>`;
+                        } else if (sState === 'amber') {
+                            sColor = 'text-amber-500 font-bold';
+                            sDaysStr = `<span class="text-amber-500">Mancano ${days} giorni ⏳</span>`;
+                        } else {
+                            sColor = 'text-emerald-500 font-bold';
+                            sDaysStr = `<span class="text-emerald-500">Mancano ${days} giorni ✅</span>`;
+                        }
+                    }
+                    
                     scadenzeHTML = `
-                        <div class="text-[11px] flex justify-between">
-                            <span class="text-slate-400">${labelStr}:</span>
-                            <span class="font-mono font-bold text-slate-900 dark:text-white">${formatDateString(op.expiration)}</span>
+                        <div class="text-[11px] flex flex-col gap-0.5">
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">${labelStr}:</span>
+                                <span class="${sColor} font-mono">${formatDateString(op.expiration)}</span>
+                            </div>
+                            ${op.expiration ? `<div class="text-[10px] text-right font-bold mt-1">${sDaysStr}</div>` : ''}
                         </div>
                     `;
 
@@ -3369,6 +3537,7 @@
                     <div class="bg-white dark:bg-slate-800 rounded-2xl border-2 ${borderClass} p-4 shadow-sm transition duration-150 flex flex-col justify-between h-56 relative overflow-hidden">
                         <div class="flex justify-between items-start">
                             <div class="flex items-center space-x-2.5">
+                                <div class="text-[11px] font-black text-slate-300 dark:text-slate-600">#${index + 1}</div>
                                 <div class="p-2 ${iconBg} rounded-xl">
                                     <i data-lucide="${cardIcon}" class="w-5 h-5"></i>
                                 </div>
@@ -3621,17 +3790,48 @@
             let ok = 0;
 
             vehicles.forEach(v => {
-                const s = getVehicleOverallStatus(v);
-                if (s === 'red') expired++;
-                else if (s === 'amber') expiring++;
-                else if (s === 'emerald') ok++;
+                let hasRed = false, hasAmber = false, hasAny = false;
+                for (let key in v.deadlines) {
+                    if (key !== 'altroNota' && v.deadlines[key]) {
+                        hasAny = true;
+                        const state = checkDeadlineState(v.deadlines[key]);
+                        if (state === 'red') hasRed = true;
+                        if (state === 'amber') hasAmber = true;
+                    }
+                }
+                if (hasRed) expired++;
+                if (hasAmber) expiring++;
+                if (!hasRed && !hasAmber && hasAny) ok++;
             });
 
             operators.forEach(op => {
-                const s = getOperatorOverallStatus(op);
-                if (s === 'red') expired++;
-                else if (s === 'amber') expiring++;
-                else if (s === 'emerald') ok++;
+                let hasRed = false, hasAmber = false, hasAny = false;
+                if (op.type === 'driver') {
+                    if (op.expiration) {
+                        hasAny = true;
+                        const s = checkDeadlineState(op.expiration);
+                        if (s === 'red') hasRed = true;
+                        if (s === 'amber') hasAmber = true;
+                    }
+                    if (op.lastDownload) {
+                        hasAny = true;
+                        const s = checkDownloadDeadlineState(op.lastDownload);
+                        if (s === 'red') hasRed = true;
+                        if (s === 'amber') hasAmber = true;
+                    }
+                } else {
+                    if (op.expiration || op.lastDownload) {
+                        hasAny = true;
+                        const sExp = checkDeadlineState(op.expiration);
+                        const sDl = checkCompanyDownloadDeadlineState(op.lastDownload);
+                        if (sExp === 'red' || sDl === 'red') hasRed = true;
+                        if (sExp === 'amber' || sDl === 'amber') hasAmber = true;
+                    }
+                }
+                
+                if (hasRed) expired++;
+                if (hasAmber) expiring++;
+                if (!hasRed && !hasAmber && hasAny) ok++;
             });
 
             const totalResources = totalVehicles + totalOperators;
@@ -3683,6 +3883,7 @@
             }
 
             buildNotificationPanelList(expired, expiring);
+            if (typeof updateCharts === "function") updateCharts();
         }
 
         function buildNotificationPanelList(expired, expiring) {
@@ -3724,12 +3925,20 @@
                         });
                     }
                 } else {
-                    const state = checkDeadlineState(op.expiration);
-                    if (state === 'red' || state === 'amber') {
+                    const stateExp = checkDeadlineState(op.expiration);
+                    if (stateExp === 'red' || stateExp === 'amber') {
                         issues.push({
-                            label: `${op.name} (${op.type === 'company' ? 'Aziendale' : 'Scarico Mezzo'})`,
-                            state: state,
+                            label: `${op.name} (Fisica Card ${op.type === 'company' ? 'Aziendale' : 'Scarico Mezzo'})`,
+                            state: stateExp,
                             date: op.expiration
+                        });
+                    }
+                    const stateDl = checkCompanyDownloadDeadlineState(op.lastDownload);
+                    if (stateDl === 'red' || stateDl === 'amber') {
+                        issues.push({
+                            label: `${op.name} (Scarico 90gg ${op.type === 'company' ? 'Aziendale' : 'Scarico Mezzo'})`,
+                            state: stateDl,
+                            date: calculateNextCompanyDownloadDate(op.lastDownload)
                         });
                     }
                 }
@@ -3871,6 +4080,15 @@
                     playChime();
                 }
             }, 1500);
+        }
+
+        function calculateDaysRemaining(dateString) {
+            if (!dateString) return 0;
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            const d = new Date(dateString);
+            d.setHours(0,0,0,0);
+            return Math.ceil((d - today) / (1000 * 60 * 60 * 24));
         }
 
         function formatDateString(str) {
@@ -4042,20 +4260,23 @@
             const txtName = document.getElementById('operatorName');
             const lblCardNum = document.getElementById('lblOperatorCardNum');
             const lblExp = document.getElementById('lblOperatorExpiration');
+            const lblDl = document.getElementById('lblOperatorDownload');
             const divDl = document.getElementById('divOperatorDownload');
 
             if (type === 'company') {
                 lblName.innerText = "Identificativo Card Aziendale *";
                 txtName.placeholder = "Es. Sede Principale, Card Ufficio";
                 lblCardNum.innerText = "Numero Card Aziendale *";
-                lblExp.innerText = "Prossima Scadenza Scarico Obbligatorio *";
-                divDl.classList.add('hidden');
+                lblExp.innerText = "Scadenza Validità Card Aziendale (5 Anni) *";
+                if(lblDl) lblDl.innerText = "Data ULTIMO Scarico (Prossimo a 90gg) *";
+                divDl.classList.remove('hidden');
             } else if (type === 'vehicle_company') {
                 lblName.innerText = "Identificativo Mezzo *";
                 txtName.placeholder = "Es. IVECO 130, IVECO 100";
                 lblCardNum.innerText = "Codice Scarico Mezzo *";
-                lblExp.innerText = "Prossima Scadenza Scarico Obbligatorio Mezzo *";
-                divDl.classList.add('hidden');
+                lblExp.innerText = "Scadenza Tachigrafo Mezzo *";
+                if(lblDl) lblDl.innerText = "Data ULTIMO Scarico (Prossimo a 90gg) *";
+                divDl.classList.remove('hidden');
             } else {
                 lblName.innerText = "Nome e Cognome Conducente *";
                 txtName.placeholder = "Es. Mario Rossi";
@@ -4080,7 +4301,7 @@
                 name, 
                 cardNum, 
                 expiration,
-                lastDownload: (type === 'driver') ? (lastDownload || new Date().toISOString().split('T')[0]) : undefined
+                lastDownload: lastDownload || new Date().toISOString().split('T')[0]
             };
 
             if (id) {
@@ -4405,6 +4626,327 @@
         function renderAll() {
             applyFilters();
         }
-    </script>
+    
+        // -- CHARTS LOGIC --
+        let fleetChartInstance = null;
+        let operatorChartInstance = null;
+
+        function updateCharts() {
+            // Count states for vehicles independently
+            let vRed = 0, vAmber = 0, vGreen = 0;
+            vehicles.forEach(v => {
+                let hasRed = false, hasAmber = false, hasAny = false;
+                for (let key in v.deadlines) {
+                    if (key !== 'altroNota' && v.deadlines[key]) {
+                        hasAny = true;
+                        const state = checkDeadlineState(v.deadlines[key]);
+                        if (state === 'red') hasRed = true;
+                        if (state === 'amber') hasAmber = true;
+                    }
+                }
+                if (hasRed) vRed++;
+                if (hasAmber) vAmber++;
+                if (!hasRed && !hasAmber && hasAny) vGreen++;
+            });
+
+            // Count states for operators independently
+            let oRed = 0, oAmber = 0, oGreen = 0;
+            operators.forEach(op => {
+                let hasRed = false, hasAmber = false, hasAny = false;
+                if (op.type === 'driver') {
+                    if (op.expiration) {
+                        hasAny = true;
+                        const s = checkDeadlineState(op.expiration);
+                        if (s === 'red') hasRed = true;
+                        if (s === 'amber') hasAmber = true;
+                    }
+                    if (op.lastDownload) {
+                        hasAny = true;
+                        const s = checkDownloadDeadlineState(op.lastDownload);
+                        if (s === 'red') hasRed = true;
+                        if (s === 'amber') hasAmber = true;
+                    }
+                } else {
+                    if (op.expiration) {
+                        hasAny = true;
+                        const s = checkDeadlineState(op.expiration);
+                        if (s === 'red') hasRed = true;
+                        if (s === 'amber') hasAmber = true;
+                    }
+                }
+                
+                if (hasRed) oRed++;
+                if (hasAmber) oAmber++;
+                if (!hasRed && !hasAmber && hasAny) oGreen++;
+            });
+
+            const isDarkMode = document.documentElement.classList.contains('dark');
+            const textColor = isDarkMode ? '#cbd5e1' : '#475569';
+
+            // Update labels - Total should be the length, not the sum (since a vehicle can be both Red and Amber)
+            if (document.getElementById('fleetTotalCenter')) document.getElementById('fleetTotalCenter').innerText = vehicles.length;
+            if (document.getElementById('fleetRedCount')) document.getElementById('fleetRedCount').innerText = vRed;
+            if (document.getElementById('fleetAmberCount')) document.getElementById('fleetAmberCount').innerText = vAmber;
+            if (document.getElementById('fleetGreenCount')) document.getElementById('fleetGreenCount').innerText = vGreen;
+
+            if (document.getElementById('operatorTotalCenter')) document.getElementById('operatorTotalCenter').innerText = operators.length;
+            if (document.getElementById('operatorRedCount')) document.getElementById('operatorRedCount').innerText = oRed;
+            if (document.getElementById('operatorAmberCount')) document.getElementById('operatorAmberCount').innerText = oAmber;
+            if (document.getElementById('operatorGreenCount')) document.getElementById('operatorGreenCount').innerText = oGreen;
+
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                circumference: 180, // Half circle
+                rotation: -90, // Start from left to right (like a speedometer)
+                onClick: (e, elements, chart) => {
+                    if (elements.length > 0) {
+                        const index = elements[0].index;
+                        // index: 0 = Scaduti, 1 = In Scadenza, 2 = In Regola
+                        const states = ['expired', 'expiring', 'ok'];
+                        const isOperatorChart = chart.canvas.id === 'operatorStatusChart';
+                        switchTab(isOperatorChart ? 'operators' : 'vehicles');
+                        filterByStatusStat(states[index]);
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return ' ' + context.label + ': ' + context.raw;
+                            }
+                        }
+                    }
+                },
+                cutout: '75%', 
+                borderWidth: 0,
+                borderRadius: 4
+            };
+
+            const ctxFleet = document.getElementById('fleetStatusChart');
+            if (ctxFleet && window.Chart) {
+                if (fleetChartInstance) fleetChartInstance.destroy();
+                const hasData = vehicles.length > 0;
+                fleetChartInstance = new Chart(ctxFleet, {
+                    type: 'doughnut',
+                    data: {
+                        labels: hasData ? ['Scaduti', 'In Scadenza', 'In Regola'] : ['Nessun dato'],
+                        datasets: [{
+                            data: hasData ? [vRed, vAmber, vGreen] : [1],
+                            backgroundColor: hasData ? ['#ef4444', '#f59e0b', '#10b981'] : [isDarkMode ? '#334155' : '#e2e8f0'],
+                            borderWidth: 0,
+                            hoverOffset: hasData ? 4 : 0
+                        }]
+                    },
+                    options: chartOptions
+                });
+            }
+
+            const ctxOperator = document.getElementById('operatorStatusChart');
+            if (ctxOperator && window.Chart) {
+                if (operatorChartInstance) operatorChartInstance.destroy();
+                const hasData = operators.length > 0;
+                operatorChartInstance = new Chart(ctxOperator, {
+                    type: 'doughnut',
+                    data: {
+                        labels: hasData ? ['Scaduti', 'In Scadenza', 'In Regola'] : ['Nessun dato'],
+                        datasets: [{
+                            data: hasData ? [oRed, oAmber, oGreen] : [1],
+                            backgroundColor: hasData ? ['#ef4444', '#f59e0b', '#10b981'] : [isDarkMode ? '#334155' : '#e2e8f0'],
+                            borderWidth: 0,
+                            hoverOffset: hasData ? 4 : 0
+                        }]
+                    },
+                    options: chartOptions
+                });
+            }
+        }
+        function formatDateForExport(dateStr) {
+            if (!dateStr) return '';
+            const parts = dateStr.split('-');
+            if (parts.length !== 3) return dateStr;
+            return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
+
+        function getStatusText(statusColor) {
+            if (statusColor === 'red') return 'SCADUTO';
+            if (statusColor === 'amber') return 'IN SCADENZA';
+            if (statusColor === 'emerald') return 'IN REGOLA';
+            return '-';
+        }
+
+        function exportToExcel() {
+            // Preparazione dati Mezzi
+            const vehiclesData = vehicles.map(v => {
+                const statusColor = getVehicleOverallStatus(v);
+                return {
+                    'Targa': v.plate || '',
+                    'Modello': v.model || '',
+                    'Portata (Kg/t)': v.payload || '',
+                    'Assicurazione RCA': formatDateForExport(v.deadlines?.insurance),
+                    'Revisione': formatDateForExport(v.deadlines?.revision),
+                    'Tachigrafo': formatDateForExport(v.deadlines?.tachograph),
+                    'Bollo': formatDateForExport(v.deadlines?.stamp),
+                    'Licenza Conto Terzi': formatDateForExport(v.deadlines?.adr),
+                    'ATP': formatDateForExport(v.deadlines?.atp),
+                    'Estintore': formatDateForExport(v.deadlines?.fireExtinguisher),
+                    'Gru / PLE': formatDateForExport(v.deadlines?.crane),
+                    'Altro': formatDateForExport(v.deadlines?.otherNote),
+                    'Telepass': v.telepass || '',
+                    'Carte Carburante': v.cards || '',
+                    'Stato Generale': getStatusText(statusColor)
+                };
+            });
+
+            // Preparazione dati Autisti
+            const operatorsData = operators.map(o => {
+                const statusColor = getOperatorOverallStatus(o);
+                let tipo = '';
+                if(o.type === 'driver') tipo = 'Autista';
+                else if(o.type === 'company') tipo = 'Azienda';
+                else tipo = 'Azienda (Mezzi)';
+                
+                let scaricoDesc = '';
+                if(o.type === 'driver') scaricoDesc = formatDateForExport(calculateNextDownloadDate(o.lastDownload));
+                else scaricoDesc = formatDateForExport(calculateNextCompanyDownloadDate(o.lastDownload));
+
+                return {
+                    'Nome e Cognome': o.name || '',
+                    'Tipologia': tipo,
+                    'Numero Carta': o.cardNum || '',
+                    'Scadenza Carta': formatDateForExport(o.expiration),
+                    'Data Ultimo Scarico': formatDateForExport(o.lastDownload),
+                    'Prossima Scadenza Scarico': scaricoDesc,
+                    'Stato Generale': getStatusText(statusColor)
+                };
+            });
+
+            // Creazione Workbook
+            const wb = XLSX.utils.book_new();
+            
+            // Foglio Mezzi
+            const wsVehicles = XLSX.utils.json_to_sheet(vehiclesData);
+            XLSX.utils.book_append_sheet(wb, wsVehicles, "Mezzi");
+            
+            // Foglio Autisti
+            const wsOperators = XLSX.utils.json_to_sheet(operatorsData);
+            XLSX.utils.book_append_sheet(wb, wsOperators, "Conducenti e Card");
+
+            // Salvataggio
+            XLSX.writeFile(wb, "Report_Scadenziario_Flotta.xlsx");
+            showToast("Report Excel generato con successo!", "success");
+        }
+
+        function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('landscape');
+
+            doc.setFontSize(18);
+            doc.text("Report Scadenziario Flotta - VI.CLA FUTURE S.R.L.", 14, 20);
+            
+            const today = new Date();
+            doc.setFontSize(10);
+            doc.text(`Generato il: ${today.toLocaleDateString('it-IT')}`, 14, 28);
+
+            // Tabella Mezzi
+            doc.setFontSize(14);
+            doc.text("Riepilogo Mezzi", 14, 40);
+            
+            const vehiclesRows = vehicles.map(v => {
+                const statusColor = getVehicleOverallStatus(v);
+                
+                // Trova la prima scadenza
+                let nextDate = null;
+                for (let d in v.deadlines) {
+                    if (d !== 'altroNota' && v.deadlines[d]) {
+                        if (!nextDate || new Date(v.deadlines[d]) < new Date(nextDate)) {
+                            nextDate = v.deadlines[d];
+                        }
+                    }
+                }
+
+                return [
+                    v.plate || '-',
+                    v.model || '-',
+                    v.payload ? v.payload + ' Kg' : '-',
+                    nextDate ? formatDateForExport(nextDate) : '-',
+                    getStatusText(statusColor)
+                ];
+            });
+
+            doc.autoTable({
+                startY: 45,
+                head: [['Targa', 'Modello', 'Portata', 'Prossima Scadenza', 'Stato']],
+                body: vehiclesRows,
+                theme: 'grid',
+                headStyles: { fillColor: [37, 99, 235] }, // brand-600
+                didParseCell: function(data) {
+                    if(data.section === 'body' && data.column.index === 4) {
+                        if(data.cell.raw === 'SCADUTO') {
+                            data.cell.styles.textColor = [220, 38, 38];
+                            data.cell.styles.fontStyle = 'bold';
+                        } else if(data.cell.raw === 'IN SCADENZA') {
+                            data.cell.styles.textColor = [217, 119, 6];
+                            data.cell.styles.fontStyle = 'bold';
+                        } else if(data.cell.raw === 'IN REGOLA') {
+                            data.cell.styles.textColor = [5, 150, 105];
+                        }
+                    }
+                }
+            });
+
+            // Tabella Autisti
+            const finalY = doc.lastAutoTable.finalY || 45;
+            
+            doc.setFontSize(14);
+            doc.text("Riepilogo Conducenti e Carte Tachigrafiche", 14, finalY + 15);
+
+            const operatorsRows = operators.map(o => {
+                const statusColor = getOperatorOverallStatus(o);
+                let tipo = '';
+                if(o.type === 'driver') tipo = 'Autista';
+                else if(o.type === 'company') tipo = 'Azienda';
+                else tipo = 'Azienda (Mezzi)';
+
+                let scaricoDesc = '';
+                if(o.type === 'driver') scaricoDesc = formatDateForExport(calculateNextDownloadDate(o.lastDownload));
+                else scaricoDesc = formatDateForExport(calculateNextCompanyDownloadDate(o.lastDownload));
+
+                return [
+                    o.name || '-',
+                    tipo,
+                    o.cardNum || '-',
+                    formatDateForExport(o.expiration) || '-',
+                    scaricoDesc || '-',
+                    getStatusText(statusColor)
+                ];
+            });
+
+            doc.autoTable({
+                startY: finalY + 20,
+                head: [['Nome e Cognome', 'Tipologia', 'Numero Carta', 'Scadenza Carta', 'Prossimo Scarico', 'Stato']],
+                body: operatorsRows,
+                theme: 'grid',
+                headStyles: { fillColor: [37, 99, 235] },
+                didParseCell: function(data) {
+                    if(data.section === 'body' && data.column.index === 5) {
+                        if(data.cell.raw === 'SCADUTO') {
+                            data.cell.styles.textColor = [220, 38, 38];
+                            data.cell.styles.fontStyle = 'bold';
+                        } else if(data.cell.raw === 'IN SCADENZA') {
+                            data.cell.styles.textColor = [217, 119, 6];
+                            data.cell.styles.fontStyle = 'bold';
+                        } else if(data.cell.raw === 'IN REGOLA') {
+                            data.cell.styles.textColor = [5, 150, 105];
+                        }
+                    }
+                }
+            });
+
+            doc.save("Report_Scadenziario_Flotta.pdf");
+            showToast("Report PDF generato con successo!", "success");
+        }
+</script>
 </body>
 </html>
