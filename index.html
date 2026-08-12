@@ -413,6 +413,11 @@
                             <i data-lucide="printer" class="w-4 h-4"></i>
                             <span>Stampa Report</span>
                         </button>
+
+                        <button onclick="generateEmailForDirezione()" class="bg-indigo-500/10 dark:bg-indigo-500/20 hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-300 text-sm px-3.5 py-2 rounded-xl transition flex items-center space-x-1.5 border border-indigo-200/50 dark:border-indigo-500/30 font-bold" title="Genera Email per la Direzione con i mezzi in allerta">
+                            <i data-lucide="mail" class="w-4 h-4"></i>
+                            <span>Email Direzione</span>
+                        </button>
                     </div>
 
                     <div class="flex items-center space-x-2">
@@ -5529,6 +5534,98 @@ let isAudioEnabled = true;
 
             doc.save("Report_Scadenziario_Flotta.pdf");
             showToast("Report PDF generato con successo!", "success");
+        }
+
+        // ========================================================
+        // EMAIL PER DIREZIONE
+        // ========================================================
+        function generateEmailForDirezione() {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const in30 = new Date(today); in30.setDate(in30.getDate() + 30);
+            const fmtDate = d => {
+                if (!d) return '—';
+                const dt = new Date(d + 'T00:00:00');
+                return dt.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            };
+
+            const dlKeys = [
+                { key: 'revision',          label: 'Revisione Veicolo' },
+                { key: 'tachimetro',        label: 'Revisione Tachigrafo' },
+                { key: 'scaricoTachigrafo', label: 'Scarico Dati Tachigrafo' },
+                { key: 'assicurazione',     label: 'Assicurazione' },
+                { key: 'gru',               label: 'Verifica Gru' },
+                { key: 'gruStrutturale',    label: 'Ventennale Gru' },
+                { key: 'tassaPossesso',     label: 'Bollo' },
+                { key: 'altro',             label: 'Altro' }
+            ];
+
+            let expiredVehicles = [];
+            let expiringVehicles = [];
+
+            vehicles.forEach(v => {
+                if (!v.deadlines) return;
+                let expiredItems = [], expiringItems = [];
+                dlKeys.forEach(({ key, label }) => {
+                    const dateStr = v.deadlines[key];
+                    if (!dateStr) return;
+                    const dt = new Date(dateStr + 'T00:00:00');
+                    if (dt < today) expiredItems.push({ label: (key === 'altro' && v.deadlines.altroNota) ? v.deadlines.altroNota : label, date: dateStr });
+                    else if (dt <= in30) expiringItems.push({ label: (key === 'altro' && v.deadlines.altroNota) ? v.deadlines.altroNota : label, date: dateStr });
+                });
+                if (expiredItems.length) expiredVehicles.push({ v, items: expiredItems });
+                if (expiringItems.length) expiringVehicles.push({ v, items: expiringItems });
+            });
+
+            let expiredOps = [], expiringOps = [];
+            operators.forEach(op => {
+                if (!op.expiration) return;
+                const dt = new Date(op.expiration + 'T00:00:00');
+                if (dt < today) expiredOps.push(op);
+                else if (dt <= in30) expiringOps.push(op);
+            });
+
+            if (!expiredVehicles.length && !expiringVehicles.length && !expiredOps.length && !expiringOps.length) {
+                showToast('Nessuna anomalia critica! Flotta tutta in regola ✅', 'success');
+                return;
+            }
+
+            const todayStr = today.toLocaleDateString('it-IT', { day: '2-digit', month: 'long', year: 'numeric' });
+            let body = `Gentile Direzione,\n\nsi segnalano le seguenti anomalie urgenti rilevate dal Gestionale Flotta in data ${todayStr}.\n\n`;
+
+            if (expiredVehicles.length) {
+                body += `SCADENZE SUPERATE - MEZZI (${expiredVehicles.length}):\n`;
+                expiredVehicles.forEach(({ v, items }) => {
+                    body += `\n  - ${v.plate || ''} ${v.model || ''}:\n`;
+                    items.forEach(i => body += `      * ${i.label}: scaduto il ${fmtDate(i.date)}\n`);
+                });
+                body += '\n';
+            }
+            if (expiringVehicles.length) {
+                body += `IN SCADENZA entro 30 giorni - MEZZI (${expiringVehicles.length}):\n`;
+                expiringVehicles.forEach(({ v, items }) => {
+                    body += `\n  - ${v.plate || ''} ${v.model || ''}:\n`;
+                    items.forEach(i => body += `      * ${i.label}: scade il ${fmtDate(i.date)}\n`);
+                });
+                body += '\n';
+            }
+            if (expiredOps.length) {
+                body += `CARD/DOCUMENTI SCADUTI - CONDUCENTI (${expiredOps.length}):\n`;
+                expiredOps.forEach(op => body += `  - ${op.name} (${op.type || 'Card'}): scaduto il ${fmtDate(op.expiration)}\n`);
+                body += '\n';
+            }
+            if (expiringOps.length) {
+                body += `IN SCADENZA entro 30 giorni - CONDUCENTI (${expiringOps.length}):\n`;
+                expiringOps.forEach(op => body += `  - ${op.name} (${op.type || 'Card'}): scade il ${fmtDate(op.expiration)}\n`);
+                body += '\n';
+            }
+
+            body += `\nSi prega di provvedere al rinnovo entro i termini previsti.\n\nCordiali saluti,\nGestionale Flotta - VI.CLA FUTURE S.R.L.\n(Report generato automaticamente il ${todayStr})`;
+
+            const subject = encodeURIComponent(`Attenzione: Report Scadenze Flotta - ${todayStr}`);
+            const encodedBody = encodeURIComponent(body);
+            window.location.href = `mailto:?subject=${subject}&body=${encodedBody}`;
+            showToast('Email pre-compilata aperta nel client di posta!', 'success');
         }
 
         // ========================================================
