@@ -61,7 +61,12 @@
             background: #475569;
         }
     </style>
+
+    <!-- Firebase Compat Libraries -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 </head>
+
 <body class="bg-slate-50 dark:bg-slate-900 min-h-screen text-slate-800 dark:text-slate-100 font-sans pb-4 transition-colors duration-200 flex flex-col justify-between">
 
     <div>
@@ -1016,6 +1021,18 @@
     <audio id="alertAudio" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-84.wav" preload="auto"></audio>
 
     <script>
+        // --- FIREBASE CONFIGURATION ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyCWDO3uCkjWF5hCMYImriSFkEYoSArYOgw",
+            authDomain: "gestionale-flotta-d6448.firebaseapp.com",
+            projectId: "gestionale-flotta-d6448",
+            storageBucket: "gestionale-flotta-d6448.firebasestorage.app",
+            messagingSenderId: "607207915320",
+            appId: "1:607207915320:web:4604bb376b7feca7e14bcd"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
         // --- BASE DATI INIZIALI DI PROVA ---
         const DEMO_VEHICLES = [
     {
@@ -2746,32 +2763,64 @@ let isAudioEnabled = true;
             }
         }
 
+        let isFirebaseLoaded = false;
         function loadFromStorage() {
-            const storedVehicles = localStorage.getItem('fleet_manager_data_vicla');
-            const storedOperators = localStorage.getItem('fleet_manager_operators_vicla');
+            // First load from local storage to show UI quickly without blank screen
+            if (!isFirebaseLoaded) {
+                const storedVehicles = localStorage.getItem('fleet_manager_data_vicla');
+                const storedOperators = localStorage.getItem('fleet_manager_operators_vicla');
 
-            let parsedV = null;
-            let parsedOp = null;
+                let parsedV = null;
+                let parsedOp = null;
 
-            try { if (storedVehicles) parsedV = JSON.parse(storedVehicles); } catch(e) {}
-            try { if (storedOperators) parsedOp = JSON.parse(storedOperators); } catch(e) {}
+                try { if (storedVehicles) parsedV = JSON.parse(storedVehicles); } catch(e) {}
+                try { if (storedOperators) parsedOp = JSON.parse(storedOperators); } catch(e) {}
 
-            if (Array.isArray(parsedV) && parsedV.length > 0) {
-                vehicles = parsedV;
-            } else {
-                vehicles = JSON.parse(JSON.stringify(DEMO_VEHICLES));
+                if (Array.isArray(parsedV) && parsedV.length > 0) {
+                    vehicles = parsedV;
+                } else {
+                    vehicles = JSON.parse(JSON.stringify(DEMO_VEHICLES));
+                }
+
+                if (Array.isArray(parsedOp) && parsedOp.length > 0) {
+                    operators = parsedOp;
+                } else {
+                    operators = JSON.parse(JSON.stringify(DEMO_OPERATORS));
+                }
+
+                document.getElementById('badgeVehiclesCount').innerText = vehicles.length;
+                document.getElementById('badgeOperatorsCount').innerText = operators.length;
+                applyFilters();
             }
 
-            if (Array.isArray(parsedOp) && parsedOp.length > 0) {
-                operators = parsedOp;
-            } else {
-                operators = JSON.parse(JSON.stringify(DEMO_OPERATORS));
-            }
+            // Setup Firebase listeners
+            if (!window.firebaseInitialized) {
+                window.firebaseInitialized = true;
+                
+                db.collection('vicla_data').doc('vehicles').onSnapshot(doc => {
+                    if (doc.exists && doc.data().data) {
+                        vehicles = doc.data().data;
+                        isFirebaseLoaded = true;
+                        localStorage.setItem('fleet_manager_data_vicla', JSON.stringify(vehicles));
+                        document.getElementById('badgeVehiclesCount').innerText = vehicles.length;
+                        applyFilters();
+                    } else if (!doc.exists) {
+                        saveToStorage(); // Seed database if it's empty
+                    }
+                }, error => console.error("Firebase listen error:", error));
 
-            saveToStorage();
-            document.getElementById('badgeVehiclesCount').innerText = vehicles.length;
-            document.getElementById('badgeOperatorsCount').innerText = operators.length;
-            applyFilters();
+                db.collection('vicla_data').doc('operators').onSnapshot(doc => {
+                    if (doc.exists && doc.data().data) {
+                        operators = doc.data().data;
+                        isFirebaseLoaded = true;
+                        localStorage.setItem('fleet_manager_operators_vicla', JSON.stringify(operators));
+                        document.getElementById('badgeOperatorsCount').innerText = operators.length;
+                        applyFilters();
+                    } else if (!doc.exists) {
+                        saveToStorage();
+                    }
+                }, error => console.error("Firebase listen error:", error));
+            }
         }
 
         function generatePrintout() {
@@ -3110,6 +3159,14 @@ let isAudioEnabled = true;
         function saveToStorage() {
             localStorage.setItem('fleet_manager_data_vicla', JSON.stringify(vehicles));
             localStorage.setItem('fleet_manager_operators_vicla', JSON.stringify(operators));
+            
+            try {
+                db.collection('vicla_data').doc('vehicles').set({ data: vehicles }).catch(console.error);
+                db.collection('vicla_data').doc('operators').set({ data: operators }).catch(console.error);
+            } catch(e) {
+                console.error("Firebase write error:", e);
+            }
+
             document.getElementById('badgeVehiclesCount').innerText = vehicles.length;
             document.getElementById('badgeOperatorsCount').innerText = operators.length;
         }
