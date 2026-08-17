@@ -68,6 +68,44 @@
         .dark ::-webkit-scrollbar-thumb {
             background: #475569;
         }
+
+        @keyframes modal-fade-in {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        @keyframes modal-pop-in {
+            0% { transform: scale(0.95) translateY(10px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+        .animate-fade-in {
+            animation: modal-fade-in 0.2s ease-out forwards;
+        }
+        .animate-modal-pop {
+            animation: modal-pop-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        
+        @media print {
+            body.printing-modal > *:not(#diaryModal) {
+                display: none !important;
+            }
+            body.printing-modal #diaryModal {
+                position: absolute !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                height: auto !important;
+                background: white !important;
+                box-shadow: none !important;
+                border: none !important;
+            }
+            body.printing-modal #diaryModal .absolute.inset-0 {
+                display: none !important; /* hide backdrop */
+            }
+            .print\:hidden {
+                display: none !important;
+            }
+        }
     </style>
 
     <!-- Firebase Compat Libraries -->
@@ -110,6 +148,12 @@
                         <span class="text-xs font-bold">Excel</span>
                     </button>
 
+                    <!-- Bottone Analisi Finanziaria -->
+                    <button onclick="openFinanceModal()" class="flex items-center space-x-1.5 p-2.5 rounded-xl bg-amber-50 text-amber-600 border border-amber-200 hover:bg-amber-100 transition dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800/50 dark:hover:bg-amber-900/50" title="Analisi Finanziaria">
+                        <i data-lucide="pie-chart" class="w-4 h-4"></i>
+                        <span class="text-xs font-bold hidden md:inline">Finanza</span>
+                    </button>
+
                     <!-- Bottone Licenza d'Uso -->
                     <button onclick="openLicenseModal()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-600 transition" title="Dettagli Sviluppatore e Licenza">
                         <i data-lucide="award" class="w-4 h-4 text-brand-600 dark:text-brand-400"></i>
@@ -138,19 +182,11 @@
                     </button>
                     
                     <div class="relative">
+                        <!-- Notifiche Smart Button -->
                         <button onclick="toggleNotificationPanel()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-600 transition relative">
                             <i data-lucide="bell" class="w-4 h-4"></i>
-                            <span id="notificationBadge" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-extrabold w-4 h-4 rounded-full flex items-center justify-center pulse-alert">0</span>
+                            <span id="notificationBadge" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-extrabold w-4 h-4 rounded-full flex items-center justify-center pulse-alert shadow-[0_0_0_2px_#fff] dark:shadow-[0_0_0_2px_#1e293b]">0</span>
                         </button>
-                        <div id="notificationPanel" class="hidden absolute right-0 mt-2 w-80 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xl z-50 p-4 transition-all">
-                            <div class="flex items-center justify-between border-b dark:border-slate-700 pb-2 mb-2">
-                                <span class="font-bold text-xs uppercase tracking-wider text-slate-400">Riepilogo Anomalie</span>
-                                <button onclick="speakDeadlines()" class="text-[10px] text-brand-600 dark:text-brand-400 font-bold flex items-center gap-1 hover:underline">
-                                    <i data-lucide="megaphone" class="w-3.5 h-3.5"></i> Leggi Avviso
-                                </button>
-                            </div>
-                            <div id="notificationList" class="space-y-2 max-h-60 overflow-y-auto text-xs"></div>
-                        </div>
                     </div>
 
                     <button onclick="openSettingsModal()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-600 transition" title="Impostazioni Soglia Scadenze e PIN">
@@ -419,9 +455,9 @@
                             <span>Stampa Report</span>
                         </button>
 
-                        <button onclick="generateEmailForDirezione()" class="bg-indigo-500/10 dark:bg-indigo-500/20 hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-300 text-sm px-3.5 py-2 rounded-xl transition flex items-center space-x-1.5 border border-indigo-200/50 dark:border-indigo-500/30 font-bold" title="Genera Email per la Direzione con i mezzi in allerta">
-                            <i data-lucide="mail" class="w-4 h-4"></i>
-                            <span>Email Direzione</span>
+                        <button onclick="resetFilters()" class="bg-slate-500/10 dark:bg-slate-500/20 hover:bg-slate-500/20 text-slate-600 dark:text-slate-300 text-sm px-3.5 py-2 rounded-xl transition flex items-center space-x-1.5 border border-slate-200/50 dark:border-slate-500/30 font-bold" title="Reimposta tutti i filtri di ricerca">
+                            <i data-lucide="filter-x" class="w-4 h-4"></i>
+                            <span>Reset Filtri</span>
                         </button>
                     </div>
 
@@ -684,55 +720,88 @@
     </div>
 
     <!-- MODAL: REGISTER OPERATOR CARD -->
-    <div id="operatorModal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 hidden backdrop-blur-sm">
-        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 max-w-md w-full transition-all">
-            <div class="px-6 py-4 border-b border-slate-150 dark:border-slate-700 flex items-center justify-between bg-slate-50 dark:bg-slate-900 rounded-t-2xl">
+    <div id="operatorModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm animate-fade-in" onclick="closeOperatorModal()"></div>
+        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 max-w-4xl w-full relative z-10 flex flex-col max-h-[90vh] animate-modal-pop">
+            <!-- Header -->
+            <div class="px-6 py-4 border-b border-slate-150 dark:border-slate-700 flex items-center justify-between bg-slate-50 dark:bg-slate-900/50 rounded-t-2xl shrink-0">
                 <h3 id="operatorModalTitle" class="text-lg font-bold text-slate-900 dark:text-white flex items-center space-x-2">
                     <i data-lucide="user-plus" class="w-5 h-5 text-brand-600"></i>
-                    <span>Registra Nuova Carta del Conducente</span>
+                    <span>Gestione Operatore / Autista</span>
                 </h3>
-                <button onclick="closeOperatorModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 p-1 rounded-lg">
+                <button type="button" onclick="closeOperatorModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 p-1 rounded-lg">
                     <i data-lucide="x" class="w-6 h-6"></i>
                 </button>
             </div>
 
-            <div class="p-6">
-                <form id="operatorForm" onsubmit="saveOperator(event)" class="space-y-4">
+            <!-- Body -->
+            <div class="p-6 overflow-y-auto flex-1">
+                <form id="operatorForm" onsubmit="saveOperator(event)" class="space-y-6">
                     <input type="hidden" id="operatorId">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Tipo di Card *</label>
-                        <select id="operatorType" onchange="toggleOperatorFormLabels()" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors">
-                            <option value="driver">Carta del Conducente</option>
-                            <option value="company">Card Aziendale (Scarico 3 mesi)</option>
-                            <option value="vehicle_company">Scarico Dati Mezzi</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label id="lblOperatorName" class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Nome e Cognome Conducente *</label>
-                        <input type="text" id="operatorName" required placeholder="Es. Mario Rossi" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors">
-                    </div>
-                    <div>
-                        <label id="lblOperatorCardNum" class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Codice Card Tachigrafica *</label>
-                        <input type="text" id="operatorCardNum" required placeholder="Es. IT00923456F" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors">
-                    </div>
-                    <div>
-                        <label id="lblOperatorExpiration" class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Data Scadenza Validità Card *</label>
-                        <input type="date" id="operatorExpiration" required class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors">
-                    </div>
-                    <div id="divOperatorDownload">
-                        <label id="lblOperatorDownload" class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Data ULTIMO Scarico Dati Effettuato *</label>
-                        <input type="date" id="operatorDownload" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-colors">
-                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Anagrafica e Tipo -->
+                        <div class="bg-slate-50 dark:bg-slate-900/30 p-4 rounded-xl border border-slate-200 dark:border-slate-700 space-y-4">
+                            <h4 class="text-sm font-bold text-brand-600 dark:text-brand-400 border-b border-slate-200 dark:border-slate-700 pb-2 mb-3">Informazioni Generali</h4>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Ruolo / Tipo *</label>
+                                <select id="operatorType" onchange="toggleOperatorFormLabels()" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white rounded-xl text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                    <option value="driver">Autista (Patente, CQC, Carta)</option>
+                                    <option value="company">Azienda (Scarico 3 mesi)</option>
+                                    <option value="vehicle_company">Veicolo (Scarico Dati Mezzi)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label id="lblOperatorName" class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Nome e Cognome *</label>
+                                <input type="text" id="operatorName" required placeholder="Es. Mario Rossi" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white rounded-xl text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                            </div>
+                        </div>
 
-                    <div class="mt-6 flex justify-end space-x-3 border-t border-slate-150 dark:border-slate-700 pt-4">
-                        <button type="button" onclick="closeOperatorModal()" class="px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 transition">
-                            Annulla
-                        </button>
-                        <button type="submit" class="px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-bold shadow-md transition">
-                            Salva Informazioni
-                        </button>
+                        <!-- Patente e CQC (Visibili solo per Driver) -->
+                        <div id="driverExtraFields" class="bg-slate-50 dark:bg-slate-900/30 p-4 rounded-xl border border-slate-200 dark:border-slate-700 space-y-4">
+                            <h4 class="text-sm font-bold text-brand-600 dark:text-brand-400 border-b border-slate-200 dark:border-slate-700 pb-2 mb-3">Documenti di Guida</h4>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Scadenza Patente</label>
+                                    <input type="date" id="operatorPatenteExpiration" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white rounded-xl text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Scadenza CQC</label>
+                                    <input type="date" id="operatorCqcExpiration" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white rounded-xl text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Carta Tachigrafica -->
+                        <div class="md:col-span-2 bg-slate-50 dark:bg-slate-900/30 p-4 rounded-xl border border-slate-200 dark:border-slate-700 space-y-4">
+                            <h4 class="text-sm font-bold text-brand-600 dark:text-brand-400 border-b border-slate-200 dark:border-slate-700 pb-2 mb-3">Dati Carta Tachigrafica / Dispositivo</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label id="lblOperatorCardNum" class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Codice Card *</label>
+                                    <input type="text" id="operatorCardNum" required placeholder="Es. IT00923456F" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white rounded-xl text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                </div>
+                                <div>
+                                    <label id="lblOperatorExpiration" class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Scadenza Validità Card *</label>
+                                    <input type="date" id="operatorExpiration" required class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white rounded-xl text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                </div>
+                                <div id="divOperatorDownload">
+                                    <label id="lblOperatorDownload" class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Ultimo Scarico Dati Effettuato *</label>
+                                    <input type="date" id="operatorDownload" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white rounded-xl text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </form>
+            </div>
+
+            <!-- Footer -->
+            <div class="px-6 py-4 border-t border-slate-150 dark:border-slate-700 flex justify-end space-x-3 bg-slate-50 dark:bg-slate-900/50 rounded-b-2xl shrink-0">
+                <button type="button" onclick="closeOperatorModal()" class="px-4 py-2.5 border border-slate-300 dark:border-slate-600 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 transition">
+                    Annulla
+                </button>
+                <button type="button" onclick="document.getElementById('operatorForm').requestSubmit()" class="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-bold shadow-md transition">
+                    Salva Informazioni
+                </button>
             </div>
         </div>
     </div>
@@ -1098,89 +1167,189 @@
 
     <!-- DIARIO DI BORDO MODAL -->
     <div id="diaryModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="closeDiaryModal()"></div>
-        <div class="bg-white dark:bg-slate-800 rounded-3xl w-full max-w-2xl relative z-10 shadow-2xl border border-slate-200 dark:border-slate-700 flex flex-col max-h-[90vh]">
+        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm animate-fade-in" onclick="closeDiaryModal()"></div>
+        <div class="bg-white dark:bg-slate-800 rounded-2xl w-full max-w-5xl relative z-10 shadow-2xl border border-slate-200 dark:border-slate-700 flex flex-col max-h-[90vh] animate-modal-pop">
             
             <!-- Header -->
-            <div class="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-700 flex-shrink-0">
+            <div class="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700 flex-shrink-0">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-teal-50 dark:bg-teal-950/50 flex items-center justify-center">
-                        <i data-lucide="book-open" class="w-5 h-5 text-teal-600 dark:text-teal-400"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-extrabold text-slate-900 dark:text-white" id="diaryModalTitle">Diario di Bordo</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400" id="diaryModalSubtitle">Storico manutenzioni e interventi</p>
-                    </div>
+                    <i data-lucide="wrench" class="w-6 h-6 text-blue-500"></i>
+                    <h3 class="text-xl font-bold text-slate-800 dark:text-white" id="diaryModalTitle">Storico Officina & Manutenzioni</h3>
                 </div>
                 <button onclick="closeDiaryModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
 
-            <!-- Stats bar -->
-            <div id="diaryStatsBar" class="flex items-center gap-4 px-6 py-3 bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700 flex-shrink-0 text-xs text-slate-600 dark:text-slate-400">
-                <span class="flex items-center gap-1.5"><i data-lucide="file-text" class="w-3.5 h-3.5 text-teal-500"></i><span id="diaryStatCount">0 interventi</span></span>
-                <span class="text-slate-300 dark:text-slate-600">|</span>
-                <span class="flex items-center gap-1.5"><i data-lucide="euro" class="w-3.5 h-3.5 text-emerald-500"></i><span id="diaryStatCost">€ 0,00 totale</span></span>
-                <span class="text-slate-300 dark:text-slate-600">|</span>
-                <span class="flex items-center gap-1.5"><i data-lucide="calendar" class="w-3.5 h-3.5 text-brand-500"></i><span id="diaryStatLast">Nessun intervento</span></span>
-            </div>
-
-            <!-- Add new entry form -->
-            <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700 bg-teal-50/50 dark:bg-teal-950/20 flex-shrink-0">
-                <p class="text-xs font-bold text-teal-700 dark:text-teal-400 uppercase tracking-wide mb-3 flex items-center gap-1.5">
-                    <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> Aggiungi intervento
-                </p>
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-2">
-                    <div>
-                        <label class="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Data</label>
-                        <input type="date" id="diaryNewDate" class="w-full mt-1 px-2 py-1.5 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white text-xs focus:ring-2 focus:ring-teal-400 outline-none">
+            <div class="overflow-y-auto flex-1 p-6 space-y-6">
+                <!-- Vehicle Stats Card -->
+                <div class="border border-slate-200 dark:border-slate-700 rounded-xl p-5 flex flex-wrap gap-6 items-end">
+                    <div class="flex-1 min-w-[150px]">
+                        <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">KM / ORE ATTUALI</label>
+                        <input type="number" id="diaryCurrentKm" min="0" onchange="updateVehicleTopStats()" class="w-full mt-1 px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white text-sm font-semibold focus:ring-2 focus:ring-blue-400 outline-none">
                     </div>
-                    <div>
-                        <label class="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Categoria</label>
-                        <select id="diaryNewCategory" class="w-full mt-1 px-2 py-1.5 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white text-xs focus:ring-2 focus:ring-teal-400 outline-none">
-                            <option value="manutenzione">🔧 Manutenzione</option>
-                            <option value="riparazione">🔨 Riparazione</option>
-                            <option value="pneumatici">🔄 Pneumatici</option>
-                            <option value="revisione">✅ Revisione/Collaudo</option>
-                            <option value="nota">📋 Nota generica</option>
-                            <option value="costo">💰 Costo straordinario</option>
-                        </select>
+                    <div class="flex-1 min-w-[150px]">
+                        <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">KM ULTIMO TAGLIANDO</label>
+                        <input type="number" id="diaryLastServiceKm" min="0" onchange="updateVehicleTopStats()" class="w-full mt-1 px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white text-sm font-semibold focus:ring-2 focus:ring-blue-400 outline-none">
                     </div>
-                    <div>
-                        <label class="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Km veicolo</label>
-                        <input type="number" id="diaryNewKm" placeholder="es. 150000" class="w-full mt-1 px-2 py-1.5 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white text-xs focus:ring-2 focus:ring-teal-400 outline-none">
+                    <div class="flex-1 min-w-[150px]">
+                        <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">INTERVALLO PERSONALIZZATO</label>
+                        <input type="number" id="diaryServiceInterval" min="0" onchange="updateVehicleTopStats()" class="w-full mt-1 px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white text-sm font-semibold focus:ring-2 focus:ring-blue-400 outline-none">
                     </div>
-                    <div>
-                        <label class="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Costo €</label>
-                        <input type="number" id="diaryNewCost" placeholder="es. 450" step="0.01" class="w-full mt-1 px-2 py-1.5 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white text-xs focus:ring-2 focus:ring-teal-400 outline-none">
+                    <div class="flex-1 min-w-[250px] flex justify-end">
+                        <div id="diaryServiceBadge" class="bg-emerald-500 text-white rounded-lg px-4 py-2.5 text-center flex flex-col items-center justify-center w-full max-w-[300px]">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-100" id="diaryServiceBadgeLabel">STATO TAGLIANDO</span>
+                            <span id="diaryServiceBadgeText" class="text-sm font-extrabold mt-0.5">TAGLIANDO REGOLARE<br><span class="text-xs font-medium text-emerald-100">(mancano 15000 km)</span></span>
+                        </div>
                     </div>
                 </div>
-                <div class="flex gap-2">
-                    <textarea id="diaryNewDescription" rows="2" placeholder="Descrizione intervento (es. Cambio cinghia distribuzione, Sostituzione freni anteriori...)" class="flex-1 px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white text-xs focus:ring-2 focus:ring-teal-400 outline-none resize-none"></textarea>
-                    <button onclick="addDiaryEntry()" class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 self-end">
-                        <i data-lucide="plus" class="w-3.5 h-3.5"></i> Aggiungi
-                    </button>
-                </div>
-            </div>
 
-            <!-- Diary entries list -->
-            <div id="diaryEntriesList" class="overflow-y-auto flex-1 divide-y divide-slate-100 dark:divide-slate-700">
-                <!-- entries rendered by JS -->
-            </div>
-
-            <!-- Empty state -->
-            <div id="diaryEmptyState" class="hidden flex-1 flex flex-col items-center justify-center py-12 text-center px-6">
-                <div class="w-16 h-16 rounded-2xl bg-teal-50 dark:bg-teal-950/50 flex items-center justify-center mb-4">
-                    <i data-lucide="book-open" class="w-8 h-8 text-teal-400"></i>
+                <!-- Add new entry form -->
+                <div class="border border-slate-200 dark:border-slate-700 rounded-xl p-5 relative overflow-hidden">
+                    <div class="flex items-center gap-2 mb-4 text-blue-600 dark:text-blue-400">
+                        <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                        <h4 class="text-sm font-bold uppercase tracking-wide">REGISTRA NUOVO INTERVENTO / LAVORAZIONE</h4>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                        <div>
+                            <label class="text-xs text-slate-500 dark:text-slate-400 mb-1 block font-semibold">Data Lavoro *</label>
+                            <input type="date" id="diaryNewDate" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white text-sm focus:ring-2 focus:ring-blue-400 outline-none">
+                        </div>
+                        <div>
+                            <label class="text-xs text-slate-500 dark:text-slate-400 mb-1 block font-semibold">Tipo Lavorazione *</label>
+                            <select id="diaryNewCategory" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white text-sm focus:ring-2 focus:ring-blue-400 outline-none">
+                                <option value="Tagliando Ordinario">Tagliando Ordinario</option>
+                                <option value="Manutenzione Straordinaria">Manutenzione Straordinaria</option>
+                                <option value="Pneumatici">Pneumatici</option>
+                                <option value="Revisione">Revisione/Collaudo</option>
+                                <option value="Carrozzeria">Carrozzeria</option>
+                                <option value="Altro">Altro</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs text-slate-500 dark:text-slate-400 mb-1 block font-semibold">Km / Ore al lavoro *</label>
+                            <input type="number" id="diaryNewKm" min="0" placeholder="Es. 154000" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white text-sm focus:ring-2 focus:ring-blue-400 outline-none">
+                        </div>
+                        <div>
+                            <label class="text-xs text-slate-500 dark:text-slate-400 mb-1 block font-semibold">Costo (€) *</label>
+                            <input type="number" id="diaryNewCost" min="0" placeholder="0.00" step="0.01" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white text-sm focus:ring-2 focus:ring-blue-400 outline-none">
+                        </div>
+                    </div>
+                    <div class="flex gap-4 items-end">
+                        <div class="flex-1">
+                            <label class="text-xs text-slate-500 dark:text-slate-400 mb-1 block font-semibold">Officina / Note *</label>
+                            <input type="text" id="diaryNewDescription" placeholder="Es. Officina Rossi - Sostituzione pastiglie e filtri" class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white text-sm focus:ring-2 focus:ring-blue-400 outline-none">
+                        </div>
+                        <button onclick="addDiaryEntry()" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-bold transition whitespace-nowrap">
+                            Aggiorna Storico
+                        </button>
+                    </div>
                 </div>
-                <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Nessun intervento registrato</p>
-                <p class="text-slate-400 dark:text-slate-500 text-xs mt-1">Aggiungi il primo intervento usando il form sopra</p>
+
+                <!-- History Table -->
+                <div class="pt-2">
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wide">CRONOLOGIA LAVORI E MANUTENZIONI</h4>
+                        <div class="bg-slate-50 dark:bg-slate-800 px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-700 dark:text-slate-300">
+                            Totale Speso (€): <span id="diaryStatCost" class="text-blue-600 dark:text-blue-400">0.00 €</span>
+                        </div>
+                    </div>
+                    
+                    <div class="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-sm min-w-[600px]">
+                                <thead class="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 text-[11px] font-bold uppercase tracking-wider">
+                                    <tr>
+                                        <th class="px-4 py-3 border-b border-slate-200 dark:border-slate-700">DATA</th>
+                                        <th class="px-4 py-3 border-b border-slate-200 dark:border-slate-700">TIPO INTERVENTO</th>
+                                        <th class="px-4 py-3 border-b border-slate-200 dark:border-slate-700">KM/ORE</th>
+                                        <th class="px-4 py-3 border-b border-slate-200 dark:border-slate-700">COSTO (€)</th>
+                                        <th class="px-4 py-3 border-b border-slate-200 dark:border-slate-700">OFFICINA / DETTAGLI</th>
+                                        <th class="px-4 py-3 border-b border-slate-200 dark:border-slate-700 text-center">AZIONE</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="diaryEntriesTableBody" class="divide-y divide-slate-100 dark:divide-slate-700 bg-white dark:bg-slate-800">
+                                    <!-- entries rendered by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="diaryEmptyState" class="hidden py-8 text-center bg-white dark:bg-slate-800">
+                            <p class="text-slate-400 dark:text-slate-500 text-sm">Nessun intervento ancora registrato per questo veicolo.</p>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             <!-- Footer -->
-            <div class="px-6 py-4 border-t border-slate-200 dark:border-slate-700 flex justify-end flex-shrink-0">
-                <button onclick="closeDiaryModal()" class="px-5 py-2.5 rounded-xl text-sm font-bold bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 transition">Chiudi</button>
+            <div class="p-4 border-t border-slate-200 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50 rounded-b-2xl flex-shrink-0">
+                <div class="flex gap-3">
+                    <button onclick="printVehicleReport()" class="px-4 py-2.5 rounded-lg text-sm font-bold bg-slate-800 hover:bg-slate-900 text-white transition flex items-center gap-2">
+                        <i data-lucide="printer" class="w-4 h-4"></i> <span class="hidden sm:inline">Stampa Report</span>
+                    </button>
+                    <button onclick="exportVehicleDiaryExcel()" class="px-4 py-2.5 rounded-lg text-sm font-bold bg-green-600 hover:bg-green-700 text-white transition flex items-center gap-2">
+                        <i data-lucide="sheet" class="w-4 h-4"></i> <span class="hidden sm:inline">Esporta Excel</span>
+                    </button>
+                </div>
+                <button onclick="closeDiaryModal()" class="px-6 py-2.5 rounded-lg text-sm font-bold bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-600 transition">
+                    Chiudi
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FINANCE MODAL -->
+    <div id="financeModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm animate-fade-in" onclick="closeFinanceModal()"></div>
+        <div class="bg-white dark:bg-slate-800 rounded-2xl w-full max-w-5xl relative z-10 shadow-2xl border border-slate-200 dark:border-slate-700 flex flex-col max-h-[90vh] animate-modal-pop">
+            <!-- Header -->
+            <div class="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700">
+                <div class="flex items-center space-x-3">
+                    <div class="p-2 bg-amber-100 dark:bg-amber-900/50 text-amber-600 rounded-lg">
+                        <i data-lucide="pie-chart" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800 dark:text-white">Dashboard Finanziaria</h2>
+                        <p class="text-[11px] text-slate-500">Analisi costi manutenzione della flotta</p>
+                    </div>
+                </div>
+                <button onclick="closeFinanceModal()" class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <!-- Body -->
+            <div class="p-4 sm:p-6 overflow-y-auto bg-slate-50 dark:bg-slate-900/30 flex-1">
+                <!-- Summary Card -->
+                <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col items-center justify-center mb-6">
+                    <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1">Costo Totale Flotta</span>
+                    <span id="totalFleetCost" class="text-4xl font-extrabold text-amber-600 dark:text-amber-500">€ 0.00</span>
+                </div>
+
+                <!-- Charts Container -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Pie Chart -->
+                    <div class="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col">
+                        <h3 class="text-sm font-bold text-slate-700 dark:text-slate-200 mb-4 text-center">Spese per Categoria</h3>
+                        <div class="relative w-full aspect-square flex-1 max-h-[300px] mx-auto">
+                            <canvas id="financeCategoryChart"></canvas>
+                        </div>
+                    </div>
+                    <!-- Bar Chart -->
+                    <div class="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col">
+                        <h3 class="text-sm font-bold text-slate-700 dark:text-slate-200 mb-4 text-center">Spese per Veicolo</h3>
+                        <div class="relative w-full aspect-square flex-1 max-h-[300px] mx-auto">
+                            <canvas id="financeVehicleChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="p-4 border-t border-slate-200 dark:border-slate-700 flex justify-end items-center bg-slate-50 dark:bg-slate-900/50 rounded-b-2xl">
+                <button onclick="closeFinanceModal()" class="px-6 py-2.5 rounded-lg text-sm font-bold bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-600 transition">
+                    Chiudi Dashboard
+                </button>
             </div>
         </div>
     </div>
@@ -1198,12 +1367,44 @@
 
 <!-- DROPZONE OVERLAY FILE .DDD -->
 <input type="file" id="dddGlobalInput" multiple accept=".ddd,.esm,.tgd,.zip,.v1b,.c1b" class="hidden">
-<div id="dddGlobalDropzone" class="fixed inset-0 z-[100] hidden bg-indigo-900/90 backdrop-blur-sm flex flex-col items-center justify-center border-4 border-dashed border-indigo-400 m-4 rounded-3xl transition-all pointer-events-none">
-    <div class="bg-white/10 p-8 rounded-full mb-6 animate-bounce">
-        <i data-lucide="upload-cloud" class="w-20 h-20 text-white"></i>
+<div id="dddGlobalDropzone" class="fixed inset-0 z-[100] hidden bg-indigo-900/90 backdrop-blur-sm flex flex-col items-center justify-center border-4 border-dashed border-indigo-400 m-4 rounded-3xl transition-all">
+    <div class="bg-white/10 p-8 rounded-full mb-6 animate-bounce pointer-events-none">
+        <i data-lucide="upload-cloud" class="w-20 h-20 text-white pointer-events-none"></i>
     </div>
-    <h2 class="text-3xl font-extrabold text-white tracking-tight text-center px-4">Rilascia qui i file .DDD</h2>
-    <p class="text-indigo-200 mt-3 font-medium text-lg text-center px-4 max-w-lg">I file verranno analizzati e assegnati automaticamente ai conducenti o ai mezzi corrispondenti.</p>
+    <h2 class="text-3xl font-extrabold text-white tracking-tight text-center px-4 pointer-events-none">Rilascia qui i file .DDD</h2>
+    <p class="text-indigo-200 mt-3 font-medium text-lg text-center px-4 max-w-lg pointer-events-none">I file verranno analizzati e assegnati automaticamente ai conducenti o ai mezzi corrispondenti.</p>
+</div>
+
+<!-- Slide-over Notifiche Smart -->
+<div id="notificationSlideOver" class="fixed inset-0 z-50 hidden">
+    <!-- Backdrop -->
+    <div id="notificationBackdrop" class="absolute inset-0 bg-slate-900/40 dark:bg-slate-900/60 backdrop-blur-sm transition-opacity opacity-0" onclick="toggleNotificationPanel()"></div>
+    <!-- Panel -->
+    <div id="notificationPanelContent" class="absolute inset-y-0 right-0 w-full sm:w-[400px] bg-white dark:bg-slate-900 shadow-2xl flex flex-col transform transition-transform translate-x-full duration-300 ease-in-out">
+        <!-- Header -->
+        <div class="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/50 relative z-10">
+            <div class="flex items-center gap-3">
+                <div class="p-2 bg-brand-100 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 rounded-xl">
+                    <i data-lucide="bell-ring" class="w-5 h-5"></i>
+                </div>
+                <h2 class="text-lg font-bold text-slate-800 dark:text-white">Centro Notifiche</h2>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="speakDeadlines()" class="p-2 text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-900/20 rounded-lg transition" title="Leggi Avvisi ad alta voce">
+                    <i data-lucide="megaphone" class="w-5 h-5"></i>
+                </button>
+                <button onclick="toggleNotificationPanel()" class="p-2 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+        <!-- Content List -->
+        <div class="flex-1 overflow-y-auto p-6 bg-slate-50 dark:bg-slate-900/50 relative z-0">
+            <div id="notificationList" class="space-y-6">
+                <!-- JS will populate this -->
+            </div>
+        </div>
+    </div>
 </div>
 
     <script>
@@ -3778,6 +3979,19 @@ let isAudioEnabled = true;
             }
         }
 
+        function resetFilters() {
+            const searchInput = document.getElementById('searchInput');
+            const statusFilter = document.getElementById('statusFilter');
+            const sortFilter = document.getElementById('sortFilter');
+            
+            if (searchInput) searchInput.value = '';
+            if (statusFilter) statusFilter.value = 'all';
+            if (sortFilter) sortFilter.value = 'name';
+            
+            applyFilters();
+            showToast("Filtri reimpostati", "info");
+        }
+
         function applyFilters() {
             if (activeTab === 'vehicles') {
                 renderVehicles();
@@ -4017,172 +4231,100 @@ let isAudioEnabled = true;
                 
                 const opState = getOperatorOverallStatus(op);
                 
-                let borderClass = "border-slate-200 dark:border-slate-700 hover:border-brand-400 dark:hover:border-brand-500";
-                let statusBadge = "bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300";
-                let statusText = "Nessuna data";
+                let borderColor = 'border-slate-200 dark:border-slate-700';
+                let iconBg = 'bg-slate-100 dark:bg-slate-700';
+                let iconColor = 'text-slate-500';
+                let iconName = 'user';
+                let badgeText = 'Attivo';
 
                 if (opState === 'red') {
-                    borderClass = "border-red-400 dark:border-red-800 bg-red-50/10 dark:bg-red-950/10 hover:border-red-500 glow-red";
-                    statusBadge = "bg-red-600 text-white font-bold animate-pulse";
-                    statusText = "CRITICO";
+                    borderColor = 'border-red-400 dark:border-red-800';
+                    iconBg = 'bg-red-100 dark:bg-red-900/30';
+                    iconColor = 'text-red-500';
+                    badgeText = 'Scaduto';
                 } else if (opState === 'amber') {
-                    borderClass = "border-amber-300 dark:border-amber-700 bg-amber-50/10 dark:bg-amber-950/10 hover:border-amber-400 glow-amber";
-                    statusBadge = "bg-amber-500 text-white font-bold";
-                    statusText = "IN SCADENZA";
-                } else if (opState === 'emerald') {
-                    borderClass = "border-emerald-200 dark:border-emerald-800 hover:border-emerald-400";
-                    statusBadge = "bg-emerald-100 text-emerald-800 font-bold dark:bg-emerald-900/60 dark:text-emerald-400";
-                    statusText = "IN REGOLA";
+                    borderColor = 'border-amber-300 dark:border-amber-700';
+                    iconBg = 'bg-amber-100 dark:bg-amber-900/30';
+                    iconColor = 'text-amber-500';
+                    badgeText = 'In Scadenza';
                 }
 
-                let cardIcon = 'credit-card';
-                let iconBg = 'bg-blue-100 dark:bg-blue-900/60 text-blue-600 dark:text-blue-400';
-                if (isCompany) {
-                    cardIcon = 'building-2';
-                    iconBg = 'bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-400';
-                } else if (isVehicleCompany) {
-                    cardIcon = 'truck';
-                    iconBg = 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400';
-                }
-
-                let cardLabel = 'Carta del Conducente';
-                let additionalInfo = '';
-                if (isCompany) {
-                    cardLabel = 'CARD AZIENDALE';
-                } else if (isVehicleCompany) {
-                    cardLabel = 'SCARICO DATI MEZZI';
-                    const opNameLower = (op.name || '').toLowerCase().trim();
-                    const matchedVehicle = vehicles.find(v => {
-                        const vModel = (v.model || '').toLowerCase().trim();
-                        const vPlate = (v.plate || '').toLowerCase().trim();
-                        return vModel === opNameLower || vPlate === opNameLower || (vPlate && opNameLower.includes(vPlate));
-                    });
-                    if (matchedVehicle && matchedVehicle.plate) {
-                        additionalInfo = ` &bull; <span class="text-brand-600 dark:text-brand-400 font-extrabold">${matchedVehicle.plate.toUpperCase()}</span>`;
-                    }
-                }
-
-                let scadenzeHTML = "";
-                let renewAction = "";
-
-                if (isDriver) {
-                    const expState = checkDeadlineState(op.expiration);
-                    const dlState = checkDownloadDeadlineState(op.lastDownload);
-                    const nextDlDate = calculateNextDownloadDate(op.lastDownload);
-
-                    let expColor = expState === 'red' ? 'text-red-500 font-bold' : (expState === 'amber' ? 'text-amber-500' : 'text-emerald-500');
-                    let dlColor = dlState === 'red' ? 'text-red-500 font-bold' : (dlState === 'amber' ? 'text-amber-500 font-bold' : 'text-emerald-500');
-
-                    scadenzeHTML = `
-                        <div class="space-y-1 text-[11px]">
-                            <div class="flex justify-between border-b dark:border-slate-700/50 pb-0.5">
-                                <span class="text-slate-400">Scadenza Card (5a):</span>
-                                <span class="${expColor} font-mono">${formatDateString(op.expiration)}</span>
+                if (isCompany) { iconName = 'building-2'; }
+                else if (isVehicleCompany) { iconName = 'truck'; }
+                
+                let html = `
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border ${borderColor} hover:shadow-md transition p-5 relative flex flex-col h-full animate-fade-in">
+                        <div class="flex items-start gap-4 mb-4">
+                            <div class="p-3 ${iconBg} ${iconColor} rounded-xl shadow-sm shrink-0">
+                                <i data-lucide="${iconName}" class="w-6 h-6"></i>
                             </div>
-                            <div class="flex justify-between">
-                                <span class="text-slate-400">Scarico (28gg):</span>
-                                <span class="${dlColor} font-mono">${formatDateString(nextDlDate)}</span>
+                            <div class="flex-1 min-w-0">
+                                <h3 class="text-sm font-bold text-slate-900 dark:text-white truncate" title="${op.name}">${op.name}</h3>
+                                <p class="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5 truncate">${op.cardNum}</p>
+                                <span class="inline-block mt-2 px-2 py-0.5 text-[10px] font-bold rounded-md bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">${badgeText}</span>
                             </div>
-                        </div>
-                    `;
-
-                    renewAction = `
-                        <div class="flex gap-1.5 w-full justify-end">
-                            <button onclick="quickRenewOperatorDownload('${op.id}')" class="text-[10px] bg-brand-50 dark:bg-brand-950 text-brand-700 dark:text-brand-300 hover:bg-brand-100 px-2 py-1 rounded-md font-bold transition flex items-center gap-0.5 border border-brand-200/40 dark:border-brand-900" title="Aggiungi 28 giorni alla data inserita nel menu">
-                                <i data-lucide="hard-drive-download" class="w-3.5 h-3.5"></i> Scarica (+28gg)
-                            </button>
-                            <button onclick="quickRenewOperator('${op.id}', 1825)" class="text-[10px] bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 px-2 py-1 rounded-md font-bold transition flex items-center gap-0.5 border border-emerald-200/40 dark:border-emerald-900" title="Card rinnovata fisicamente oggi per i prossimi 5 anni">
-                                <i data-lucide="refresh-cw" class="w-3 h-3"></i> Rinnova (5a)
-                            </button>
-                        </div>
-                    `;
-                } else {
-                    const labelStr = isVehicleCompany ? 'Scarico Obbligatorio (90gg)' : (isCompany ? 'Scarico Obbligatorio' : 'Scadenza Card');
-                    let sColor = 'text-slate-900 dark:text-white';
-                    let sDaysStr = '';
-                    if (op.expiration) {
-                        const sState = checkDeadlineState(op.expiration);
-                        const days = calculateDaysRemaining(op.expiration);
-                        if (sState === 'red') {
-                            sColor = 'text-red-500 font-bold';
-                            sDaysStr = `<span class="text-red-500">Scaduto da ${Math.abs(days)} giorni ⚠️</span>`;
-                        } else if (sState === 'amber') {
-                            sColor = 'text-amber-500 font-bold';
-                            sDaysStr = `<span class="text-amber-500">Mancano ${days} giorni ⏳</span>`;
-                        } else {
-                            sColor = 'text-emerald-500 font-bold';
-                            sDaysStr = `<span class="text-emerald-500">Mancano ${days} giorni ✅</span>`;
-                        }
-                    }
-                    
-                    scadenzeHTML = `
-                        <div class="text-[11px] flex flex-col gap-0.5">
-                            <div class="flex justify-between">
-                                <span class="text-slate-400">${labelStr}:</span>
-                                <span class="${sColor} font-mono">${formatDateString(op.expiration)}</span>
-                            </div>
-                            ${op.expiration ? `<div class="text-[10px] text-right font-bold mt-1">${sDaysStr}</div>` : ''}
-                        </div>
-                    `;
-
-                    renewAction = `
-                        <button onclick="quickRenewOperator('${op.id}', 90)" class="text-[10px] bg-brand-50 dark:bg-brand-950 text-brand-700 dark:text-brand-300 hover:bg-brand-100 px-2 py-1 rounded-md font-bold transition flex items-center gap-0.5 border border-brand-200/40 dark:border-brand-900" title="Scarico effettuato oggi, posticipa scadenza di 90 giorni">
-                            <i data-lucide="check" class="w-3 h-3"></i> Scaricato Oggi (+90gg)
-                        </button>
-                    `;
-                }
-
-                return `
-                    <div class="bg-white dark:bg-slate-800 rounded-2xl border-2 ${borderClass} p-4 shadow-sm transition duration-150 flex flex-col justify-between h-full min-h-[14rem] relative overflow-hidden">
-                        <div class="flex justify-between items-start">
-                            <div class="flex items-center space-x-2.5">
-                                <div class="text-[11px] font-black text-slate-300 dark:text-slate-600">#${index + 1}</div>
-                                <div class="p-2 ${iconBg} rounded-xl">
-                                    <i data-lucide="${cardIcon}" class="w-5 h-5"></i>
-                                </div>
-                                <div>
-                                    <h4 class="font-extrabold text-slate-900 dark:text-white text-sm leading-tight">${op.name}</h4>
-                                    <span class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">${cardLabel}${additionalInfo}</span>
-                                </div>
-                            </div>
-                            <span class="text-[9px] px-2 py-0.5 rounded-full ${statusBadge}">
-                                ${statusText}
-                            </span>
-                        </div>
-
-                        <div class="my-1.5 flex justify-between items-center bg-slate-50 dark:bg-slate-900/60 p-2 rounded-lg border border-slate-150 dark:border-slate-700/60">
-                            <div>
-                                <p class="text-[9px] text-slate-400 uppercase font-bold">N. Card / ID</p>
-                                <p class="font-mono text-xs font-bold text-slate-700 dark:text-slate-300">${op.cardNum}</p>
-                            </div>
-                            <div class="w-7 h-5 bg-gradient-to-br from-amber-300 to-yellow-500 rounded border border-amber-400 flex items-center justify-center opacity-70">
-                                <div class="w-4 h-3 border border-amber-600/40 rounded-sm"></div>
-                            </div>
-                        </div>
-
-                        <div class="border-t border-slate-100 dark:border-slate-700 pt-2 flex flex-col gap-1.5">
-                            <div class="flex justify-between items-end">
-                                <div class="w-2/3">
-                                    ${scadenzeHTML}
-                                </div>
-                                <div class="flex items-center space-x-1">
-                                    <button onclick="editOperator('${op.id}')" class="text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-950 p-1.5 rounded-lg transition" title="Modifica">
-                                        <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                            <!-- Menu Azioni -->
+                            <div class="relative group">
+                                <button class="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                                    <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                                </button>
+                                <div class="absolute right-0 mt-1 w-36 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10">
+                                    <button onclick="editOperator('${op.id}')" class="w-full text-left px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-2">
+                                        <i data-lucide="edit-3" class="w-3.5 h-3.5"></i> Modifica
                                     </button>
-                                    <button onclick="confirmDeleteOperator('${op.id}')" class="text-red-500 hover:bg-red-50 dark:hover:bg-red-950 p-1.5 rounded-lg transition" title="Elimina">
-                                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                    <button onclick="confirmDeleteOperator('${op.id}')" class="w-full text-left px-4 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 flex items-center gap-2">
+                                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Elimina
                                     </button>
                                 </div>
                             </div>
-                            <div class="flex justify-end">
-                                ${renewAction}
-                            </div>
+                        </div>
+
+                        <div class="space-y-3 mt-auto">
+                            <!-- Patente e CQC (solo driver) -->
+                            ${op.type === 'driver' ? `
+                                ${op.patenteExpiration ? renderProgressBar('Scadenza Patente', op.patenteExpiration, 3650) : ''}
+                                ${op.cqcExpiration ? renderProgressBar('Scadenza CQC', op.cqcExpiration, 1825) : ''}
+                            ` : ''}
+                            
+                            <!-- Carta / Scarico -->
+                            ${op.expiration ? renderProgressBar(op.type === 'driver' ? 'Validità Carta' : 'Validità', op.expiration, 1825) : ''}
+                            ${op.lastDownload ? renderProgressBar('Scarico Dati', op.lastDownload, op.type === 'driver' ? 28 : 90) : ''}
                         </div>
                     </div>
                 `;
+                return html;
             }).join('');
 
+            container.innerHTML = container.innerHTML;
             lucide.createIcons();
+        }
+
+        // Helper function for rendering progress bars in Operator cards
+        function renderProgressBar(label, dateStr, maxDays) {
+            const daysLeft = calculateDaysRemaining(dateStr);
+            const state = checkDeadlineState(dateStr);
+            
+            let colorClass = 'bg-emerald-500';
+            if (state === 'amber') colorClass = 'bg-amber-500';
+            if (state === 'red') colorClass = 'bg-red-500';
+
+            let percent = Math.max(0, Math.min(100, (1 - (daysLeft / maxDays)) * 100));
+            if (daysLeft < 0) percent = 100;
+
+            const formattedDate = formatDateString(dateStr);
+            const daysText = daysLeft < 0 ? `Scaduto da ${Math.abs(daysLeft)} gg` : (daysLeft === 0 ? 'Scade Oggi' : `${daysLeft} gg rimasti`);
+
+            return `
+                <div>
+                    <div class="flex justify-between text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1">
+                        <span>${label}</span>
+                        <span>${formattedDate} (${daysText})</span>
+                    </div>
+                    <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-1.5 overflow-hidden">
+                        <div class="${colorClass} h-1.5 rounded-full transition-all duration-500" style="width: ${percent}%"></div>
+                    </div>
+                </div>
+            `;
         }
 
         function renderDeadlineBox(title, dateString) {
@@ -4499,20 +4641,29 @@ let isAudioEnabled = true;
             }
         }
 
-        function buildNotificationPanelList(expired, expiring) {
+        function buildNotificationPanelList(expiredCount, expiringCount) {
             const listContainer = document.getElementById('notificationList');
             if (!listContainer) return;
 
-            let issues = [];
+            let expiredIssues = [];
+            let expiringIssues = [];
+
+            const addIssue = (state, issue) => {
+                if (state === 'red') expiredIssues.push(issue);
+                else if (state === 'amber') expiringIssues.push(issue);
+            };
+
             vehicles.forEach(v => {
                 for (let k in v.deadlines) {
                     if (k !== 'altroNota' && v.deadlines[k]) {
                         const state = checkDeadlineState(v.deadlines[k]);
                         if (state === 'red' || state === 'amber') {
-                            issues.push({
-                                label: `${v.plate} - ${getDeadlineFriendlyName(k)}`,
+                            addIssue(state, {
+                                name: v.plate,
+                                detail: getDeadlineFriendlyName(k),
                                 state: state,
-                                date: v.deadlines[k]
+                                date: v.deadlines[k],
+                                icon: 'truck'
                             });
                         }
                     }
@@ -4521,68 +4672,121 @@ let isAudioEnabled = true;
 
             operators.forEach(op => {
                 if (op.type === 'driver') {
-                    const stateExp = checkDeadlineState(op.expiration);
-                    if (stateExp === 'red' || stateExp === 'amber') {
-                        issues.push({
-                            label: `${op.name} (Fisica Card)`,
-                            state: stateExp,
-                            date: op.expiration
-                        });
+                    // Check patente
+                    if (op.patenteExpiration) {
+                        const s = checkDeadlineState(op.patenteExpiration);
+                        if (s === 'red' || s === 'amber') addIssue(s, { name: op.name, detail: 'Scadenza Patente', state: s, date: op.patenteExpiration, icon: 'user' });
                     }
-                    const stateDl = checkDownloadDeadlineState(op.lastDownload);
-                    if (stateDl === 'red' || stateDl === 'amber') {
-                        issues.push({
-                            label: `${op.name} (Scarico 28gg)`,
-                            state: stateDl,
-                            date: calculateNextDownloadDate(op.lastDownload)
-                        });
+                    // Check CQC
+                    if (op.cqcExpiration) {
+                        const s = checkDeadlineState(op.cqcExpiration);
+                        if (s === 'red' || s === 'amber') addIssue(s, { name: op.name, detail: 'Scadenza CQC', state: s, date: op.cqcExpiration, icon: 'user' });
+                    }
+                    // Check physical card
+                    if (op.expiration) {
+                        const stateExp = checkDeadlineState(op.expiration);
+                        if (stateExp === 'red' || stateExp === 'amber') addIssue(stateExp, { name: op.name, detail: 'Validità Carta', state: stateExp, date: op.expiration, icon: 'user' });
+                    }
+                    // Check download
+                    if (op.lastDownload) {
+                        const stateDl = checkDownloadDeadlineState(op.lastDownload);
+                        if (stateDl === 'red' || stateDl === 'amber') addIssue(stateDl, { name: op.name, detail: 'Scarico 28gg', state: stateDl, date: calculateNextDownloadDate(op.lastDownload), icon: 'download' });
                     }
                 } else {
-                    const stateExp = checkDeadlineState(op.expiration);
-                    if (stateExp === 'red' || stateExp === 'amber') {
-                        issues.push({
-                            label: `${op.name} (Fisica Card ${op.type === 'company' ? 'Aziendale' : 'Scarico Mezzo'})`,
-                            state: stateExp,
-                            date: op.expiration
-                        });
+                    const iconName = op.type === 'company' ? 'building-2' : 'truck';
+                    if (op.expiration) {
+                        const stateExp = checkDeadlineState(op.expiration);
+                        if (stateExp === 'red' || stateExp === 'amber') addIssue(stateExp, { name: op.name, detail: `Fisica Card ${op.type === 'company' ? 'Aziendale' : 'Scarico Mezzo'}`, state: stateExp, date: op.expiration, icon: iconName });
                     }
-                    const stateDl = checkCompanyDownloadDeadlineState(op.lastDownload);
-                    if (stateDl === 'red' || stateDl === 'amber') {
-                        issues.push({
-                            label: `${op.name} (Scarico 90gg ${op.type === 'company' ? 'Aziendale' : 'Scarico Mezzo'})`,
-                            state: stateDl,
-                            date: calculateNextCompanyDownloadDate(op.lastDownload)
-                        });
+                    if (op.lastDownload) {
+                        const stateDl = checkCompanyDownloadDeadlineState(op.lastDownload);
+                        if (stateDl === 'red' || stateDl === 'amber') addIssue(stateDl, { name: op.name, detail: `Scarico 90gg ${op.type === 'company' ? 'Aziendale' : 'Scarico Mezzo'}`, state: stateDl, date: calculateNextCompanyDownloadDate(op.lastDownload), icon: 'download' });
                     }
                 }
             });
 
-            if (issues.length === 0) {
-                listContainer.innerHTML = `<p class="text-center py-4 text-slate-400">Tutti i mezzi e le tessere aziendali sono in regola. Ottimo lavoro!</p>`;
+            if (expiredIssues.length === 0 && expiringIssues.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="text-center py-12 px-4">
+                        <div class="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i data-lucide="check-circle" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-2">Tutto in regola!</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">Nessuna anomalia o scadenza imminente rilevata per la tua flotta e i tuoi autisti.</p>
+                    </div>`;
                 return;
             }
 
-            issues.sort((a,b) => new Date(a.date) - new Date(b.date));
+            expiredIssues.sort((a,b) => new Date(a.date) - new Date(b.date));
+            expiringIssues.sort((a,b) => new Date(a.date) - new Date(b.date));
 
-            listContainer.innerHTML = issues.map(issue => {
-                const isExpired = issue.state === 'red';
-                const color = isExpired ? 'text-red-500 animate-pulse' : 'text-amber-500';
+            const renderSection = (title, issues, colorClass, bgClass, iconName) => {
+                if (issues.length === 0) return '';
                 return `
-                    <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 dark:bg-slate-900 border-l-4 ${isExpired ? 'border-red-500' : 'border-amber-500'}">
-                        <div class="max-w-[190px]">
-                            <p class="font-bold text-slate-700 dark:text-slate-300 truncate">${issue.label}</p>
-                            <p class="text-[10px] text-slate-400 font-mono">${formatDateString(issue.date)}</p>
+                    <div class="mb-8 last:mb-0">
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="p-1.5 rounded-md ${bgClass} ${colorClass}">
+                                <i data-lucide="${iconName}" class="w-4 h-4"></i>
+                            </div>
+                            <h3 class="font-bold text-sm text-slate-800 dark:text-slate-200 uppercase tracking-wider">${title} <span class="bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 py-0.5 px-2 rounded-full text-xs ml-2">${issues.length}</span></h3>
                         </div>
-                        <span class="text-[9px] uppercase font-extrabold ${color}">
-                            ${isExpired ? 'Scaduto' : 'In Scadenza'}
-                        </span>
+                        <div class="space-y-3">
+                            ${issues.map(issue => `
+                                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition group relative overflow-hidden flex flex-col justify-between min-h-[5rem]">
+                                    <div class="absolute top-0 left-0 w-1 h-full ${issue.state === 'red' ? 'bg-red-500' : 'bg-amber-500'}"></div>
+                                    <div class="flex items-start gap-3 w-full">
+                                        <div class="mt-0.5 p-2 bg-slate-50 dark:bg-slate-900 text-slate-500 rounded-lg shrink-0">
+                                            <i data-lucide="${issue.icon}" class="w-5 h-5"></i>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <div class="flex justify-between items-start gap-2">
+                                                <h4 class="font-bold text-sm text-slate-900 dark:text-white truncate" title="${issue.name}">${issue.name}</h4>
+                                                <span class="text-[11px] font-mono font-bold ${issue.state === 'red' ? 'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30' : 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30'} whitespace-nowrap px-2 py-0.5 rounded-md shrink-0 border ${issue.state === 'red' ? 'border-red-100 dark:border-red-800' : 'border-amber-100 dark:border-amber-800'}">
+                                                    ${formatDateString(issue.date)}
+                                                </span>
+                                            </div>
+                                            <p class="text-[13px] text-slate-500 dark:text-slate-400 font-medium mt-1 truncate" title="${issue.detail}">${issue.detail}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
                     </div>
                 `;
-            }).join('');
+            };
+
+            listContainer.innerHTML = 
+                renderSection('Scaduti', expiredIssues, 'text-red-600', 'bg-red-100 dark:bg-red-900/30', 'alert-circle') +
+                renderSection('In Scadenza', expiringIssues, 'text-amber-600', 'bg-amber-100 dark:bg-amber-900/30', 'clock');
+
+            if(window.lucide) lucide.createIcons();
         }
 
         function toggleNotificationPanel() {
-            document.getElementById('notificationPanel').classList.toggle('hidden');
+            const panel = document.getElementById('notificationSlideOver');
+            const backdrop = document.getElementById('notificationBackdrop');
+            const content = document.getElementById('notificationPanelContent');
+            
+            if (panel.classList.contains('hidden')) {
+                // Apri il modale
+                panel.classList.remove('hidden');
+                // Forza reflow
+                void panel.offsetWidth;
+                // Anima in ingresso
+                backdrop.classList.add('opacity-100');
+                backdrop.classList.remove('opacity-0');
+                content.classList.remove('translate-x-full');
+            } else {
+                // Chiudi il modale
+                backdrop.classList.remove('opacity-100');
+                backdrop.classList.add('opacity-0');
+                content.classList.add('translate-x-full');
+                
+                // Attendi fine transizione per nascondere
+                setTimeout(() => {
+                    panel.classList.add('hidden');
+                }, 300);
+            }
         }
 
         function dismissBanner() {
@@ -4860,6 +5064,8 @@ let isAudioEnabled = true;
                 document.getElementById('operatorCardNum').value = op.cardNum;
                 document.getElementById('operatorExpiration').value = op.expiration;
                 document.getElementById('operatorDownload').value = op.lastDownload || '';
+                document.getElementById('operatorPatenteExpiration').value = op.patenteExpiration || '';
+                document.getElementById('operatorCqcExpiration').value = op.cqcExpiration || '';
 
                 toggleOperatorFormLabels();
                 document.getElementById('operatorModal').classList.remove('hidden');
@@ -4883,19 +5089,22 @@ let isAudioEnabled = true;
                 lblExp.innerText = "Scadenza Validità Card Aziendale (5 Anni) *";
                 if(lblDl) lblDl.innerText = "Data ULTIMO Scarico (Prossimo a 90gg) *";
                 divDl.classList.remove('hidden');
+                document.getElementById('driverExtraFields').classList.add('hidden');
             } else if (type === 'vehicle_company') {
-                lblName.innerText = "Identificativo Mezzo *";
-                txtName.placeholder = "Es. IVECO 130, IVECO 100";
-                lblCardNum.innerText = "Codice Scarico Mezzo *";
-                lblExp.innerText = "Scadenza Tachigrafo Mezzo *";
-                if(lblDl) lblDl.innerText = "Data ULTIMO Scarico (Prossimo a 90gg) *";
+                lblName.innerText = "Identificativo Mezzo o Chiavetta *";
+                txtName.placeholder = "Es. Targa AB123CD";
+                lblCardNum.innerText = "Numero Identificativo/Seriale *";
+                lblExp.innerText = "Scadenza / Validità (opzionale)";
+                if(lblDl) lblDl.innerText = "Data ULTIMO Scarico Dati Veicolo (90gg) *";
                 divDl.classList.remove('hidden');
+                document.getElementById('driverExtraFields').classList.add('hidden');
             } else {
                 lblName.innerText = "Nome e Cognome Conducente *";
                 txtName.placeholder = "Es. Mario Rossi";
                 lblCardNum.innerText = "Codice Carta del Conducente *";
                 lblExp.innerText = "Scadenza Validità Carta del Conducente (5 Anni) *";
                 divDl.classList.remove('hidden');
+                document.getElementById('driverExtraFields').classList.remove('hidden');
             }
         }
 
@@ -4907,6 +5116,8 @@ let isAudioEnabled = true;
             const cardNum = document.getElementById('operatorCardNum').value.trim().toUpperCase();
             const expiration = document.getElementById('operatorExpiration').value;
             const lastDownload = document.getElementById('operatorDownload').value;
+            const patenteExpiration = document.getElementById('operatorPatenteExpiration').value;
+            const cqcExpiration = document.getElementById('operatorCqcExpiration').value;
 
             const opData = {
                 id: id || 'op-' + Date.now(),
@@ -4914,7 +5125,9 @@ let isAudioEnabled = true;
                 name, 
                 cardNum, 
                 expiration,
-                lastDownload: lastDownload || new Date().toISOString().split('T')[0]
+                lastDownload: lastDownload || new Date().toISOString().split('T')[0],
+                patenteExpiration: type === 'driver' ? patenteExpiration : null,
+                cqcExpiration: type === 'driver' ? cqcExpiration : null
             };
 
             if (id) {
@@ -5666,11 +5879,16 @@ let isAudioEnabled = true;
             document.getElementById('diaryNewDescription').value = '';
             document.getElementById('diaryNewKm').value = '';
             document.getElementById('diaryNewCost').value = '';
-            document.getElementById('diaryNewCategory').value = 'manutenzione';
-            document.getElementById('diaryModalTitle').textContent = '\u{1F4CB} Diario \u2014 ' + (v.plate || v.model);
-            document.getElementById('diaryModalSubtitle').textContent = v.model + (v.plate ? ' | ' + v.plate : '');
+            document.getElementById('diaryNewCategory').value = 'Tagliando Ordinario';
+            document.getElementById('diaryModalTitle').textContent = `Storico Officina & Manutenzioni - ${v.plate || ''} (${v.model || ''})`;
+            
+            // Populate top stats
+            document.getElementById('diaryCurrentKm').value = v.currentKm || 0;
+            document.getElementById('diaryLastServiceKm').value = v.lastServiceKm || 0;
+            document.getElementById('diaryServiceInterval').value = v.serviceInterval || 15000;
+            
+            updateServiceStatus(v);
             renderDiaryEntries(v);
-            updateDiaryStats(v);
             document.getElementById('diaryModal').classList.remove('hidden');
             if (window.lucide) lucide.createIcons();
         }
@@ -5680,94 +5898,265 @@ let isAudioEnabled = true;
             currentDiaryVehicleId = null;
         }
 
+        function updateVehicleTopStats() {
+            if (!currentDiaryVehicleId) return;
+            const v = vehicles.find(x => x.id === currentDiaryVehicleId);
+            if (!v) return;
+            v.currentKm = parseInt(document.getElementById('diaryCurrentKm').value) || 0;
+            v.lastServiceKm = parseInt(document.getElementById('diaryLastServiceKm').value) || 0;
+            v.serviceInterval = parseInt(document.getElementById('diaryServiceInterval').value) || 15000;
+            saveToStorage();
+            updateServiceStatus(v);
+            showToast('Dati veicolo aggiornati', 'success');
+        }
+
+        function updateServiceStatus(v) {
+            const currentKm = v.currentKm || 0;
+            const lastService = v.lastServiceKm || 0;
+            const interval = v.serviceInterval || 15000;
+            const kmSinceService = currentKm - lastService;
+            const remaining = interval - kmSinceService;
+            
+            const badge = document.getElementById('diaryServiceBadge');
+            const badgeLabel = document.getElementById('diaryServiceBadgeLabel');
+            const badgeText = document.getElementById('diaryServiceBadgeText');
+            
+            // Remove existing color classes
+            badge.classList.remove('bg-emerald-500', 'bg-red-500', 'bg-yellow-500');
+            badgeLabel.classList.remove('text-emerald-100', 'text-red-100', 'text-yellow-100');
+            
+            if (remaining > 1000) {
+                badge.classList.add('bg-emerald-500');
+                badgeLabel.classList.add('text-emerald-100');
+                badgeText.innerHTML = `TAGLIANDO REGOLARE<br><span class="text-xs font-medium text-emerald-100">(mancano ${remaining} km)</span>`;
+            } else if (remaining >= 0) {
+                badge.classList.add('bg-yellow-500');
+                badgeLabel.classList.add('text-yellow-100');
+                badgeText.innerHTML = `IN SCADENZA<br><span class="text-xs font-medium text-yellow-100">(mancano ${remaining} km)</span>`;
+            } else {
+                badge.classList.add('bg-red-500');
+                badgeLabel.classList.add('text-red-100');
+                badgeText.innerHTML = `TAGLIANDO SCADUTO<br><span class="text-xs font-medium text-red-100">(superato di ${Math.abs(remaining)} km)</span>`;
+            }
+        }
+
         function renderDiaryEntries(v) {
-            const list = document.getElementById('diaryEntriesList');
+            const tableBody = document.getElementById('diaryEntriesTableBody');
             const empty = document.getElementById('diaryEmptyState');
             const diary = v.diary || [];
+            
+            const totalCost = diary.reduce((s, e) => s + (parseFloat(e.cost) || 0), 0);
+            document.getElementById('diaryStatCost').textContent = totalCost.toLocaleString('it-IT', { minimumFractionDigits: 2 }) + ' \u20AC';
+
             if (diary.length === 0) {
-                list.innerHTML = '';
-                list.classList.add('hidden');
+                tableBody.innerHTML = '';
+                tableBody.parentElement.parentElement.classList.add('hidden');
                 empty.classList.remove('hidden');
                 return;
             }
-            list.classList.remove('hidden');
+            
+            tableBody.parentElement.parentElement.classList.remove('hidden');
             empty.classList.add('hidden');
-            const catMap = {
-                manutenzione: { icon: '\u{1F527}', label: 'Manutenzione' },
-                riparazione:  { icon: '\u{1F528}', label: 'Riparazione' },
-                pneumatici:   { icon: '\u{1F504}', label: 'Pneumatici' },
-                revisione:    { icon: '\u2705',     label: 'Revisione' },
-                nota:         { icon: '\u{1F4CB}', label: 'Nota' },
-                costo:        { icon: '\u{1F4B0}', label: 'Costo' }
-            };
+            
             const sorted = [...diary].sort((a, b) => new Date(b.date) - new Date(a.date));
-            list.innerHTML = sorted.map(entry => {
-                const cat = catMap[entry.category] || catMap['nota'];
-                const dateFmt = entry.date ? new Date(entry.date + 'T00:00:00').toLocaleDateString('it-IT', { day: '2-digit', month: 'short', year: 'numeric' }) : '\u2014';
-                const kmText = entry.km ? `<span class="text-slate-400">\u2022</span> ${Number(entry.km).toLocaleString('it-IT')} km` : '';
-                const costText = entry.cost ? `<span class="text-slate-400">\u2022</span> <span class="font-semibold text-emerald-600 dark:text-emerald-400">\u20AC ${Number(entry.cost).toLocaleString('it-IT',{minimumFractionDigits:2})}</span>` : '';
-                return `<div class="flex items-start gap-3 px-6 py-4 hover:bg-slate-50 dark:hover:bg-slate-900/40 transition group">
-                    <div class="text-xl flex-shrink-0 mt-0.5">${cat.icon}</div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-2 flex-wrap mb-1">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">${dateFmt}</span>
-                            <span class="text-[10px] font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded">${cat.label}</span>
-                            <span class="text-[11px] text-slate-500 flex items-center gap-1">${kmText} ${costText}</span>
-                        </div>
-                        <p class="text-sm text-slate-800 dark:text-white font-medium">${entry.description || '\u2014'}</p>
-                    </div>
-                    <button onclick="deleteDiaryEntry('${v.id}','${entry.id}')" class="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/40 transition flex-shrink-0" title="Elimina">
-                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                    </button>
-                </div>`;
+            tableBody.innerHTML = sorted.map(entry => {
+                const dateFmt = entry.date ? new Date(entry.date + 'T00:00:00').toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '\u2014';
+                const kmText = entry.km ? Number(entry.km).toLocaleString('it-IT') : '\u2014';
+                const costText = entry.cost ? `\u20AC ${Number(entry.cost).toLocaleString('it-IT',{minimumFractionDigits:2})}` : '\u2014';
+                
+                return `
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-900/40 transition group">
+                    <td class="px-4 py-3 font-medium text-slate-900 dark:text-white whitespace-nowrap">${dateFmt}</td>
+                    <td class="px-4 py-3 text-slate-700 dark:text-slate-300">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                            ${entry.category || '\u2014'}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 text-slate-600 dark:text-slate-400">${kmText}</td>
+                    <td class="px-4 py-3 font-semibold text-slate-800 dark:text-slate-200">${costText}</td>
+                    <td class="px-4 py-3 text-slate-600 dark:text-slate-400 max-w-xs truncate" title="${entry.description || ''}">${entry.description || '\u2014'}</td>
+                    <td class="px-4 py-3 text-center">
+                        <button onclick="deleteDiaryEntry('${v.id}','${entry.id}')" class="text-red-400 hover:text-red-600 p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/40 transition" title="Elimina">
+                            <i data-lucide="trash-2" class="w-4 h-4 mx-auto"></i>
+                        </button>
+                    </td>
+                </tr>`;
             }).join('');
+            
             if (window.lucide) lucide.createIcons();
-        }
-
-        function updateDiaryStats(v) {
-            const diary = v.diary || [];
-            const totalCost = diary.reduce((s, e) => s + (parseFloat(e.cost) || 0), 0);
-            const sorted = [...diary].sort((a, b) => new Date(b.date) - new Date(a.date));
-            const lastDate = sorted.length ? new Date(sorted[0].date + 'T00:00:00').toLocaleDateString('it-IT', { day:'2-digit', month:'long', year:'numeric' }) : null;
-            document.getElementById('diaryStatCount').textContent = diary.length + (diary.length === 1 ? ' intervento' : ' interventi');
-            document.getElementById('diaryStatCost').textContent = '\u20AC ' + totalCost.toLocaleString('it-IT', { minimumFractionDigits: 2 });
-            document.getElementById('diaryStatLast').textContent = lastDate ? 'Ultimo: ' + lastDate : 'Nessun intervento';
         }
 
         function addDiaryEntry() {
             if (!currentDiaryVehicleId) return;
+            const date = document.getElementById('diaryNewDate').value;
+            const category = document.getElementById('diaryNewCategory').value;
+            const km = document.getElementById('diaryNewKm').value;
+            const cost = document.getElementById('diaryNewCost').value;
             const desc = document.getElementById('diaryNewDescription').value.trim();
-            if (!desc) { showToast('Inserisci una descrizione', 'error'); return; }
+            
+            if (!date) { showToast('Inserisci la data', 'error'); return; }
+            if (!desc) { showToast('Inserisci officina/note', 'error'); return; }
+            
             const v = vehicles.find(x => x.id === currentDiaryVehicleId);
             if (!v) return;
             if (!v.diary) v.diary = [];
+            
             const entry = {
                 id: Date.now().toString(36) + Math.random().toString(36).slice(2),
-                date: document.getElementById('diaryNewDate').value || new Date().toISOString().split('T')[0],
-                category: document.getElementById('diaryNewCategory').value,
+                date: date,
+                category: category,
                 description: desc,
-                km: document.getElementById('diaryNewKm').value ? parseInt(document.getElementById('diaryNewKm').value) : null,
-                cost: document.getElementById('diaryNewCost').value ? parseFloat(document.getElementById('diaryNewCost').value) : null,
+                km: km ? parseInt(km) : null,
+                cost: cost ? parseFloat(cost) : null,
                 addedAt: new Date().toISOString()
             };
             v.diary.push(entry);
+            
             saveToStorage();
+            
             document.getElementById('diaryNewDescription').value = '';
             document.getElementById('diaryNewKm').value = '';
             document.getElementById('diaryNewCost').value = '';
+            
             renderDiaryEntries(v);
-            updateDiaryStats(v);
-            showToast('Intervento aggiunto al diario!', 'success');
+            showToast('Intervento aggiunto allo storico!', 'success');
         }
 
         function deleteDiaryEntry(vehicleId, entryId) {
             const v = vehicles.find(x => x.id === vehicleId);
             if (!v || !v.diary) return;
+            if (!confirm('Sei sicuro di voler eliminare questa voce dallo storico?')) return;
             v.diary = v.diary.filter(e => e.id !== entryId);
             saveToStorage();
             renderDiaryEntries(v);
-            updateDiaryStats(v);
             showToast('Voce eliminata', 'info');
+        }
+
+        function printVehicleReport() {
+            if (!currentDiaryVehicleId) return;
+            document.body.classList.add('printing-modal');
+            window.print();
+            // In Chrome, window.print blocks until closed, so this fires after.
+            // For other browsers, we might want to use window.onafterprint but this is generally safe enough.
+            setTimeout(() => document.body.classList.remove('printing-modal'), 100);
+        }
+
+        function exportVehicleDiaryExcel() {
+            if (!currentDiaryVehicleId || !window.XLSX) return;
+            const v = vehicles.find(x => x.id === currentDiaryVehicleId);
+            if (!v || !v.diary || v.diary.length === 0) {
+                showToast('Nessun dato da esportare', 'error');
+                return;
+            }
+
+            const sorted = [...v.diary].sort((a, b) => new Date(b.date) - new Date(a.date));
+            const data = sorted.map(entry => ({
+                'Data': entry.date ? new Date(entry.date + 'T00:00:00').toLocaleDateString('it-IT') : '',
+                'Categoria': entry.category || '',
+                'Lavoro/Note': entry.description || '',
+                'KM': entry.km || '',
+                'Costo (\u20AC)': entry.cost || ''
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Storico");
+            
+            const plateStr = (v.plate || 'mezzo').replace(/[^a-zA-Z0-9]/g, '');
+            XLSX.writeFile(wb, `Storico_Interventi_${plateStr}.xlsx`);
+            showToast('Esportazione Excel completata', 'success');
+        }
+
+        // --- FINANCE MODAL LOGIC ---
+        let financeCategoryChartInstance = null;
+        let financeVehicleChartInstance = null;
+
+        function openFinanceModal() {
+            document.getElementById('financeModal').classList.remove('hidden');
+            renderFinanceCharts();
+        }
+
+        function closeFinanceModal() {
+            document.getElementById('financeModal').classList.add('hidden');
+        }
+
+        function renderFinanceCharts() {
+            if (financeCategoryChartInstance) financeCategoryChartInstance.destroy();
+            if (financeVehicleChartInstance) financeVehicleChartInstance.destroy();
+
+            let totalFleetCost = 0;
+            const categoryCosts = {};
+            const vehicleCosts = {};
+
+            vehicles.forEach(v => {
+                const plate = v.plate || 'Sconosciuto';
+                let vTotal = 0;
+                if (v.diary && v.diary.length > 0) {
+                    v.diary.forEach(entry => {
+                        const cost = entry.cost || 0;
+                        if (cost > 0) {
+                            totalFleetCost += cost;
+                            vTotal += cost;
+                            const cat = entry.category || 'Altro';
+                            categoryCosts[cat] = (categoryCosts[cat] || 0) + cost;
+                        }
+                    });
+                }
+                if (vTotal > 0) {
+                    vehicleCosts[plate] = (vehicleCosts[plate] || 0) + vTotal;
+                }
+            });
+
+            document.getElementById('totalFleetCost').innerText = '€ ' + totalFleetCost.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+            const categoryLabels = Object.keys(categoryCosts);
+            const categoryData = Object.values(categoryCosts);
+
+            const vehicleLabels = Object.keys(vehicleCosts);
+            const vehicleData = Object.values(vehicleCosts);
+
+            if (!window.Chart) {
+                console.warn("Chart.js non caricato!");
+                return;
+            }
+
+            const ctxCategory = document.getElementById('financeCategoryChart').getContext('2d');
+            financeCategoryChartInstance = new Chart(ctxCategory, {
+                type: 'doughnut',
+                data: {
+                    labels: categoryLabels,
+                    datasets: [{
+                        data: categoryData,
+                        backgroundColor: ['#f59e0b', '#3b82f6', '#10b981', '#ef4444', '#8b5cf6', '#64748b']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+
+            const ctxVehicle = document.getElementById('financeVehicleChart').getContext('2d');
+            financeVehicleChartInstance = new Chart(ctxVehicle, {
+                type: 'bar',
+                data: {
+                    labels: vehicleLabels,
+                    datasets: [{
+                        label: 'Spesa (€)',
+                        data: vehicleData,
+                        backgroundColor: '#3b82f6',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+            if (window.lucide) lucide.createIcons();
         }
 
         // --- GESTIONE DRAG & DROP E PARSING FILE .DDD ---
