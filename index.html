@@ -160,8 +160,9 @@
                     </button>
 
                     <!-- BOTTONE LOCK/UNLOCK RAPIDO -->
-                    <button onclick="togglePinProtectionVisual()" id="lockStatusBtn" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-600 transition" title="Attiva/Disattiva Protezione PIN">
-                        <i data-lucide="lock-open" class="w-4 h-4 text-emerald-500" id="lockIcon"></i>
+                    <button onclick="togglePinProtectionVisual()" id="lockStatusBtn" class="flex items-center space-x-1.5 p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-700 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition shadow-sm" title="Attiva/Disattiva Protezione PIN">
+                        <i data-lucide="lock-open" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" id="lockIcon"></i>
+                        <span class="text-xs font-bold hidden sm:inline" id="lockStatusLabel">Libero</span>
                     </button>
 
                     <button onclick="toggleTheme()" id="themeToggleBtn" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-600 transition" title="Cambia Modalità Visiva">
@@ -2410,28 +2411,28 @@
         function populateCalendarDataMap() {
             calendarDataMap = {};
             
-            // Mezzi
+            // ✅ FIX: Usare i campi corretti della struttura dati (plate, deadlines.*)
             vehicles.forEach(v => {
                 const addExp = (dateStr, type, name) => {
                     if(!dateStr) return;
                     if(!calendarDataMap[dateStr]) calendarDataMap[dateStr] = [];
                     calendarDataMap[dateStr].push({
-                        entity: 'Veicolo: ' + v.targa,
+                        entity: 'Veicolo: ' + (v.plate || v.targa || '?'),
                         type,
                         name,
                         status: getStatus(dateStr)
                     });
                 };
-                
-                addExp(v.scadenzaAssicurazione, 'Assicurazione', v.targa);
-                addExp(v.scadenzaBollo, 'Bollo', v.targa);
-                addExp(v.scadenzaRevisione, 'Revisione', v.targa);
-                addExp(v.scadenzaTachigrafo, 'Tachigrafo', v.targa);
-                addExp(v.scadenzaHaccp, 'HACCP (ATP)', v.targa);
-                addExp(v.scadenzaTachigrafoDownload, 'Scarico Dati Tachigrafo', v.targa);
-                addExp(v.scadenzaTagliando, 'Tagliando Meccanico', v.targa);
-                addExp(v.scadenzaEstintore, 'Estintore a Bordo', v.targa);
-                addExp(v.scadenzaBombole, 'Scadenza Bombole', v.targa);
+                const d = v.deadlines || {};
+                const plate = v.plate || v.targa || '?';
+                addExp(d.assicurazione,      'Assicurazione',          plate);
+                addExp(d.tassaPossesso,      'Bollo / Tassa Possesso', plate);
+                addExp(d.revision,           'Revisione',              plate);
+                addExp(d.tachimetro,         'Rev. Tachigrafo',        plate);
+                addExp(d.scaricoTachigrafo,  'Scarico Dati Tachigrafo',plate);
+                addExp(d.gru,                'Revisione Gru',          plate);
+                addExp(d.gruStrutturale,     'Ventennale Gru',         plate);
+                addExp(d.altro,              d.altroNota || 'Altro',   plate);
             });
             
             // Autisti
@@ -2734,7 +2735,10 @@ let isAudioEnabled = true;
         let pinEntered = ''; 
 
         // STATO PER IL BLOCCO/SBLOCCO MANUALE
-        let isPinProtectionActive = localStorage.getItem('fleet_pin_active_vicla') !== 'false';
+        // Se il PIN è impostato e non è stata esplicitamente disattivata, è attiva
+        const _storedPinActive = localStorage.getItem('fleet_pin_active_vicla');
+        const _storedPin = localStorage.getItem('fleet_master_pin_vicla') || '';
+        let isPinProtectionActive = _storedPin ? (_storedPinActive !== 'false') : false;
 
         window.addEventListener('DOMContentLoaded', () => {
             loadTheme();
@@ -2791,24 +2795,33 @@ let isAudioEnabled = true;
             }
         }
 
+
         function updateLockUI() {
             const icon = document.getElementById('lockIcon');
             const btn = document.getElementById('lockStatusBtn');
+            const label = document.getElementById('lockStatusLabel');
             if (!icon || !btn) return;
 
             if (isPinProtectionActive) {
+                // 🔴 PIN ATTIVO — bottone rosso
                 icon.setAttribute('data-lucide', 'lock');
-                icon.className = "w-4 h-4 text-red-500";
-                btn.title = "PIN Attivo: Clicca per sbloccare le modifiche";
+                icon.className = "w-4 h-4 text-red-600 dark:text-red-400";
+                btn.className = "flex items-center space-x-1.5 p-2.5 rounded-xl bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-400 border border-red-300 dark:border-red-700 hover:bg-red-100 dark:hover:bg-red-900/40 transition shadow-sm";
+                btn.title = "PIN Attivo: Clicca per sbloccare";
+                if (label) label.innerText = "Bloccato";
             } else {
+                // 🟢 PIN DISATTIVO — bottone verde
                 icon.setAttribute('data-lucide', 'lock-open');
-                icon.className = "w-4 h-4 text-emerald-500";
-                btn.title = "PIN Disattivato: Clicca per bloccare le modifiche";
+                icon.className = "w-4 h-4 text-emerald-600 dark:text-emerald-400";
+                btn.className = "flex items-center space-x-1.5 p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-700 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition shadow-sm";
+                btn.title = "PIN Disattivato: Clicca per bloccare";
+                if (label) label.innerText = "Libero";
             }
             if (typeof lucide !== 'undefined' && lucide.createIcons) {
                 lucide.createIcons();
             }
         }
+
 
         function updatePinDots() {
             for (let i = 0; i < 4; i++) {
@@ -2823,11 +2836,30 @@ let isAudioEnabled = true;
             }
         }
 
+        // ✅ FIX: Funzione playBeep era MANCANTE — causava ReferenceError che
+        // bloccava setTimeout(verifyPin) impedendo la verifica del PIN
+        function playBeep() {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.08);
+                osc.start();
+                setTimeout(() => { try { osc.stop(); } catch(e) {} }, 90);
+            } catch(e) {}
+        }
+
         function pressPinKey(digit) {
             if (pinEntered.length < 4) {
                 pinEntered += digit;
                 updatePinDots();
-                playBeep();
+                try { playBeep(); } catch(e) {}
                 
                 if (pinEntered.length === 4) {
                     setTimeout(verifyPin, 180);
@@ -2958,8 +2990,24 @@ let isAudioEnabled = true;
                 return;
             }
 
+            const oldPin = masterPin;
             masterPin = pinVal;
             localStorage.setItem('fleet_master_pin_vicla', masterPin);
+
+            // ✅ FIX: Se viene impostato un nuovo PIN → attiva automaticamente la protezione
+            // Se il PIN viene rimosso (campo vuoto) → disattiva la protezione
+            if (pinVal) {
+                isPinProtectionActive = true;
+                localStorage.setItem('fleet_pin_active_vicla', 'true');
+                if (!oldPin) {
+                    showToast("PIN di sicurezza impostato e protezione ATTIVATA!", "success");
+                }
+            } else if (!pinVal && oldPin) {
+                isPinProtectionActive = false;
+                localStorage.setItem('fleet_pin_active_vicla', 'false');
+                showToast("PIN rimosso. Protezione disattivata.", "info");
+            }
+            updateLockUI();
 
             const chimeVal = document.getElementById('settingChimeStyle').value;
             localStorage.setItem('fleet_chime_style_vicla', chimeVal);
@@ -2967,13 +3015,13 @@ let isAudioEnabled = true;
             const voiceVal = document.getElementById('settingVoiceSelect').value;
             if (voiceVal) {
                 localStorage.setItem('fleet_voice_name_vicla', voiceVal);
+            }
 
+            // ✅ FIX: Salva sempre rate e pitch, non solo quando voiceVal è valorizzato
             const rEl = document.getElementById('settingVoiceRate');
             const pEl = document.getElementById('settingVoicePitch');
             if (rEl) localStorage.setItem('fleet_voice_rate_vicla', rEl.value);
             if (pEl) localStorage.setItem('fleet_voice_pitch_vicla', pEl.value);
-
-            }
 
             updateThresholdLabels();
             closeSettingsModal();
@@ -3850,7 +3898,9 @@ let isAudioEnabled = true;
                             <div style="margin-top: 4px;">Scarico Dati (28gg): <span class="badge ${dlBadge}">${formatDateString(calculateNextDownloadDate(op.lastDownload))}</span></div>
                         `;
                     } else {
-                        scadenzeHTML = `<div>Scarico Obbligatorio ${isVehicleCompany ? '(90gg)' : ''}: <span class="badge ${badgeClass}">${formatDateString(op.expiration)}</span></div>`;
+                        // ✅ FIX: isVehicleCompany non era definita → uso op.type
+                        const isVehicleCompanyType = op.type === 'vehicle_company';
+                        scadenzeHTML = `<div>Scarico Obbligatorio ${isVehicleCompanyType ? '(90gg)' : ''}: <span class="badge ${badgeClass}">${formatDateString(op.expiration)}</span></div>`;
                     }
 
                     htmlContent += `
