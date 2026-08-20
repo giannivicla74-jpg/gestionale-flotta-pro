@@ -1,0 +1,12 @@
+# Dipendenze Node
+node_modules/
+
+# File temporanei di lavoro
+scratch/
+
+# File di log
+*.log
+
+# File di sistema
+.DS_Store
+Thumbs.db
