@@ -616,6 +616,156 @@
         </div>
     </div>
 
+    
+    <!-- ========================================================= -->
+    <!-- MODALE VERBALE CONSEGNA / RIENTRO (CHECK-IN / CHECK-OUT) -->
+    <!-- ========================================================= -->
+    <div id="checkinModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto hidden">
+        <div class="max-w-2xl w-full bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden my-auto animate-in fade-in zoom-in duration-200">
+            <div class="bg-gradient-to-r from-blue-700 to-indigo-700 p-5 text-white flex justify-between items-center">
+                <div class="flex items-center gap-2.5">
+                    <div class="p-2 bg-white/10 rounded-xl">
+                        <i data-lucide="clipboard-check" class="w-5 h-5 text-amber-300"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold" id="checkinModalTitle">Verbale di Consegna & Rientro Mezzo</h3>
+                        <p class="text-[11px] text-blue-100" id="checkinContractSub">Contratto N° ---</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeCheckinModal()" class="text-white/80 hover:text-white cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+
+            <div class="p-6 space-y-5 max-h-[80vh] overflow-y-auto">
+                <input type="hidden" id="chkRentalId">
+
+                <!-- Riepilogo Rapido Mezzo e Cliente -->
+                <div class="bg-slate-50 dark:bg-slate-800/60 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 flex flex-wrap items-center justify-between gap-3 text-xs">
+                    <div>
+                        <span class="text-slate-400 font-medium">Cliente:</span>
+                        <div class="font-bold text-slate-900 dark:text-white" id="chkCustomerName">---</div>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 font-medium">Mezzo Assegnato:</span>
+                        <div class="font-bold font-mono text-blue-600 dark:text-blue-400" id="chkVehiclePlate">---</div>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 font-medium">Periodo Noleggio:</span>
+                        <div class="font-bold text-slate-800 dark:text-slate-200" id="chkDates">---</div>
+                    </div>
+                </div>
+
+                <!-- SELETTORE FASE: CONSEGNA (PARTENZA) VS RIENTRO (RESTITUZIONE) -->
+                <div class="grid grid-cols-2 gap-3 bg-slate-100 dark:bg-slate-950 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-800">
+                    <button type="button" onclick="setCheckinPhase('departure')" id="btnPhaseDeparture" class="py-2 rounded-xl text-xs font-extrabold transition cursor-pointer bg-blue-600 text-white shadow-sm flex items-center justify-center gap-1.5">
+                        <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+                        <span>1. Consegna (Partenza)</span>
+                    </button>
+                    <button type="button" onclick="setCheckinPhase('return')" id="btnPhaseReturn" class="py-2 rounded-xl text-xs font-extrabold transition cursor-pointer text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center justify-center gap-1.5">
+                        <i data-lucide="log-in" class="w-3.5 h-3.5"></i>
+                        <span>2. Rientro (Restituzione)</span>
+                    </button>
+                </div>
+
+                <!-- RILEVAZIONE CHILOMETRI -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Km di Partenza (Consegna)</label>
+                        <input type="number" id="chkStartKm" placeholder="Es. 150000" oninput="calculateKmDiff()" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl text-xs font-mono font-bold focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Km di Rientro (Arrivo)</label>
+                        <input type="number" id="chkEndKm" placeholder="Es. 151250" oninput="calculateKmDiff()" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl text-xs font-mono font-bold focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <div id="chkKmDiffBox" class="hidden p-2.5 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 rounded-xl text-xs text-blue-800 dark:text-blue-300 flex items-center justify-between font-bold">
+                    <span>Chilometri Percorsi nel Noleggio:</span>
+                    <span class="font-mono text-sm" id="chkKmDiffVal">0 Km</span>
+                </div>
+
+                <!-- LIVELLO CARBURANTE GRAFICO INTERATTIVO -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Livello Carburante Serbatoio</label>
+                    <div class="grid grid-cols-5 gap-2" id="fuelGaugeButtons">
+                        <button type="button" onclick="setFuelLevel('0/8')" data-fuel="0/8" class="fuel-btn py-2 px-1 rounded-xl border border-slate-300 dark:border-slate-600 text-center text-xs font-bold transition hover:bg-slate-100 dark:hover:bg-slate-800">
+                            <span class="block text-[10px] text-red-500">Riserva</span> 0/8
+                        </button>
+                        <button type="button" onclick="setFuelLevel('1/4')" data-fuel="1/4" class="fuel-btn py-2 px-1 rounded-xl border border-slate-300 dark:border-slate-600 text-center text-xs font-bold transition hover:bg-slate-100 dark:hover:bg-slate-800">
+                            <span class="block text-[10px] text-amber-500">1/4</span> 25%
+                        </button>
+                        <button type="button" onclick="setFuelLevel('1/2')" data-fuel="1/2" class="fuel-btn py-2 px-1 rounded-xl border border-slate-300 dark:border-slate-600 text-center text-xs font-bold transition hover:bg-slate-100 dark:hover:bg-slate-800">
+                            <span class="block text-[10px] text-amber-500">1/2</span> 50%
+                        </button>
+                        <button type="button" onclick="setFuelLevel('3/4')" data-fuel="3/4" class="fuel-btn py-2 px-1 rounded-xl border border-slate-300 dark:border-slate-600 text-center text-xs font-bold transition hover:bg-slate-100 dark:hover:bg-slate-800">
+                            <span class="block text-[10px] text-emerald-500">3/4</span> 75%
+                        </button>
+                        <button type="button" onclick="setFuelLevel('4/4')" data-fuel="4/4" class="fuel-btn py-2 px-1 rounded-xl border border-blue-600 bg-blue-600 text-white text-center text-xs font-bold transition shadow-sm">
+                            <span class="block text-[10px] text-amber-300">Pieno</span> 100%
+                        </button>
+                    </div>
+                    <input type="hidden" id="chkFuelLevel" value="4/4">
+                </div>
+
+                <!-- CHECKLIST ISPEZIONE VEICOLO -->
+                <div class="space-y-2.5 pt-2">
+                    <div class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                        <i data-lucide="check-square" class="w-3.5 h-3.5 text-blue-500"></i>
+                        <span>Checklist Stato Veicolo & Dotazioni di Bordo</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                        <label class="flex items-center space-x-2.5 p-2 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-100">
+                            <input type="checkbox" id="chkBodyOk" checked class="w-4 h-4 text-blue-600 rounded">
+                            <span class="font-medium text-slate-800 dark:text-slate-200">Carrozzeria e Verniciatura OK</span>
+                        </label>
+                        <label class="flex items-center space-x-2.5 p-2 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-100">
+                            <input type="checkbox" id="chkGlassOk" checked class="w-4 h-4 text-blue-600 rounded">
+                            <span class="font-medium text-slate-800 dark:text-slate-200">Parabrezza & Cristalli Integri</span>
+                        </label>
+                        <label class="flex items-center space-x-2.5 p-2 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-100">
+                            <input type="checkbox" id="chkTiresOk" checked class="w-4 h-4 text-blue-600 rounded">
+                            <span class="font-medium text-slate-800 dark:text-slate-200">Pneumatici & Pressione OK</span>
+                        </label>
+                        <label class="flex items-center space-x-2.5 p-2 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-100">
+                            <input type="checkbox" id="chkToolsOk" checked class="w-4 h-4 text-blue-600 rounded">
+                            <span class="font-medium text-slate-800 dark:text-slate-200">Kit Bordo (Triangolo/Giubbino/Ruota)</span>
+                        </label>
+                        <label class="flex items-center space-x-2.5 p-2 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-100">
+                            <input type="checkbox" id="chkDocsOk" checked class="w-4 h-4 text-blue-600 rounded">
+                            <span class="font-medium text-slate-800 dark:text-slate-200">Libretto & Documenti di Bordo Presenti</span>
+                        </label>
+                        <label class="flex items-center space-x-2.5 p-2 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-100">
+                            <input type="checkbox" id="chkCleanOk" checked class="w-4 h-4 text-blue-600 rounded">
+                            <span class="font-medium text-slate-800 dark:text-slate-200">Pulizia Interna & Esterna Conforme</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- NOTE DANNI & OSSERVAZIONI -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Note Danni Rilevati o Segnalazioni</label>
+                    <textarea id="chkNotes" rows="2" placeholder="Es. Lieve graffio paraurti anteriore destro già presente alla consegna..." class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
+                </div>
+
+                <!-- AZIONI SALVATAGGIO & STAMPA VERBALE PDF -->
+                <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+                    <button type="button" onclick="printCheckinReportPDF()" class="px-4 py-2.5 bg-red-50 hover:bg-red-100 dark:bg-red-950/50 text-red-600 dark:text-red-400 font-bold text-xs rounded-xl transition flex items-center gap-1.5 cursor-pointer border border-red-200 dark:border-red-800">
+                        <i data-lucide="file-text" class="w-4 h-4"></i>
+                        <span>Stampa Verbale PDF</span>
+                    </button>
+                    <div class="flex items-center space-x-2">
+                        <button type="button" onclick="closeCheckinModal()" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 cursor-pointer">Annulla</button>
+                        <button type="button" onclick="saveCheckinReport()" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md cursor-pointer flex items-center gap-1.5">
+                            <i data-lucide="check" class="w-4 h-4"></i>
+                            <span>Salva Verbale</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <!-- TOAST NOTIFICHE -->
     <div id="toast" class="fixed bottom-5 right-5 z-50 bg-slate-900 text-white py-3 px-5 rounded-2xl shadow-xl flex items-center space-x-3 transition-all duration-300 transform translate-y-20 opacity-0 pointer-events-none border border-slate-700">
         <div id="toastIcon"></div>
@@ -1019,6 +1169,7 @@
                     <td class="p-3.5 font-mono font-bold">${r.dailyRate} €/gg <span class="text-slate-400 font-normal">(${r.totalAmount} €)</span></td>
                     <td class="p-3.5">${statusBadge}</td>
                     <td class="p-3.5 text-right space-x-1.5">
+                        <button onclick="openCheckinModal('${r.id}')" class="p-1.5 text-slate-500 hover:text-indigo-600 transition" title="Verbale Consegna / Rientro"><i data-lucide="clipboard-check" class="w-4 h-4"></i></button>
                         <button onclick="printRentalContractPDF('${r.id}')" class="p-1.5 text-slate-500 hover:text-blue-600 transition" title="Stampa Contratto PDF"><i data-lucide="printer" class="w-4 h-4"></i></button>
                         ${r.status === 'attivo' ? `<button onclick="closeRentalContract('${r.id}')" class="p-1.5 text-emerald-600 hover:text-emerald-700 transition" title="Rientro Mezzo"><i data-lucide="check-circle" class="w-4 h-4"></i></button>` : ''}
                         <button onclick="deleteRental('${r.id}')" class="p-1.5 text-slate-400 hover:text-red-600 transition" title="Elimina"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
