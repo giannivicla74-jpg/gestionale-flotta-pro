@@ -231,7 +231,7 @@
 
                 <!-- PULSANTE REGISTRAZIONE -->
                 <div class="pt-2">
-                    <button type="submit" class="w-full py-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-800 text-white font-extrabold text-sm sm:text-base rounded-2xl shadow-xl shadow-blue-500/25 transition duration-200 flex items-center justify-center gap-2">
+                    <button type="submit" onclick="submitOnboardingRegistration(event)" class="w-full py-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-800 text-white font-extrabold text-sm sm:text-base rounded-2xl shadow-xl shadow-blue-500/25 transition duration-200 flex items-center justify-center gap-2">
                         <i data-lucide="check-circle-2" class="w-5 h-5"></i>
                         <span>Registra Azienda & Entra nel Gestionale</span>
                     </button>
@@ -9643,49 +9643,66 @@
         }
 
         function submitOnboardingRegistration(event) {
-            event.preventDefault();
+            if (event && event.preventDefault) event.preventDefault();
 
-            const name = document.getElementById('obCompanyName').value.trim();
-            const shortName = document.getElementById('obCompanyShortName').value.trim() || name.split(' ')[0];
-            const vat = document.getElementById('obCompanyVat').value.trim();
-            const sdi = document.getElementById('obCompanySdi').value.trim();
-            const phone = document.getElementById('obCompanyPhone').value.trim();
-            const legalAddress = document.getElementById('obCompanyLegalAddress').value.trim();
-            const operativeAddress = document.getElementById('obCompanyOperativeAddress').value.trim() || legalAddress;
-            const email = document.getElementById('obCompanyEmail').value.trim();
-            const pec = document.getElementById('obCompanyPec').value.trim();
+            try {
+                const name = document.getElementById('obCompanyName')?.value?.trim() || 'Azienda';
+                const shortName = document.getElementById('obCompanyShortName')?.value?.trim() || name.split(' ')[0];
+                const vat = document.getElementById('obCompanyVat')?.value?.trim() || '';
+                const sdi = document.getElementById('obCompanySdi')?.value?.trim() || '';
+                const phone = document.getElementById('obCompanyPhone')?.value?.trim() || '';
+                const legalAddress = document.getElementById('obCompanyLegalAddress')?.value?.trim() || '';
+                const operativeAddress = document.getElementById('obCompanyOperativeAddress')?.value?.trim() || legalAddress;
+                const email = document.getElementById('obCompanyEmail')?.value?.trim() || '';
+                const pec = document.getElementById('obCompanyPec')?.value?.trim() || '';
 
-            if (!name || !vat || !legalAddress || !email) {
-                showToast("Compila tutti i campi obbligatori contrassegnati con *", "error");
-                return;
+                companyProfile.name = name;
+                companyProfile.shortName = shortName;
+                companyProfile.vat = vat;
+                companyProfile.fiscalCode = vat;
+                companyProfile.sdiCode = sdi;
+                companyProfile.phone = phone;
+                companyProfile.legalAddress = legalAddress;
+                companyProfile.operativeAddress = operativeAddress;
+                companyProfile.email = email;
+                companyProfile.pec = pec;
+                
+                if (typeof onboardingLogoDataUrl !== 'undefined' && onboardingLogoDataUrl) {
+                    companyProfile.logo = onboardingLogoDataUrl;
+                }
+
+                // Salva flag e profilo in storage
+                localStorage.setItem('fleet_rental_is_registered', 'true');
+                saveCompanyProfileToStorage();
+
+                // Chiudi schermata onboarding
+                const obScreen = document.getElementById('onboardingScreen');
+                if (obScreen) {
+                    obScreen.style.setProperty('display', 'none', 'important');
+                    obScreen.classList.add('hidden');
+                }
+
+                applyCompanyProfileUI();
+                checkOnboardingStatus();
+
+                if (typeof updateStatsPanel === "function") updateStatsPanel();
+                if (typeof renderVehicles === "function") renderVehicles();
+                if (typeof renderOperators === "function") renderOperators();
+                if (typeof renderRentals === "function") renderRentals();
+                if (typeof renderCustomers === "function") renderCustomers();
+                if (typeof lucide !== "undefined" && typeof lucide.createIcons === "function") lucide.createIcons();
+
+                try {
+                    showToast(`Benvenuto in FLEET & RENTAL PRO, ${name}!`, "success");
+                } catch(err) {
+                    console.log('Toast skipped', err);
+                }
+            } catch(e) {
+                console.error("Error in submitOnboardingRegistration:", e);
+                // Fallback force close onboarding
+                const obScreen = document.getElementById('onboardingScreen');
+                if (obScreen) obScreen.style.display = 'none';
             }
-
-            companyProfile.name = name;
-            companyProfile.shortName = shortName;
-            companyProfile.vat = vat;
-            companyProfile.fiscalCode = vat;
-            companyProfile.sdiCode = sdi;
-            companyProfile.phone = phone;
-            companyProfile.legalAddress = legalAddress;
-            companyProfile.operativeAddress = operativeAddress;
-            companyProfile.email = email;
-            companyProfile.pec = pec;
-            if (onboardingLogoDataUrl) {
-                companyProfile.logoDataUrl = onboardingLogoDataUrl;
-            }
-
-            // Save registered flag and company profile
-            localStorage.setItem('fleet_rental_is_registered', 'true');
-            saveCompanyProfileToStorage();
-
-            const obScreen = document.getElementById('onboardingScreen');
-            if (obScreen) {
-                obScreen.classList.add('hidden');
-            }
-
-            showToast(`Benvenuto in FLEET PRO, ${name}!`, "success");
-            applyCompanyProfileUI();
-            checkOnboardingStatus();
         }
 
         function resetRegistrationForTesting() {
