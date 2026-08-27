@@ -354,6 +354,21 @@
 
         // Run check as soon as DOM is ready
         document.addEventListener('DOMContentLoaded', function() {
+            var btn = document.getElementById('btnSubmitOnboarding');
+            if (btn) {
+                btn.onclick = submitOnboardingRegistration;
+            }
+            
+            var inputs = document.querySelectorAll('#onboardingFormContainer input');
+            inputs.forEach(function(inp) {
+                inp.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        submitOnboardingRegistration(e);
+                    }
+                });
+            });
+            
             checkOnboardingStatus();
         });
     </script>
