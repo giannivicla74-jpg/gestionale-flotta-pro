@@ -1632,12 +1632,40 @@
             vehSelect.innerHTML = vehicles.map(v => `<option value="${v.id}">${v.plate} - ${v.model} (${v.status})</option>`).join('');
 
             const todayStr = new Date().toISOString().split('T')[0];
+            document.getElementById('rentId').value = '';
+            document.getElementById('rentalModalTitle').innerHTML = '<i data-lucide="file-signature" class="w-4 h-4"></i><span>Nuovo Contratto Noleggio</span>';
             document.getElementById('rentStartDate').value = todayStr;
             
             const nextWeek = new Date();
             nextWeek.setDate(nextWeek.getDate() + 7);
             document.getElementById('rentEndDate').value = nextWeek.toISOString().split('T')[0];
 
+            document.getElementById('rentalModal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        
+        function editRental(id) {
+            const r = rentals.find(item => item.id === id);
+            if (!r) return;
+            
+            const custSelect = document.getElementById('rentCustomerSelect');
+            const vehSelect = document.getElementById('rentVehicleSelect');
+
+            custSelect.innerHTML = customers.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+            // Se il mezzo è stato chiuso o è in un altro stato, dobbiamo comunque mostrarlo
+            vehSelect.innerHTML = vehicles.map(v => `<option value="${v.id}">${v.plate} - ${v.model} (${v.status})</option>`).join('');
+
+            document.getElementById('rentId').value = r.id;
+            document.getElementById('rentCustomerSelect').value = r.customerId;
+            document.getElementById('rentVehicleSelect').value = r.vehicleId;
+            document.getElementById('rentStartDate').value = r.startDate;
+            document.getElementById('rentEndDate').value = r.endDate;
+            document.getElementById('rentDailyRate').value = r.dailyRate;
+            document.getElementById('rentDeposit').value = r.deposit || 0;
+            document.getElementById('rentStartKm').value = r.startKm || 0;
+            
+            document.getElementById('rentalModalTitle').innerHTML = '<i data-lucide="file-signature" class="w-4 h-4"></i><span>Modifica ' + r.id + '</span>';
             document.getElementById('rentalModal').classList.remove('hidden');
             lucide.createIcons();
         }
@@ -1651,7 +1679,9 @@
             document.getElementById('rentVehicleSelect').value = vehId;
         }
 
+        
         function saveRentalContract() {
+            const rentId = document.getElementById('rentId').value;
             const custId = document.getElementById('rentCustomerSelect').value;
             const vehId = document.getElementById('rentVehicleSelect').value;
             const startDate = document.getElementById('rentStartDate').value;
@@ -1667,7 +1697,20 @@
 
             const days = Math.max(1, Math.ceil((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24)));
             const totalAmount = days * dailyRate;
-            const contractId = 'RNT-' + new Date().getFullYear() + '-' + String(rentals.length + 1).padStart(3, '0');
+            
+            let contractId = rentId;
+            let existingIdx = -1;
+            
+            if (contractId) {
+                existingIdx = rentals.findIndex(r => r.id === contractId);
+            } else {
+                contractId = 'RNT-' + new Date().getFullYear() + '-' + String(rentals.length + 1).padStart(3, '0');
+            }
+
+            let statusStr = "attivo";
+            if (existingIdx >= 0) {
+                statusStr = rentals[existingIdx].status;
+            }
 
             const rental = {
                 id: contractId,
@@ -1679,19 +1722,24 @@
                 totalAmount: totalAmount,
                 deposit: deposit,
                 startKm: startKm,
-                endKm: null,
-                status: "attivo"
+                endKm: existingIdx >= 0 ? rentals[existingIdx].endKm : null,
+                status: statusStr
             };
 
-            rentals.push(rental);
-            const veh = vehicles.find(v => v.id === vehId);
-            if (veh) veh.status = 'noleggio';
+            if (existingIdx >= 0) {
+                rentals[existingIdx] = rental;
+            } else {
+                rentals.push(rental);
+                const veh = vehicles.find(v => v.id === vehId);
+                if (veh) veh.status = 'noleggio';
+            }
 
             saveToStorage();
             closeRentalModal();
             renderAll();
-            showToast(`✓ Contratto ${contractId} creato con successo!`, "success");
+            showToast(`✓ Contratto ${contractId} ${existingIdx >= 0 ? 'aggiornato' : 'creato'} con successo!`, "success");
         }
+
 
         function closeRentalContract(id) {
             const r = rentals.find(item => item.id === id);
