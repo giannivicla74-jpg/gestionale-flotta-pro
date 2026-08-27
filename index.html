@@ -620,6 +620,99 @@
 
     
     <!-- ========================================================= -->
+    
+    <!-- MODALE LIBRETTO MANUTENZIONI -->
+    <div id="maintenanceModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto hidden">
+        <div class="max-w-3xl w-full bg-slate-50 dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden my-auto flex flex-col max-h-[90vh]">
+            <div class="bg-gradient-to-r from-emerald-600 to-teal-700 p-5 text-white flex justify-between items-center shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 bg-white/20 rounded-xl">
+                        <i data-lucide="wrench" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-black leading-tight" id="maintenanceModalTitle">Libretto Manutenzioni</h3>
+                        <p class="text-xs text-emerald-100 font-medium" id="maintenanceModalSubtitle">Targa e Modello</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-[10px] text-emerald-200 uppercase font-bold tracking-wider">Costo Totale</p>
+                        <p class="text-xl font-black" id="maintenanceTotalCost">€ 0,00</p>
+                    </div>
+                    <button type="button" onclick="closeMaintenanceModal()" class="text-white/80 hover:text-white p-2 rounded-full hover:bg-white/10 transition"><i data-lucide="x" class="w-6 h-6"></i></button>
+                </div>
+            </div>
+            
+            <div class="p-6 flex-1 overflow-y-auto">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="text-sm font-bold text-slate-800 dark:text-white">Storico Interventi</h4>
+                    <button type="button" onclick="openAddMaintenanceModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-md transition flex items-center gap-1.5">
+                        <i data-lucide="plus" class="w-4 h-4"></i> Aggiungi Intervento
+                    </button>
+                </div>
+                
+                <div id="maintenanceList" class="space-y-3">
+                    <!-- Maintenance records will be injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALE AGGIUNGI INTERVENTO -->
+    <div id="addMaintenanceModal" class="fixed inset-0 z-[60] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto hidden">
+        <div class="max-w-md w-full bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden my-auto animate-in fade-in zoom-in duration-200">
+            <div class="bg-emerald-600 p-5 text-white flex justify-between items-center">
+                <h3 class="text-sm font-bold flex items-center gap-2">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                    <span>Nuovo Intervento</span>
+                </h3>
+                <button type="button" onclick="closeAddMaintenanceModal()" class="text-white/80 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div class="p-6 space-y-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Data *</label>
+                        <input type="date" id="maintDate" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl text-xs font-bold focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Tipo Intervento *</label>
+                        <select id="maintType" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl text-xs font-bold focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                            <option value="Tagliando">Tagliando / Manutenzione Regolare</option>
+                            <option value="Gomme">Cambio Gomme</option>
+                            <option value="Freni">Freni (Dischi/Pasticche)</option>
+                            <option value="Olio">Cambio Olio e Filtri</option>
+                            <option value="Revisione">Revisione Ministeriale</option>
+                            <option value="Riparazione">Riparazione Straordinaria</option>
+                            <option value="Altro">Altro</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Descrizione Dettagliata</label>
+                    <textarea id="maintDesc" rows="2" placeholder="Es. Sostituzione 4 pneumatici invernali Pirelli" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Costo Totale (€) *</label>
+                        <input type="number" id="maintCost" step="0.01" required placeholder="0.00" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl text-xs font-mono font-bold focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Chilometri (Km)</label>
+                        <input type="number" id="maintKm" placeholder="Es. 150000" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl text-xs font-mono focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Officina / Fornitore</label>
+                    <input type="text" id="maintProvider" placeholder="Nome dell'officina" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+                <div class="flex justify-end space-x-2 pt-3">
+                    <button type="button" onclick="closeAddMaintenanceModal()" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300">Annulla</button>
+                    <button type="button" onclick="saveMaintenanceRecord()" class="px-5 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-md">Salva Intervento</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- MODALE VERBALE CONSEGNA / RIENTRO (CHECK-IN / CHECK-OUT) -->
     <!-- ========================================================= -->
     <div id="checkinModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto hidden">
@@ -1193,6 +1286,7 @@
                             <i data-lucide="key" class="w-3.5 h-3.5"></i> Noleggia
                         </button>
                         <div class="flex items-center gap-2">
+                            <button onclick="openMaintenanceModal('${v.id}')" class="p-1.5 text-slate-400 hover:text-emerald-600 transition" title="Libretto Manutenzioni"><i data-lucide="wrench" class="w-4 h-4"></i></button>
                             <button onclick="editVehicle('${v.id}')" class="p-1.5 text-slate-400 hover:text-blue-600 transition" title="Modifica"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
                             <button onclick="deleteVehicle('${v.id}')" class="p-1.5 text-slate-400 hover:text-red-600 transition" title="Elimina"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                         </div>
@@ -1622,6 +1716,149 @@
             document.getElementById('vehicleModalTitle').innerText = 'Modifica ' + v.plate;
             document.getElementById('vehicleModal').classList.remove('hidden');
             lucide.createIcons();
+        }
+
+        
+        // --- LIBRETTO MANUTENZIONI ---
+        let currentMaintenanceVehicleId = null;
+
+        function openMaintenanceModal(vehicleId) {
+            currentMaintenanceVehicleId = vehicleId;
+            const v = vehicles.find(item => item.id === vehicleId);
+            if (!v) return;
+
+            document.getElementById('maintenanceModalTitle').innerText = `${v.plate} - ${v.model}`;
+            document.getElementById('maintenanceModalSubtitle').innerText = `Libretto Manutenzioni`;
+            
+            renderMaintenanceHistory(v);
+            
+            document.getElementById('maintenanceModal').classList.remove('hidden');
+        }
+
+        function closeMaintenanceModal() {
+            document.getElementById('maintenanceModal').classList.add('hidden');
+            currentMaintenanceVehicleId = null;
+        }
+
+        function renderMaintenanceHistory(vehicle) {
+            const listDiv = document.getElementById('maintenanceList');
+            if (!vehicle.maintenanceHistory || vehicle.maintenanceHistory.length === 0) {
+                listDiv.innerHTML = `<div class="text-center py-10 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
+                    <i data-lucide="tool" class="w-10 h-10 mx-auto mb-3 text-slate-300 dark:text-slate-600"></i>
+                    <p class="text-sm font-bold text-slate-500">Nessun intervento registrato.</p>
+                </div>`;
+                document.getElementById('maintenanceTotalCost').innerText = '€ 0,00';
+                lucide.createIcons();
+                return;
+            }
+
+            // Sort by date descending
+            const sortedHistory = [...vehicle.maintenanceHistory].sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            let totalCost = 0;
+
+            listDiv.innerHTML = sortedHistory.map((m, index) => {
+                totalCost += parseFloat(m.cost) || 0;
+                
+                let icon = 'tool';
+                let iconColor = 'text-slate-500';
+                if(m.type === 'Tagliando') { icon = 'check-circle'; iconColor = 'text-emerald-500'; }
+                if(m.type === 'Gomme') { icon = 'disc'; iconColor = 'text-blue-500'; }
+                if(m.type === 'Freni') { icon = 'shield-alert'; iconColor = 'text-red-500'; }
+                if(m.type === 'Olio') { icon = 'droplet'; iconColor = 'text-amber-500'; }
+
+                return `<div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div class="flex items-start gap-4">
+                        <div class="p-2.5 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-700 shrink-0">
+                            <i data-lucide="${icon}" class="w-5 h-5 ${iconColor}"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-xs font-bold px-2 py-0.5 bg-slate-100 dark:bg-slate-700 rounded text-slate-700 dark:text-slate-300">${new Date(m.date).toLocaleDateString('it-IT')}</span>
+                                <span class="text-sm font-black text-slate-900 dark:text-white">${m.type}</span>
+                            </div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">${m.description || 'Nessuna descrizione.'}</p>
+                            <div class="flex items-center gap-3 text-[11px] font-medium text-slate-400">
+                                ${m.km ? `<span class="flex items-center gap-1"><i data-lucide="gauge" class="w-3 h-3"></i> ${m.km} Km</span>` : ''}
+                                ${m.provider ? `<span class="flex items-center gap-1"><i data-lucide="building" class="w-3 h-3"></i> ${m.provider}</span>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center border-t sm:border-t-0 border-slate-100 dark:border-slate-700 pt-3 sm:pt-0 mt-2 sm:mt-0">
+                        <span class="text-base font-black text-slate-900 dark:text-white">€ ${parseFloat(m.cost).toFixed(2)}</span>
+                        <button onclick="deleteMaintenanceRecord('${vehicle.id}', '${m.id}')" class="text-xs text-red-500 hover:text-red-700 font-bold mt-1">Elimina</button>
+                    </div>
+                </div>`;
+            }).join('');
+
+            document.getElementById('maintenanceTotalCost').innerText = `€ ${totalCost.toFixed(2)}`;
+            lucide.createIcons();
+        }
+
+        function openAddMaintenanceModal() {
+            if(!currentMaintenanceVehicleId) return;
+            document.getElementById('maintDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('maintType').value = 'Tagliando';
+            document.getElementById('maintDesc').value = '';
+            document.getElementById('maintCost').value = '';
+            document.getElementById('maintKm').value = '';
+            document.getElementById('maintProvider').value = '';
+            
+            document.getElementById('addMaintenanceModal').classList.remove('hidden');
+        }
+
+        function closeAddMaintenanceModal() {
+            document.getElementById('addMaintenanceModal').classList.add('hidden');
+        }
+
+        function saveMaintenanceRecord() {
+            if(!currentMaintenanceVehicleId) return;
+            
+            const date = document.getElementById('maintDate').value;
+            const type = document.getElementById('maintType').value;
+            const cost = document.getElementById('maintCost').value;
+            
+            if(!date || !type || !cost) {
+                showToast("Compila i campi obbligatori (Data, Tipo, Costo)", "error");
+                return;
+            }
+
+            const vehicle = vehicles.find(v => v.id === currentMaintenanceVehicleId);
+            if(!vehicle) return;
+
+            if(!vehicle.maintenanceHistory) {
+                vehicle.maintenanceHistory = [];
+            }
+
+            const record = {
+                id: 'MNT-' + Date.now(),
+                date: date,
+                type: type,
+                description: document.getElementById('maintDesc').value,
+                cost: parseFloat(cost),
+                km: document.getElementById('maintKm').value ? parseInt(document.getElementById('maintKm').value) : null,
+                provider: document.getElementById('maintProvider').value
+            };
+
+            vehicle.maintenanceHistory.push(record);
+            saveToStorage();
+            
+            closeAddMaintenanceModal();
+            renderMaintenanceHistory(vehicle);
+            showToast("Intervento aggiunto al libretto!", "success");
+        }
+
+        function deleteMaintenanceRecord(vehicleId, recordId) {
+            if(!confirm("Sei sicuro di voler eliminare questo intervento dallo storico?")) return;
+            
+            const vehicle = vehicles.find(v => v.id === vehicleId);
+            if(!vehicle || !vehicle.maintenanceHistory) return;
+
+            vehicle.maintenanceHistory = vehicle.maintenanceHistory.filter(m => m.id !== recordId);
+            saveToStorage();
+            
+            renderMaintenanceHistory(vehicle);
+            showToast("Intervento eliminato", "info");
         }
 
         function deleteVehicle(id) {
