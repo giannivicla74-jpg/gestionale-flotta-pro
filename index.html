@@ -675,7 +675,7 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Km di Partenza (Alla Consegna) *</label>
-                            <input type="number" id="chkDepKm" placeholder="Es. 150000" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl text-xs font-mono font-bold focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <input type="number" id="chkDepKm" placeholder="Es. 150000" oninput="calculateReturnDiff()" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl text-xs font-mono font-bold focus:ring-2 focus:ring-blue-500 focus:outline-none">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Livello Carburante alla Consegna</label>
@@ -1698,76 +1698,53 @@
             showToast("Contratto eliminato", "info");
         }
 
-        // --- MODULO 1: ENGINE VERBALE CONSEGNA / RIENTRO (CHECK-IN / CHECK-OUT) ---
+        // --- MODULO 1: ENGINE VERBALE CONSEGNA / RIENTRO BI-DIREZIONALE ---
         let currentCheckinRental = null;
         let currentCheckinPhase = 'departure';
 
+        // Temporary session buffers for live toggling
+        let tempDepState = { km: '', fuel: '4/4', notes: '', checklist: { body: true, glass: true, tires: true, tools: true, docs: true, clean: true } };
+        let tempRetState = { km: '', fuel: '4/4', notes: '', checklist: { body: true, glass: true, tires: true, tools: true, docs: true, clean: true } };
+
         window.openCheckinModal = function(rentalId) {
             const r = rentals.find(item => item.id === rentalId);
-            if (!r) {
-                console.error("Contratto non trovato:", rentalId);
-                return;
-            }
+            if (!r) return;
             currentCheckinRental = r;
 
             const cust = customers.find(c => c.id === r.customerId) || { name: 'Cliente Sconosciuto' };
             const veh = vehicles.find(v => v.id === r.vehicleId) || { plate: '---', model: '' };
 
-            const idEl = document.getElementById('chkRentalId');
-            if (idEl) idEl.value = r.id;
-            
-            const subEl = document.getElementById('checkinContractSub');
-            if (subEl) subEl.innerText = 'Contratto N° ' + r.id;
-            
-            const nameEl = document.getElementById('chkCustomerName');
-            if (nameEl) nameEl.innerText = cust.name;
-            
-            const plateEl = document.getElementById('chkVehiclePlate');
-            if (plateEl) plateEl.innerText = veh.plate + ' - ' + veh.model;
-            
-            const datesEl = document.getElementById('chkDates');
-            if (datesEl) datesEl.innerText = formatDate(r.startDate) + ' → ' + formatDate(r.endDate);
+            document.getElementById('chkRentalId').value = r.id;
+            document.getElementById('checkinContractSub').innerText = 'Contratto N° ' + r.id;
+            document.getElementById('chkCustomerName').innerText = cust.name;
+            document.getElementById('chkVehiclePlate').innerText = veh.plate + ' - ' + veh.model;
+            document.getElementById('chkDates').innerText = formatDate(r.startDate) + ' → ' + formatDate(r.endDate);
 
-            // Populate Departure Fields
-            document.getElementById('chkDepKm').value = r.startKm || 0;
-            setDepFuel(r.depFuel || r.fuelLevel || '4/4');
-            document.getElementById('chkDepNotes').value = r.depNotes || r.checkinNotes || '';
-            if (r.depChecklist) {
-                document.getElementById('chkDepBody').checked = r.depChecklist.body !== false;
-                document.getElementById('chkDepGlass').checked = r.depChecklist.glass !== false;
-                document.getElementById('chkDepTires').checked = r.depChecklist.tires !== false;
-                document.getElementById('chkDepTools').checked = r.depChecklist.tools !== false;
-            }
+            // Load saved data into temporary buffers
+            tempDepState = {
+                km: r.startKm || (r.depData && r.depData.km) || '',
+                fuel: r.depFuel || (r.depData && r.depData.fuel) || r.fuelLevel || '4/4',
+                notes: r.depNotes || (r.depData && r.depData.notes) || r.checkinNotes || '',
+                checklist: (r.depData && r.depData.checklist) || r.depChecklist || { body: true, glass: true, tires: true, tools: true, docs: true, clean: true }
+            };
 
-            // Populate Return Fields
-            document.getElementById('chkRetKm').value = r.endKm || '';
-            setRetFuel(r.retFuel || '4/4');
-            document.getElementById('chkRetNotes').value = r.retNotes || '';
-            if (r.retChecklist) {
-                document.getElementById('chkRetBody').checked = r.retChecklist.body !== false;
-                document.getElementById('chkRetGlass').checked = r.retChecklist.glass !== false;
-                document.getElementById('chkRetTires').checked = r.retChecklist.tires !== false;
-                document.getElementById('chkRetTools').checked = r.retChecklist.tools !== false;
-            }
+            tempRetState = {
+                km: r.endKm || (r.retData && r.retData.km) || '',
+                fuel: r.retFuel || (r.retData && r.retData.fuel) || '4/4',
+                notes: r.retNotes || (r.retData && r.retData.notes) || '',
+                checklist: (r.retData && r.retData.checklist) || r.retChecklist || { body: true, glass: true, tires: true, tools: true, docs: true, clean: true }
+            };
 
-            // Default to return if concluded or endKm present, else departure
-            if (r.status === 'concluso' || r.endKm) {
-                setCheckinPhase('return');
-            } else {
-                setCheckinPhase('departure');
-            }
-
-            calculateReturnDiff();
+            // Set initial phase
+            const initialPhase = (r.status === 'concluso' || tempRetState.km) ? 'return' : 'departure';
+            setCheckinPhase(initialPhase);
 
             const modal = document.getElementById('checkinModal');
             if (modal) {
                 modal.classList.remove('hidden');
                 modal.style.display = 'flex';
             }
-            
-            if (typeof lucide !== 'undefined' && lucide.createIcons) {
-                lucide.createIcons();
-            }
+            if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
         };
 
         window.closeCheckinModal = function() {
@@ -1778,7 +1755,38 @@
             }
         };
 
+        function saveCurrentPhaseToBuffer() {
+            if (currentCheckinPhase === 'departure') {
+                tempDepState.km = document.getElementById('chkDepKm')?.value || '';
+                tempDepState.fuel = document.getElementById('chkDepFuelVal')?.value || '4/4';
+                tempDepState.notes = document.getElementById('chkDepNotes')?.value || '';
+                tempDepState.checklist = {
+                    body: document.getElementById('chkDepBody')?.checked,
+                    glass: document.getElementById('chkDepGlass')?.checked,
+                    tires: document.getElementById('chkDepTires')?.checked,
+                    tools: document.getElementById('chkDepTools')?.checked,
+                    docs: document.getElementById('chkDepDocs')?.checked,
+                    clean: document.getElementById('chkDepClean')?.checked
+                };
+            } else {
+                tempRetState.km = document.getElementById('chkRetKm')?.value || '';
+                tempRetState.fuel = document.getElementById('chkRetFuelVal')?.value || '4/4';
+                tempRetState.notes = document.getElementById('chkRetNotes')?.value || '';
+                tempRetState.checklist = {
+                    body: document.getElementById('chkRetBody')?.checked,
+                    glass: document.getElementById('chkRetGlass')?.checked,
+                    tires: document.getElementById('chkRetTires')?.checked,
+                    tools: document.getElementById('chkRetTools')?.checked,
+                    docs: document.getElementById('chkRetDocs')?.checked,
+                    clean: document.getElementById('chkRetClean')?.checked
+                };
+            }
+        }
+
         window.setCheckinPhase = function(phase) {
+            // Save current inputs before switching
+            saveCurrentPhaseToBuffer();
+
             currentCheckinPhase = phase;
             const btnDep = document.getElementById('btnPhaseDeparture');
             const btnRet = document.getElementById('btnPhaseReturn');
@@ -1792,17 +1800,44 @@
                 if (boxDep) boxDep.classList.remove('hidden');
                 if (boxRet) boxRet.classList.add('hidden');
                 if (btnSaveText) btnSaveText.innerText = "Salva Verbale Consegna";
+
+                // Populate Departure DOM from buffer
+                document.getElementById('chkDepKm').value = tempDepState.km;
+                setDepFuel(tempDepState.fuel);
+                document.getElementById('chkDepNotes').value = tempDepState.notes;
+                if (tempDepState.checklist) {
+                    if (document.getElementById('chkDepBody')) document.getElementById('chkDepBody').checked = tempDepState.checklist.body !== false;
+                    if (document.getElementById('chkDepGlass')) document.getElementById('chkDepGlass').checked = tempDepState.checklist.glass !== false;
+                    if (document.getElementById('chkDepTires')) document.getElementById('chkDepTires').checked = tempDepState.checklist.tires !== false;
+                    if (document.getElementById('chkDepTools')) document.getElementById('chkDepTools').checked = tempDepState.checklist.tools !== false;
+                    if (document.getElementById('chkDepDocs')) document.getElementById('chkDepDocs').checked = tempDepState.checklist.docs !== false;
+                    if (document.getElementById('chkDepClean')) document.getElementById('chkDepClean').checked = tempDepState.checklist.clean !== false;
+                }
             } else {
                 if (btnRet) btnRet.className = "py-2.5 rounded-xl text-xs font-extrabold transition cursor-pointer bg-indigo-600 text-white shadow-sm flex items-center justify-center gap-1.5";
                 if (btnDep) btnDep.className = "py-2.5 rounded-xl text-xs font-extrabold transition cursor-pointer text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center justify-center gap-1.5";
                 if (boxRet) boxRet.classList.remove('hidden');
                 if (boxDep) boxDep.classList.add('hidden');
                 if (btnSaveText) btnSaveText.innerText = "Salva Rientro & Concludi Noleggio";
+
+                // Populate Return DOM from buffer
+                document.getElementById('chkRetKm').value = tempRetState.km;
+                setRetFuel(tempRetState.fuel);
+                document.getElementById('chkRetNotes').value = tempRetState.notes;
+                if (tempRetState.checklist) {
+                    if (document.getElementById('chkRetBody')) document.getElementById('chkRetBody').checked = tempRetState.checklist.body !== false;
+                    if (document.getElementById('chkRetGlass')) document.getElementById('chkRetGlass').checked = tempRetState.checklist.glass !== false;
+                    if (document.getElementById('chkRetTires')) document.getElementById('chkRetTires').checked = tempRetState.checklist.tires !== false;
+                    if (document.getElementById('chkRetTools')) document.getElementById('chkRetTools').checked = tempRetState.checklist.tools !== false;
+                    if (document.getElementById('chkRetDocs')) document.getElementById('chkRetDocs').checked = tempRetState.checklist.docs !== false;
+                    if (document.getElementById('chkRetClean')) document.getElementById('chkRetClean').checked = tempRetState.checklist.clean !== false;
+                }
             }
             calculateReturnDiff();
         };
 
         window.setDepFuel = function(level) {
+            tempDepState.fuel = level;
             const input = document.getElementById('chkDepFuelVal');
             if (input) input.value = level;
             document.querySelectorAll('.dep-fuel-btn').forEach(btn => {
@@ -1815,6 +1850,7 @@
         };
 
         window.setRetFuel = function(level) {
+            tempRetState.fuel = level;
             const input = document.getElementById('chkRetFuelVal');
             if (input) input.value = level;
             document.querySelectorAll('.ret-fuel-btn').forEach(btn => {
@@ -1827,15 +1863,15 @@
         };
 
         window.calculateReturnDiff = function() {
-            const depKm = parseInt(document.getElementById('chkDepKm')?.value) || 0;
-            const retKm = parseInt(document.getElementById('chkRetKm')?.value) || 0;
+            const depKm = parseInt(tempDepState.km || document.getElementById('chkDepKm')?.value) || 0;
+            const retKm = parseInt(document.getElementById('chkRetKm')?.value || tempRetState.km) || 0;
 
             const sumDep = document.getElementById('chkSummaryDepKm');
             const sumRet = document.getElementById('chkSummaryRetKm');
             const sumTot = document.getElementById('chkSummaryTotalKm');
 
             if (sumDep) sumDep.innerText = depKm.toLocaleString() + ' Km';
-            if (sumRet) sumRet.innerText = (retKm || '---') + (retKm ? ' Km' : '');
+            if (sumRet) sumRet.innerText = (retKm ? retKm.toLocaleString() + ' Km' : '---');
 
             if (retKm > depKm) {
                 const diff = retKm - depKm;
@@ -1847,51 +1883,35 @@
 
         window.saveCheckinReport = function() {
             if (!currentCheckinRental) return;
+            saveCurrentPhaseToBuffer();
 
-            const depKm = parseInt(document.getElementById('chkDepKm')?.value) || 0;
-            const depFuel = document.getElementById('chkDepFuelVal')?.value || '4/4';
-            const depNotes = document.getElementById('chkDepNotes')?.value.trim() || '';
-            const depChecklist = {
-                body: document.getElementById('chkDepBody')?.checked,
-                glass: document.getElementById('chkDepGlass')?.checked,
-                tires: document.getElementById('chkDepTires')?.checked,
-                tools: document.getElementById('chkDepTools')?.checked
-            };
-
-            currentCheckinRental.startKm = depKm;
-            currentCheckinRental.depFuel = depFuel;
-            currentCheckinRental.depNotes = depNotes;
-            currentCheckinRental.depChecklist = depChecklist;
+            currentCheckinRental.startKm = parseInt(tempDepState.km) || 0;
+            currentCheckinRental.depFuel = tempDepState.fuel;
+            currentCheckinRental.depNotes = tempDepState.notes;
+            currentCheckinRental.depChecklist = tempDepState.checklist;
+            currentCheckinRental.depData = JSON.parse(JSON.stringify(tempDepState));
 
             if (currentCheckinPhase === 'return') {
-                const retKm = parseInt(document.getElementById('chkRetKm')?.value);
-                if (!retKm || retKm < depKm) {
+                const retKmNum = parseInt(tempRetState.km);
+                if (!retKmNum || retKmNum < currentCheckinRental.startKm) {
                     showToast("⚠️ Inserisci un chilometraggio di rientro valido (maggiore della partenza)", "warning");
                     return;
                 }
 
-                const retFuel = document.getElementById('chkRetFuelVal')?.value || '4/4';
-                const retNotes = document.getElementById('chkRetNotes')?.value.trim() || '';
-                const retChecklist = {
-                    body: document.getElementById('chkRetBody')?.checked,
-                    glass: document.getElementById('chkRetGlass')?.checked,
-                    tires: document.getElementById('chkRetTires')?.checked,
-                    tools: document.getElementById('chkRetTools')?.checked
-                };
-
-                currentCheckinRental.endKm = retKm;
-                currentCheckinRental.retFuel = retFuel;
-                currentCheckinRental.retNotes = retNotes;
-                currentCheckinRental.retChecklist = retChecklist;
+                currentCheckinRental.endKm = retKmNum;
+                currentCheckinRental.retFuel = tempRetState.fuel;
+                currentCheckinRental.retNotes = tempRetState.notes;
+                currentCheckinRental.retChecklist = tempRetState.checklist;
+                currentCheckinRental.retData = JSON.parse(JSON.stringify(tempRetState));
                 currentCheckinRental.status = 'concluso';
 
-                // Return vehicle to available status
+                // Return vehicle to available
                 const v = vehicles.find(item => item.id === currentCheckinRental.vehicleId);
                 if (v) v.status = 'disponibile';
-                
+
                 showToast(`✓ Noleggio ${currentCheckinRental.id} concluso e mezzo rientrato!`, "success");
             } else {
-                showToast(`✓ Dati di consegna per ${currentCheckinRental.id} aggiornati!`, "success");
+                showToast(`✓ Dati di consegna per ${currentCheckinRental.id} salvati con successo!`, "success");
             }
 
             saveToStorage();
@@ -1901,16 +1921,18 @@
 
         window.printCheckinReportPDF = function() {
             if (!currentCheckinRental) return;
+            saveCurrentPhaseToBuffer();
+
             const r = currentCheckinRental;
             const customer = customers.find(c => c.id === r.customerId) || {};
             const vehicle = vehicles.find(v => v.id === r.vehicleId) || {};
 
-            const depKm = document.getElementById('chkDepKm')?.value || r.startKm || '---';
-            const retKm = document.getElementById('chkRetKm')?.value || r.endKm || 'Non ancora effettuato';
-            const depFuel = document.getElementById('chkDepFuelVal')?.value || r.depFuel || '4/4';
-            const retFuel = document.getElementById('chkRetFuelVal')?.value || r.retFuel || '---';
-            const depNotes = document.getElementById('chkDepNotes')?.value || r.depNotes || 'Nessuna anomalia alla consegna.';
-            const retNotes = document.getElementById('chkRetNotes')?.value || r.retNotes || 'Nessun nuovo danno riscontrato.';
+            const depKm = tempDepState.km || '---';
+            const retKm = tempRetState.km || 'Non ancora effettuato';
+            const depFuel = tempDepState.fuel || '4/4';
+            const retFuel = tempRetState.fuel || '---';
+            const depNotes = tempDepState.notes || 'Nessuna anomalia alla consegna.';
+            const retNotes = tempRetState.notes || 'Nessun nuovo danno riscontrato.';
 
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
@@ -1950,7 +1972,6 @@
                 ]
             });
 
-            // Comparative Table
             doc.autoTable({
                 startY: doc.lastAutoTable.finalY + 4,
                 head: [['Punto di Ispezione / Parametro', 'Alla Consegna (Partenza)', 'Al Rientro (Restituzione)']],
@@ -1958,10 +1979,10 @@
                     ['Mezzo Assegnato', `${vehicle.plate || '---'} - ${vehicle.model || ''}`, `${vehicle.plate || '---'} - ${vehicle.model || ''}`],
                     ['Chilometri Contachilometri', `${depKm} Km`, `${retKm} Km`],
                     ['Livello Serbatoio Carburante', `${depFuel}`, `${retFuel}`],
-                    ['Carrozzeria e Verniciatura', document.getElementById('chkDepBody')?.checked ? 'CONFORME [X]' : 'ANOMALIA [!]', document.getElementById('chkRetBody')?.checked ? 'CONFORME [X]' : 'ANOMALIA [!]'],
-                    ['Parabrezza e Cristalli', document.getElementById('chkDepGlass')?.checked ? 'CONFORME [X]' : 'ANOMALIA [!]', document.getElementById('chkRetGlass')?.checked ? 'CONFORME [X]' : 'ANOMALIA [!]'],
-                    ['Pneumatici e Battistrada', document.getElementById('chkDepTires')?.checked ? 'CONFORME [X]' : 'ANOMALIA [!]', document.getElementById('chkRetTires')?.checked ? 'CONFORME [X]' : 'ANOMALIA [!]'],
-                    ['Dotazioni e Kit di Bordo', document.getElementById('chkDepTools')?.checked ? 'PRESENTI [X]' : 'MANCANTI [!]', document.getElementById('chkRetTools')?.checked ? 'RESTITUITE [X]' : 'MANCANTI [!]']
+                    ['Carrozzeria e Verniciatura', tempDepState.checklist.body ? 'CONFORME [X]' : 'ANOMALIA [!]', tempRetState.checklist.body ? 'CONFORME [X]' : 'ANOMALIA [!]'],
+                    ['Parabrezza e Cristalli', tempDepState.checklist.glass ? 'CONFORME [X]' : 'ANOMALIA [!]', tempRetState.checklist.glass ? 'CONFORME [X]' : 'ANOMALIA [!]'],
+                    ['Pneumatici e Battistrada', tempDepState.checklist.tires ? 'CONFORME [X]' : 'ANOMALIA [!]', tempRetState.checklist.tires ? 'CONFORME [X]' : 'ANOMALIA [!]'],
+                    ['Dotazioni e Kit di Bordo', tempDepState.checklist.tools ? 'PRESENTI [X]' : 'MANCANTI [!]', tempRetState.checklist.tools ? 'RESTITUITE [X]' : 'MANCANTI [!]']
                 ],
                 headStyles: { fillColor: [37, 99, 235], textColor: 255, fontStyle: 'bold' }
             });
