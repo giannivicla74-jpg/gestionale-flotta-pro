@@ -136,38 +136,226 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
-    <!-- Top-Level Immediate Handlers -->
+    
+
+
+    <!-- FLEET & RENTAL PRO - CORE REGISTRATION & PROFILE ENGINE -->
     <script>
         var onboardingLogoDataUrl = "";
+        var companyProfile = {
+            id: "tenant-main",
+            name: "",
+            shortName: "",
+            tagline: "FLEET & RENTAL PRO",
+            subtitle: "Gestionale Flotta, Scadenziario & Noleggio Mezzi",
+            vat: "",
+            fiscalCode: "",
+            sdiCode: "",
+            pec: "",
+            phone: "",
+            email: "",
+            legalAddress: "",
+            operativeAddress: "",
+            logo: ""
+        };
+
+        // Load profile immediately on startup
+        (function initCompanyProfile() {
+            try {
+                var stored = localStorage.getItem('fleet_rental_company_profile');
+                if (stored) {
+                    var parsed = JSON.parse(stored);
+                    if (parsed && typeof parsed === 'object') {
+                        Object.assign(companyProfile, parsed);
+                    }
+                }
+            } catch(e) {
+                console.error("Error reading stored profile:", e);
+            }
+        })();
+
         function handleOnboardingLogoUpload(event) {
             var input = (event && event.target) || document.getElementById('onboardingLogoInput');
             var file = input && input.files && input.files[0];
             if (!file) return;
 
+            if (file.size > 8 * 1024 * 1024) {
+                alert("Il file del logo è troppo grande (massimo 8MB)");
+                return;
+            }
+
             var reader = new FileReader();
             reader.onload = function(e) {
                 onboardingLogoDataUrl = e.target.result;
-                var preview = document.getElementById('onboardingLogoPreview');
-                var placeholder = document.getElementById('onboardingLogoPlaceholder');
+                companyProfile.logo = onboardingLogoDataUrl;
                 
-                if (preview) {
-                    preview.src = onboardingLogoDataUrl;
-                    preview.style.display = 'block';
-                    preview.classList.remove('hidden');
+                var prev = document.getElementById('onboardingLogoPreview');
+                var ph = document.getElementById('onboardingLogoPlaceholder');
+                if (prev) {
+                    prev.src = onboardingLogoDataUrl;
+                    prev.style.display = 'block';
                 }
-                if (placeholder) {
-                    placeholder.style.display = 'none';
-                    placeholder.classList.add('hidden');
-                }
-                if (typeof companyProfile !== 'undefined') {
-                    companyProfile.logo = onboardingLogoDataUrl;
-                }
-                if (typeof showToast === 'function') {
-                    showToast("✓ Logo caricato con successo!", "success");
+                if (ph) {
+                    ph.style.display = 'none';
                 }
             };
             reader.readAsDataURL(file);
         }
+
+        function submitOnboardingRegistration(event) {
+            if (event) {
+                if (event.preventDefault) event.preventDefault();
+                if (event.stopPropagation) event.stopPropagation();
+            }
+
+            var nameInput = document.getElementById('obCompanyName');
+            var name = nameInput ? nameInput.value.trim() : '';
+
+            // Validazione obbligatoria Ragione Sociale
+            if (!name || name.length < 2 || name.toLowerCase() === 'azienda') {
+                if (nameInput) {
+                    nameInput.focus();
+                    nameInput.style.borderColor = '#ef4444';
+                    nameInput.style.boxShadow = '0 0 0 4px rgba(239, 68, 68, 0.25)';
+                }
+                if (typeof showToast === 'function') {
+                    showToast("⚠️ Inserisci la Ragione Sociale dell'Azienda per procedere!", "warning");
+                } else {
+                    alert("⚠️ Inserisci la Ragione Sociale dell'Azienda per procedere!");
+                }
+                return false;
+            }
+
+            if (nameInput) {
+                nameInput.style.borderColor = '';
+                nameInput.style.boxShadow = '';
+            }
+
+            var shortNameInput = document.getElementById('obCompanyShortName');
+            var shortName = (shortNameInput && shortNameInput.value.trim()) || name.split(' ')[0];
+            
+            var vatInput = document.getElementById('obCompanyVat');
+            var vat = vatInput ? vatInput.value.trim() : '';
+            
+            var sdiInput = document.getElementById('obCompanySdi');
+            var sdi = sdiInput ? sdiInput.value.trim() : '';
+            
+            var phoneInput = document.getElementById('obCompanyPhone');
+            var phone = phoneInput ? phoneInput.value.trim() : '';
+            
+            var legalAddressInput = document.getElementById('obCompanyLegalAddress');
+            var legalAddress = legalAddressInput ? legalAddressInput.value.trim() : '';
+            
+            var operativeAddressInput = document.getElementById('obCompanyOperativeAddress');
+            var operativeAddress = (operativeAddressInput && operativeAddressInput.value.trim()) || legalAddress;
+            
+            var emailInput = document.getElementById('obCompanyEmail');
+            var email = emailInput ? emailInput.value.trim() : '';
+            
+            var pecInput = document.getElementById('obCompanyPec');
+            var pec = pecInput ? pecInput.value.trim() : '';
+
+            companyProfile.name = name;
+            companyProfile.shortName = shortName;
+            companyProfile.vat = vat;
+            companyProfile.fiscalCode = vat;
+            companyProfile.sdiCode = sdi;
+            companyProfile.phone = phone;
+            companyProfile.legalAddress = legalAddress;
+            companyProfile.operativeAddress = operativeAddress;
+            companyProfile.email = email;
+            companyProfile.pec = pec;
+            if (onboardingLogoDataUrl) {
+                companyProfile.logo = onboardingLogoDataUrl;
+            }
+
+            // Salva flag e profilo in storage
+            localStorage.setItem('fleet_rental_is_registered', 'true');
+            localStorage.setItem('fleet_rental_company_profile', JSON.stringify(companyProfile));
+
+            // Chiudi immediatamente la schermata onboarding
+            var obScreen = document.getElementById('onboardingScreen');
+            if (obScreen) {
+                obScreen.style.setProperty('display', 'none', 'important');
+            }
+
+            // Aggiorna l'header
+            applyCompanyProfileUI();
+
+            // Refresh UI in sicurezza
+            try { if (typeof updateStatsPanel === "function") updateStatsPanel(); } catch(e) {}
+            try { if (typeof renderVehicles === "function") renderVehicles(); } catch(e) {}
+            try { if (typeof renderOperators === "function") renderOperators(); } catch(e) {}
+            try { if (typeof renderRentals === "function") renderRentals(); } catch(e) {}
+            try { if (typeof renderCustomers === "function") renderCustomers(); } catch(e) {}
+            try { if (typeof lucide !== "undefined" && typeof lucide.createIcons === "function") lucide.createIcons(); } catch(e) {}
+
+            try {
+                if (typeof showToast === 'function') {
+                    showToast("Benvenuto in FLEET & RENTAL PRO, " + name + "!", "success");
+                }
+            } catch(e) {}
+
+            return false;
+        }
+
+        function checkOnboardingStatus() {
+            var isReg = localStorage.getItem('fleet_rental_is_registered') === 'true';
+            var hasValidName = companyProfile && companyProfile.name && companyProfile.name.trim() !== '' && companyProfile.name.toLowerCase() !== 'azienda';
+            var obScreen = document.getElementById('onboardingScreen');
+            var btnRegister = document.getElementById('btnHeaderCompanyRegister');
+            var headerShort = document.getElementById('headerCompanyNameShort');
+
+            if (!isReg || !hasValidName) {
+                if (obScreen) {
+                    obScreen.style.display = 'flex';
+                }
+                if (btnRegister) {
+                    btnRegister.classList.remove('hidden');
+                }
+                if (headerShort) headerShort.innerText = "Registra Azienda";
+            } else {
+                if (obScreen) {
+                    obScreen.style.setProperty('display', 'none', 'important');
+                }
+                if (headerShort) headerShort.innerText = companyProfile.shortName || companyProfile.name;
+            }
+            applyCompanyProfileUI();
+        }
+
+        function applyCompanyProfileUI() {
+            var headerName = document.getElementById('headerCompanyName');
+            if (headerName) headerName.innerText = companyProfile.name || 'FLEET & RENTAL PRO';
+
+            var headerSubtitle = document.getElementById('headerCompanySubtitle');
+            if (headerSubtitle) headerSubtitle.innerText = companyProfile.subtitle || 'Gestionale Flotta, Scadenziario & Noleggio Mezzi';
+
+            var headerShort = document.getElementById('headerCompanyNameShort');
+            if (headerShort) {
+                var isReg = localStorage.getItem('fleet_rental_is_registered') === 'true';
+                headerShort.innerText = isReg && companyProfile.shortName ? companyProfile.shortName : (isReg ? companyProfile.name : "Registra Azienda");
+            }
+
+            var headerLogo = document.getElementById('headerCompanyLogo');
+            var headerIcon = document.getElementById('headerDefaultIcon');
+            if (headerLogo) {
+                if (companyProfile.logo) {
+                    headerLogo.src = companyProfile.logo;
+                    headerLogo.style.display = 'block';
+                    headerLogo.classList.remove('hidden');
+                    if (headerIcon) headerIcon.style.display = 'none';
+                } else {
+                    headerLogo.style.display = 'none';
+                    headerLogo.classList.add('hidden');
+                    if (headerIcon) headerIcon.style.display = 'flex';
+                }
+            }
+        }
+
+        // Run check as soon as DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            checkOnboardingStatus();
+        });
     </script>
 
 </head>
@@ -191,7 +379,7 @@
             </div>
 
             <!-- Form Registrazione -->
-            <form id="onboardingForm" onsubmit="event.preventDefault(); submitOnboardingRegistration(event); return false;" style="padding: 24px;" class="space-y-6">
+            <div id="onboardingFormContainer" style="padding: 24px;" class="space-y-6">
                 <!-- LOGO AZIENDALE UPLOAD -->
                 <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 18px; padding: 16px; display: flex; align-items: center; gap: 18px;" class="dark:bg-slate-800/60 dark:border-slate-700/60">
                     <div id="onboardingLogoDropzone" onclick="document.getElementById('onboardingLogoInput').click()" style="width: 96px; height: 96px; border: 2px dashed #3b82f6; border-radius: 16px; display: flex; align-items: center; justify-content: center; background: #ffffff; cursor: pointer; flex-shrink: 0; position: relative; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05);" class="dark:bg-slate-900 group" title="Clicca per scegliere l'immagine del logo">
@@ -284,7 +472,7 @@
                     </button>
                     <p style="font-size: 11px; text-align: center; color: #94a3b8; margin-top: 8px;">I dati inseriti rimarranno salvati in modo sicuro e potranno essere aggiornati in seguito.</p>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 
