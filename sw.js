@@ -1,4 +1,4 @@
-const CACHE_NAME = 'fleet-deadline-v2.0.17';
+const CACHE_NAME = 'fleet-rental-v3.0.1';
 const ASSETS_TO_CACHE = [
   './',
   'index.html',
@@ -23,7 +23,7 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Network First for HTML, Cache Fallback for offline
+  // Always fetch fresh from network for navigation / HTML
   if (event.request.mode === 'navigate' || (event.request.headers.get('accept') && event.request.headers.get('accept').includes('text/html'))) {
     event.respondWith(
       fetch(event.request)
