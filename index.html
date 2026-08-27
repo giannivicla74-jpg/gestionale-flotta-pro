@@ -1284,7 +1284,7 @@
 
             // Calcola incassi (somma prezzo totale dei noleggi esclusa cauzione)
             rentals.forEach(r => {
-                if (r.status === 'chiuso' || r.status === 'attivo') {
+                if (r.status === 'concluso' || r.status === 'attivo') {
                     const price = parseFloat(r.totalPrice) || 0;
                     totalIncome += price;
                     
