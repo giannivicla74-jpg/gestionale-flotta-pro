@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "gestionale-flotta-d6448"
+  },
+  "targets": {
+    "gestionale-flotta-d6448": {
+      "hosting": {
+        "fleet-rental-pro": [
+          "fleet-rental-pro"
+        ]
+      }
+    }
+  }
+}
