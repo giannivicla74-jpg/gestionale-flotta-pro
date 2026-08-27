@@ -341,15 +341,60 @@
 
         <!-- TAB 3: PLANNING GRAFICO NOLEGGI -->
         <section id="tabPlanningContent" class="space-y-4 hidden">
-            <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                        <i data-lucide="gantt-chart" class="w-4 h-4 text-indigo-500"></i>
-                        <span>Planning Occupazione Mezzi (Mese Corrente)</span>
-                    </h3>
-                    <span class="text-xs text-slate-400 font-medium" id="planningCurrentMonth"></span>
+            <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+                
+                <!-- Planning Header & View Controls -->
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4 pb-3 border-b border-slate-100 dark:border-slate-700">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2.5 bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 rounded-xl">
+                            <i data-lucide="gantt-chart" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white">Planning Occupazione & Disponibilità Mezzi</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400" id="planningSubtitle">Visualizzazione cronologica noleggi e disponibilità flotta</p>
+                        </div>
+                    </div>
+
+                    <!-- View Mode Selector (Mese, Settimana, Giorno) -->
+                    <div class="flex items-center gap-2">
+                        <div class="bg-slate-100 dark:bg-slate-900 p-1 rounded-xl flex items-center gap-1 border border-slate-200 dark:border-slate-700">
+                            <button type="button" onclick="setPlanningViewMode('day')" id="btnPlanningViewDay" class="px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+                                <i data-lucide="clock" class="w-3.5 h-3.5 inline mr-1"></i> Giorno
+                            </button>
+                            <button type="button" onclick="setPlanningViewMode('week')" id="btnPlanningViewWeek" class="px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+                                <i data-lucide="calendar-range" class="w-3.5 h-3.5 inline mr-1"></i> Settimana
+                            </button>
+                            <button type="button" onclick="setPlanningViewMode('month')" id="btnPlanningViewMonth" class="px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer bg-blue-600 text-white shadow-sm">
+                                <i data-lucide="calendar" class="w-3.5 h-3.5 inline mr-1"></i> Mese
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div id="planningGanttContainer" class="overflow-x-auto">
+
+                <!-- Navigation Controls for Selected Date -->
+                <div class="flex flex-wrap items-center justify-between gap-3 bg-slate-50 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="navigatePlanningDate(-1)" class="p-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 text-xs font-bold cursor-pointer" title="Precedente">
+                            <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                        </button>
+                        <button type="button" onclick="setPlanningDateToToday()" class="px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-100 text-xs font-bold cursor-pointer">
+                            Oggi
+                        </button>
+                        <button type="button" onclick="navigatePlanningDate(1)" class="p-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 text-xs font-bold cursor-pointer" title="Successivo">
+                            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                        </button>
+                        <span class="text-sm font-black text-slate-900 dark:text-white font-mono ml-2" id="planningCurrentPeriodLabel"></span>
+                    </div>
+
+                    <!-- Day KPI badges (visible in day mode) -->
+                    <div id="planningDayKpiBadges" class="hidden flex items-center gap-2 text-xs">
+                        <span class="px-2.5 py-1 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-bold border border-emerald-200 dark:border-emerald-800" id="dayKpiAvailable">0 Mezzi Liberi</span>
+                        <span class="px-2.5 py-1 rounded-lg bg-indigo-100 dark:bg-indigo-950 text-indigo-800 dark:text-indigo-300 font-bold border border-indigo-200 dark:border-indigo-800" id="dayKpiRented">0 In Noleggio</span>
+                    </div>
+                </div>
+
+                <!-- Planning View Canvas (Gantt / Timeline) -->
+                <div id="planningGanttContainer" class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700">
                     <!-- Popolato dinamicamente -->
                 </div>
             </div>
@@ -982,58 +1027,237 @@
             }).join('');
         }
 
+        let planningViewMode = 'day'; // Default to Day view as requested!
+        let planningSelectedDate = new Date();
+
+        function setPlanningViewMode(mode) {
+            planningViewMode = mode;
+            ['day', 'week', 'month'].forEach(m => {
+                const btn = document.getElementById('btnPlanningView' + m.charAt(0).toUpperCase() + m.slice(1));
+                if (btn) {
+                    if (m === mode) {
+                        btn.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer bg-blue-600 text-white shadow-sm";
+                    } else {
+                        btn.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white";
+                    }
+                }
+            });
+            renderPlanning();
+            lucide.createIcons();
+        }
+
+        function setPlanningDateToToday() {
+            planningSelectedDate = new Date();
+            renderPlanning();
+        }
+
+        function navigatePlanningDate(direction) {
+            if (planningViewMode === 'day') {
+                planningSelectedDate.setDate(planningSelectedDate.getDate() + direction);
+            } else if (planningViewMode === 'week') {
+                planningSelectedDate.setDate(planningSelectedDate.getDate() + (direction * 7));
+            } else if (planningViewMode === 'month') {
+                planningSelectedDate.setMonth(planningSelectedDate.getMonth() + direction);
+            }
+            renderPlanning();
+        }
+
         function renderPlanning() {
             const container = document.getElementById('planningGanttContainer');
+            const label = document.getElementById('planningCurrentPeriodLabel');
+            const dayBadges = document.getElementById('planningDayKpiBadges');
             if (!container) return;
 
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = now.getMonth();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-
+            const daysNames = ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
             const monthNames = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
-            const currentMonthEl = document.getElementById('planningCurrentMonth');
-            if (currentMonthEl) currentMonthEl.innerText = `${monthNames[month]} ${year}`;
 
-            let headerDays = '';
-            for (let d = 1; d <= daysInMonth; d++) {
-                const isToday = d === now.getDate();
-                headerDays += `<div class="w-7 text-center font-mono text-[10px] py-1 border-r border-slate-100 dark:border-slate-800 ${isToday ? 'bg-blue-600 text-white font-bold rounded' : 'text-slate-400'}">${d}</div>`;
-            }
+            // -------------------------------------------------------------
+            // A) VISIONE GIORNO (DETTAGLIO ORARIO MEZZI)
+            // -------------------------------------------------------------
+            if (planningViewMode === 'day') {
+                if (dayBadges) dayBadges.classList.remove('hidden');
 
-            let rows = vehicles.map(v => {
-                const activeRentals = rentals.filter(r => r.vehicleId === v.id);
-                let dayCells = '';
+                const d = planningSelectedDate.getDate();
+                const mName = monthNames[planningSelectedDate.getMonth()];
+                const dayName = daysNames[planningSelectedDate.getDay()];
+                const y = planningSelectedDate.getFullYear();
 
-                for (let d = 1; d <= daysInMonth; d++) {
-                    const cellDate = new Date(year, month, d);
-                    const isRented = activeRentals.some(r => {
-                        const start = new Date(r.startDate);
-                        const end = new Date(r.endDate);
-                        return cellDate >= start && cellDate <= end;
+                if (label) label.innerText = `${dayName}, ${d} ${mName} ${y}`;
+
+                const hours = ['06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00'];
+                
+                let hourHeaders = hours.map(h => `<div class="w-16 text-center font-mono text-[10px] py-2 border-r border-slate-200 dark:border-slate-800 text-slate-400 font-bold">${h}</div>`).join('');
+
+                const curDateStr = planningSelectedDate.toISOString().split('T')[0];
+                let freeCount = 0;
+                let rentedCount = 0;
+
+                let vehicleRows = vehicles.map(v => {
+                    // Check if vehicle is rented on this day
+                    const activeRental = rentals.find(r => {
+                        return r.vehicleId === v.id && r.startDate <= curDateStr && r.endDate >= curDateStr && r.status === 'attivo';
                     });
 
-                    dayCells += `<div class="w-7 h-9 border-r border-slate-100 dark:border-slate-800 flex items-center justify-center ${isRented ? 'bg-indigo-500/20' : ''}">
-                        ${isRented ? '<div class="w-full h-4 bg-indigo-600 rounded-sm" title="Noleggiato"></div>' : ''}
+                    if (activeRental) rentedCount++;
+                    else freeCount++;
+
+                    const cust = activeRental ? (customers.find(c => c.id === activeRental.customerId) || { name: 'Cliente' }) : null;
+
+                    let timeTrack = '';
+                    if (activeRental) {
+                        timeTrack = `<div class="flex-1 h-12 bg-gradient-to-r from-indigo-600 via-blue-600 to-indigo-700 text-white rounded-lg mx-2 p-2 flex items-center justify-between shadow-sm cursor-pointer hover:opacity-95" onclick="printRentalContractPDF('${activeRental.id}')" title="Clicca per visualizzare contratto">
+                            <div class="flex items-center gap-2 truncate">
+                                <i data-lucide="key" class="w-4 h-4 text-amber-300 shrink-0"></i>
+                                <span class="font-bold text-xs truncate">${cust ? cust.name : 'Noleggio Attivo'}</span>
+                                <span class="font-mono text-[10px] bg-white/20 px-1.5 py-0.5 rounded font-bold">${activeRental.id}</span>
+                            </div>
+                            <span class="text-[10px] font-bold bg-white/20 px-2 py-0.5 rounded shrink-0">Tariffa: ${activeRental.dailyRate}€/gg</span>
+                        </div>`;
+                    } else {
+                        timeTrack = `<div class="flex-1 h-12 bg-emerald-50/60 dark:bg-emerald-950/20 border border-dashed border-emerald-300 dark:border-emerald-800/60 rounded-lg mx-2 flex items-center justify-between px-3">
+                            <div class="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400 text-xs font-bold">
+                                <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
+                                <span>Disponibile per Noleggio</span>
+                            </div>
+                            <button type="button" onclick="openQuickRental('${v.id}')" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-md text-[10px] font-bold transition flex items-center gap-1 cursor-pointer">
+                                <i data-lucide="plus" class="w-3 h-3"></i> Noleggia Subito
+                            </button>
+                        </div>`;
+                    }
+
+                    return `<div class="flex items-center border-b border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
+                        <div class="w-52 p-3 shrink-0 border-r border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60">
+                            <div class="flex items-center gap-2">
+                                <span class="font-mono font-bold text-xs bg-white dark:bg-slate-800 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700">${v.plate}</span>
+                                <span class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">${v.model}</span>
+                            </div>
+                            <span class="text-[10px] text-slate-400">${v.type}</span>
+                        </div>
+                        <div class="flex-1 flex items-center py-2 min-w-[750px]">
+                            ${timeTrack}
+                        </div>
                     </div>`;
+                }).join('');
+
+                const kpiFree = document.getElementById('dayKpiAvailable');
+                const kpiRent = document.getElementById('dayKpiRented');
+                if (kpiFree) kpiFree.innerText = `${freeCount} Mezzi Liberi`;
+                if (kpiRent) kpiRent.innerText = `${rentedCount} In Noleggio`;
+
+                container.innerHTML = `<div class="min-w-[950px] bg-white dark:bg-slate-900">
+                    <div class="flex border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/80 font-bold">
+                        <div class="w-52 px-3 py-2 shrink-0 border-r border-slate-200 dark:border-slate-800 text-xs text-slate-400">Mezzo Flotta</div>
+                        <div class="flex-1 flex items-center px-3 text-xs text-slate-400 font-bold">Fasce Orarie & Stato Giornaliero</div>
+                    </div>
+                    <div>${vehicleRows}</div>
+                </div>`;
+            }
+
+            // -------------------------------------------------------------
+            // B) VISIONE SETTIMANA
+            // -------------------------------------------------------------
+            else if (planningViewMode === 'week') {
+                if (dayBadges) dayBadges.classList.add('hidden');
+
+                const curr = new Date(planningSelectedDate);
+                const first = curr.getDate() - curr.getDay() + (curr.getDay() === 0 ? -6 : 1); // Lunedì
+                const monday = new Date(curr.setDate(first));
+                
+                const weekDays = [];
+                for (let i = 0; i < 7; i++) {
+                    const next = new Date(monday);
+                    next.setDate(monday.getDate() + i);
+                    weekDays.push(next);
                 }
 
-                return `<div class="flex items-center border-b border-slate-100 dark:border-slate-800">
-                    <div class="w-44 px-3 py-2 shrink-0 border-r border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/60">
-                        <span class="font-mono font-bold text-xs">${v.plate}</span>
-                        <div class="text-[10px] text-slate-400 truncate">${v.model}</div>
-                    </div>
-                    <div class="flex">${dayCells}</div>
-                </div>`;
-            }).join('');
+                if (label) {
+                    label.innerText = `Settimana ${weekDays[0].getDate()} ${monthNames[weekDays[0].getMonth()]} - ${weekDays[6].getDate()} ${monthNames[weekDays[6].getMonth()]} ${weekDays[6].getFullYear()}`;
+                }
 
-            container.innerHTML = `<div class="min-w-[950px]">
-                <div class="flex border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/80 font-bold">
-                    <div class="w-44 px-3 py-1.5 shrink-0 border-r border-slate-200 dark:border-slate-700 text-xs text-slate-400">Mezzo / Targa</div>
-                    <div class="flex">${headerDays}</div>
-                </div>
-                <div>${rows}</div>
-            </div>`;
+                let headerDays = weekDays.map(d => {
+                    const isToday = d.toDateString() === new Date().toDateString();
+                    return `<div class="flex-1 text-center py-2 border-r border-slate-200 dark:border-slate-800 ${isToday ? 'bg-blue-600 text-white font-bold' : 'text-slate-400 font-medium'}">
+                        <div class="text-[10px] uppercase font-bold">${daysNames[d.getDay()].substring(0, 3)}</div>
+                        <div class="text-xs font-mono font-bold">${d.getDate()}</div>
+                    </div>`;
+                }).join('');
+
+                let rows = vehicles.map(v => {
+                    let dayCells = weekDays.map(d => {
+                        const dateStr = d.toISOString().split('T')[0];
+                        const activeRental = rentals.find(r => r.vehicleId === v.id && r.startDate <= dateStr && r.endDate >= dateStr && r.status === 'attivo');
+                        
+                        return `<div class="flex-1 h-12 border-r border-slate-200 dark:border-slate-800 p-1 flex items-center justify-center ${activeRental ? 'bg-indigo-500/10' : ''}">
+                            ${activeRental ? `<div class="w-full h-8 bg-indigo-600 rounded text-white text-[9px] font-bold flex items-center justify-center truncate px-1 shadow-sm" title="Noleggiato da ${activeRental.startDate}">A Noleggio</div>` : `<div class="text-[10px] text-emerald-600 font-bold">Libero</div>`}
+                        </div>`;
+                    }).join('');
+
+                    return `<div class="flex items-center border-b border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                        <div class="w-52 p-3 shrink-0 border-r border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60">
+                            <span class="font-mono font-bold text-xs">${v.plate}</span>
+                            <div class="text-[11px] text-slate-500 truncate">${v.model}</div>
+                        </div>
+                        <div class="flex-1 flex">${dayCells}</div>
+                    </div>`;
+                }).join('');
+
+                container.innerHTML = `<div class="min-w-[850px] bg-white dark:bg-slate-900">
+                    <div class="flex border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/80 font-bold">
+                        <div class="w-52 px-3 py-2 shrink-0 border-r border-slate-200 dark:border-slate-800 text-xs text-slate-400">Mezzo Flotta</div>
+                        <div class="flex-1 flex">${headerDays}</div>
+                    </div>
+                    <div>${rows}</div>
+                </div>`;
+            }
+
+            // -------------------------------------------------------------
+            // C) VISIONE MESE (GANTT MENSILE COMPLETO)
+            // -------------------------------------------------------------
+            else {
+                if (dayBadges) dayBadges.classList.add('hidden');
+
+                const year = planningSelectedDate.getFullYear();
+                const month = planningSelectedDate.getMonth();
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+                if (label) label.innerText = `${monthNames[month]} ${year}`;
+
+                let headerDays = '';
+                for (let d = 1; d <= daysInMonth; d++) {
+                    const isToday = (d === new Date().getDate() && month === new Date().getMonth() && year === new Date().getFullYear());
+                    headerDays += `<div class="w-7 text-center font-mono text-[10px] py-1.5 border-r border-slate-200 dark:border-slate-800 ${isToday ? 'bg-blue-600 text-white font-bold rounded-t' : 'text-slate-400'}">${d}</div>`;
+                }
+
+                let rows = vehicles.map(v => {
+                    const activeRentals = rentals.filter(r => r.vehicleId === v.id && r.status === 'attivo');
+                    let dayCells = '';
+
+                    for (let d = 1; d <= daysInMonth; d++) {
+                        const cellDateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                        const isRented = activeRentals.some(r => r.startDate <= cellDateStr && r.endDate >= cellDateStr);
+
+                        dayCells += `<div class="w-7 h-9 border-r border-slate-200 dark:border-slate-800 flex items-center justify-center ${isRented ? 'bg-indigo-500/20' : ''}">
+                            ${isRented ? '<div class="w-full h-4 bg-indigo-600 rounded-sm" title="Noleggiato"></div>' : ''}
+                        </div>`;
+                    }
+
+                    return `<div class="flex items-center border-b border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                        <div class="w-48 px-3 py-2 shrink-0 border-r border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60">
+                            <span class="font-mono font-bold text-xs">${v.plate}</span>
+                            <div class="text-[10px] text-slate-400 truncate">${v.model}</div>
+                        </div>
+                        <div class="flex">${dayCells}</div>
+                    </div>`;
+                }).join('');
+
+                container.innerHTML = `<div class="min-w-[950px] bg-white dark:bg-slate-900">
+                    <div class="flex border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/80 font-bold">
+                        <div class="w-48 px-3 py-1.5 shrink-0 border-r border-slate-200 dark:border-slate-800 text-xs text-slate-400">Mezzo / Targa</div>
+                        <div class="flex">${headerDays}</div>
+                    </div>
+                    <div>${rows}</div>
+                </div>`;
+            }
         }
 
         function renderCustomers() {
