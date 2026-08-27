@@ -641,11 +641,11 @@
                 <!-- Riepilogo Rapido Mezzo e Cliente -->
                 <div class="bg-slate-50 dark:bg-slate-800/60 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 flex flex-wrap items-center justify-between gap-3 text-xs">
                     <div>
-                        <span class="text-slate-400 font-medium">Cliente:</span>
+                        <span class="text-slate-400 font-medium">Cliente Locatario:</span>
                         <div class="font-bold text-slate-900 dark:text-white" id="chkCustomerName">---</div>
                     </div>
                     <div>
-                        <span class="text-slate-400 font-medium">Mezzo Assegnato:</span>
+                        <span class="text-slate-400 font-medium">Mezzo Flotta:</span>
                         <div class="font-bold font-mono text-blue-600 dark:text-blue-400" id="chkVehiclePlate">---</div>
                     </div>
                     <div>
@@ -656,95 +656,136 @@
 
                 <!-- SELETTORE FASE: CONSEGNA (PARTENZA) VS RIENTRO (RESTITUZIONE) -->
                 <div class="grid grid-cols-2 gap-3 bg-slate-100 dark:bg-slate-950 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-800">
-                    <button type="button" onclick="setCheckinPhase('departure')" id="btnPhaseDeparture" class="py-2 rounded-xl text-xs font-extrabold transition cursor-pointer bg-blue-600 text-white shadow-sm flex items-center justify-center gap-1.5">
-                        <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+                    <button type="button" onclick="setCheckinPhase('departure')" id="btnPhaseDeparture" class="py-2.5 rounded-xl text-xs font-extrabold transition cursor-pointer bg-blue-600 text-white shadow-sm flex items-center justify-center gap-1.5">
+                        <i data-lucide="log-out" class="w-4 h-4"></i>
                         <span>1. Consegna (Partenza)</span>
                     </button>
-                    <button type="button" onclick="setCheckinPhase('return')" id="btnPhaseReturn" class="py-2 rounded-xl text-xs font-extrabold transition cursor-pointer text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center justify-center gap-1.5">
-                        <i data-lucide="log-in" class="w-3.5 h-3.5"></i>
+                    <button type="button" onclick="setCheckinPhase('return')" id="btnPhaseReturn" class="py-2.5 rounded-xl text-xs font-extrabold transition cursor-pointer text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center justify-center gap-1.5">
+                        <i data-lucide="log-in" class="w-4 h-4"></i>
                         <span>2. Rientro (Restituzione)</span>
                     </button>
                 </div>
 
-                <!-- RILEVAZIONE CHILOMETRI -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- FASE 1: CONSEGNA (PARTENZA) -->
+                <div id="phaseDepartureBox" class="space-y-4">
+                    <div class="p-3 bg-blue-50/70 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/60 rounded-xl text-xs text-blue-800 dark:text-blue-300 font-medium">
+                        Registra i dati del veicolo prima dell'affidamento al cliente.
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Km di Partenza (Alla Consegna) *</label>
+                            <input type="number" id="chkDepKm" placeholder="Es. 150000" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl text-xs font-mono font-bold focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Livello Carburante alla Consegna</label>
+                            <div class="grid grid-cols-5 gap-1.5" id="depFuelButtons">
+                                <button type="button" onclick="setDepFuel('0/8')" data-depfuel="0/8" class="dep-fuel-btn py-2 px-1 rounded-xl border border-slate-300 dark:border-slate-600 text-center text-xs font-bold transition hover:bg-slate-100 dark:hover:bg-slate-800"><span class="block text-[9px] text-red-500">Riserva</span>0/8</button>
+                                <button type="button" onclick="setDepFuel('1/4')" data-depfuel="1/4" class="dep-fuel-btn py-2 px-1 rounded-xl border border-slate-300 dark:border-slate-600 text-center text-xs font-bold transition hover:bg-slate-100 dark:hover:bg-slate-800"><span class="block text-[9px] text-amber-500">1/4</span>25%</button>
+                                <button type="button" onclick="setDepFuel('1/2')" data-depfuel="1/2" class="dep-fuel-btn py-2 px-1 rounded-xl border border-slate-300 dark:border-slate-600 text-center text-xs font-bold transition hover:bg-slate-100 dark:hover:bg-slate-800"><span class="block text-[9px] text-amber-500">1/2</span>50%</button>
+                                <button type="button" onclick="setDepFuel('3/4')" data-depfuel="3/4" class="dep-fuel-btn py-2 px-1 rounded-xl border border-slate-300 dark:border-slate-600 text-center text-xs font-bold transition hover:bg-slate-100 dark:hover:bg-slate-800"><span class="block text-[9px] text-emerald-500">3/4</span>75%</button>
+                                <button type="button" onclick="setDepFuel('4/4')" data-depfuel="4/4" class="dep-fuel-btn py-2 px-1 rounded-xl border border-blue-600 bg-blue-600 text-white text-center text-xs font-bold transition shadow-sm"><span class="block text-[9px] text-amber-300">Pieno</span>100%</button>
+                            </div>
+                            <input type="hidden" id="chkDepFuelVal" value="4/4">
+                        </div>
+                    </div>
+
+                    <!-- Checklist Ispezione Consegna -->
+                    <div class="space-y-2 pt-1">
+                        <div class="text-xs font-bold uppercase tracking-wider text-slate-400">Stato del Mezzo alla Consegna</div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                            <label class="flex items-center space-x-2.5 p-2 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer">
+                                <input type="checkbox" id="chkDepBody" checked class="w-4 h-4 text-blue-600 rounded">
+                                <span class="font-medium text-slate-800 dark:text-slate-200">Carrozzeria e Verniciatura OK</span>
+                            </label>
+                            <label class="flex items-center space-x-2.5 p-2 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer">
+                                <input type="checkbox" id="chkDepGlass" checked class="w-4 h-4 text-blue-600 rounded">
+                                <span class="font-medium text-slate-800 dark:text-slate-200">Parabrezza & Cristalli Integri</span>
+                            </label>
+                            <label class="flex items-center space-x-2.5 p-2 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer">
+                                <input type="checkbox" id="chkDepTires" checked class="w-4 h-4 text-blue-600 rounded">
+                                <span class="font-medium text-slate-800 dark:text-slate-200">Pneumatici & Pressione OK</span>
+                            </label>
+                            <label class="flex items-center space-x-2.5 p-2 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer">
+                                <input type="checkbox" id="chkDepTools" checked class="w-4 h-4 text-blue-600 rounded">
+                                <span class="font-medium text-slate-800 dark:text-slate-200">Dotazioni Bordo / Triangolo Presenti</span>
+                            </label>
+                        </div>
+                    </div>
+
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Km di Partenza (Consegna)</label>
-                        <input type="number" id="chkStartKm" placeholder="Es. 150000" oninput="calculateKmDiff()" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl text-xs font-mono font-bold focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Note & Danni Preesistenti alla Consegna</label>
+                        <textarea id="chkDepNotes" rows="2" placeholder="Es. Lieve graffio paraurti anteriore destro..." class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
                     </div>
+                </div>
+
+                <!-- FASE 2: RIENTRO (RESTITUZIONE) -->
+                <div id="phaseReturnBox" class="space-y-4 hidden">
+                    <div class="p-3 bg-indigo-50/70 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800/60 rounded-xl text-xs text-indigo-800 dark:text-indigo-300 font-medium">
+                        Registra i dati effettivi alla restituzione del mezzo da parte del cliente.
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Km di Rientro (Effettivi al Ritorno) *</label>
+                            <input type="number" id="chkRetKm" placeholder="Es. 151250" oninput="calculateReturnDiff()" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl text-xs font-mono font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Livello Carburante al Rientro</label>
+                            <div class="grid grid-cols-5 gap-1.5" id="retFuelButtons">
+                                <button type="button" onclick="setRetFuel('0/8')" data-retfuel="0/8" class="ret-fuel-btn py-2 px-1 rounded-xl border border-slate-300 dark:border-slate-600 text-center text-xs font-bold transition hover:bg-slate-100 dark:hover:bg-slate-800"><span class="block text-[9px] text-red-500">Riserva</span>0/8</button>
+                                <button type="button" onclick="setRetFuel('1/4')" data-retfuel="1/4" class="ret-fuel-btn py-2 px-1 rounded-xl border border-slate-300 dark:border-slate-600 text-center text-xs font-bold transition hover:bg-slate-100 dark:hover:bg-slate-800"><span class="block text-[9px] text-amber-500">1/4</span>25%</button>
+                                <button type="button" onclick="setRetFuel('1/2')" data-retfuel="1/2" class="ret-fuel-btn py-2 px-1 rounded-xl border border-slate-300 dark:border-slate-600 text-center text-xs font-bold transition hover:bg-slate-100 dark:hover:bg-slate-800"><span class="block text-[9px] text-amber-500">1/2</span>50%</button>
+                                <button type="button" onclick="setRetFuel('3/4')" data-retfuel="3/4" class="ret-fuel-btn py-2 px-1 rounded-xl border border-slate-300 dark:border-slate-600 text-center text-xs font-bold transition hover:bg-slate-100 dark:hover:bg-slate-800"><span class="block text-[9px] text-emerald-500">3/4</span>75%</button>
+                                <button type="button" onclick="setRetFuel('4/4')" data-retfuel="4/4" class="ret-fuel-btn py-2 px-1 rounded-xl border border-indigo-600 bg-indigo-600 text-white text-center text-xs font-bold transition shadow-sm"><span class="block text-[9px] text-amber-300">Pieno</span>100%</button>
+                            </div>
+                            <input type="hidden" id="chkRetFuelVal" value="4/4">
+                        </div>
+                    </div>
+
+                    <!-- BOX CONFRONTO KM PERCORSI -->
+                    <div id="chkKmSummaryCard" class="p-3 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-between text-xs">
+                        <div>
+                            <span class="text-slate-400">Partenza:</span>
+                            <span class="font-mono font-bold text-slate-800 dark:text-slate-200 ml-1" id="chkSummaryDepKm">0 Km</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400">Rientro:</span>
+                            <span class="font-mono font-bold text-slate-800 dark:text-slate-200 ml-1" id="chkSummaryRetKm">0 Km</span>
+                        </div>
+                        <div class="px-2 py-1 bg-indigo-600 text-white rounded-lg font-bold">
+                            <span>Totale:</span>
+                            <span class="font-mono" id="chkSummaryTotalKm">0 Km</span>
+                        </div>
+                    </div>
+
+                    <!-- Checklist Ispezione Rientro -->
+                    <div class="space-y-2 pt-1">
+                        <div class="text-xs font-bold uppercase tracking-wider text-slate-400">Verifica Integrità al Rientro</div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                            <label class="flex items-center space-x-2.5 p-2 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer">
+                                <input type="checkbox" id="chkRetBody" checked class="w-4 h-4 text-indigo-600 rounded">
+                                <span class="font-medium text-slate-800 dark:text-slate-200">Nessun nuovo danno a carrozzeria</span>
+                            </label>
+                            <label class="flex items-center space-x-2.5 p-2 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer">
+                                <input type="checkbox" id="chkRetGlass" checked class="w-4 h-4 text-indigo-600 rounded">
+                                <span class="font-medium text-slate-800 dark:text-slate-200">Cristalli e Specchietti Integri</span>
+                            </label>
+                            <label class="flex items-center space-x-2.5 p-2 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer">
+                                <input type="checkbox" id="chkRetTires" checked class="w-4 h-4 text-indigo-600 rounded">
+                                <span class="font-medium text-slate-800 dark:text-slate-200">Pneumatici Senza Tagli o Usure Anomale</span>
+                            </label>
+                            <label class="flex items-center space-x-2.5 p-2 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer">
+                                <input type="checkbox" id="chkRetTools" checked class="w-4 h-4 text-indigo-600 rounded">
+                                <span class="font-medium text-slate-800 dark:text-slate-200">Tutte le Dotazioni Riconsegnate</span>
+                            </label>
+                        </div>
+                    </div>
+
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Km di Rientro (Arrivo)</label>
-                        <input type="number" id="chkEndKm" placeholder="Es. 151250" oninput="calculateKmDiff()" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl text-xs font-mono font-bold focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Note di Rientro / Segnalazione Nuovi Danni</label>
+                        <textarea id="chkRetNotes" rows="2" placeholder="Es. Veicolo riconsegnato in perfette condizioni, nessun nuovo danno riscontrato..." class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
                     </div>
-                </div>
-
-                <div id="chkKmDiffBox" class="hidden p-2.5 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 rounded-xl text-xs text-blue-800 dark:text-blue-300 flex items-center justify-between font-bold">
-                    <span>Chilometri Percorsi nel Noleggio:</span>
-                    <span class="font-mono text-sm" id="chkKmDiffVal">0 Km</span>
-                </div>
-
-                <!-- LIVELLO CARBURANTE GRAFICO INTERATTIVO -->
-                <div class="space-y-2">
-                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Livello Carburante Serbatoio</label>
-                    <div class="grid grid-cols-5 gap-2" id="fuelGaugeButtons">
-                        <button type="button" onclick="setFuelLevel('0/8')" data-fuel="0/8" class="fuel-btn py-2 px-1 rounded-xl border border-slate-300 dark:border-slate-600 text-center text-xs font-bold transition hover:bg-slate-100 dark:hover:bg-slate-800">
-                            <span class="block text-[10px] text-red-500">Riserva</span> 0/8
-                        </button>
-                        <button type="button" onclick="setFuelLevel('1/4')" data-fuel="1/4" class="fuel-btn py-2 px-1 rounded-xl border border-slate-300 dark:border-slate-600 text-center text-xs font-bold transition hover:bg-slate-100 dark:hover:bg-slate-800">
-                            <span class="block text-[10px] text-amber-500">1/4</span> 25%
-                        </button>
-                        <button type="button" onclick="setFuelLevel('1/2')" data-fuel="1/2" class="fuel-btn py-2 px-1 rounded-xl border border-slate-300 dark:border-slate-600 text-center text-xs font-bold transition hover:bg-slate-100 dark:hover:bg-slate-800">
-                            <span class="block text-[10px] text-amber-500">1/2</span> 50%
-                        </button>
-                        <button type="button" onclick="setFuelLevel('3/4')" data-fuel="3/4" class="fuel-btn py-2 px-1 rounded-xl border border-slate-300 dark:border-slate-600 text-center text-xs font-bold transition hover:bg-slate-100 dark:hover:bg-slate-800">
-                            <span class="block text-[10px] text-emerald-500">3/4</span> 75%
-                        </button>
-                        <button type="button" onclick="setFuelLevel('4/4')" data-fuel="4/4" class="fuel-btn py-2 px-1 rounded-xl border border-blue-600 bg-blue-600 text-white text-center text-xs font-bold transition shadow-sm">
-                            <span class="block text-[10px] text-amber-300">Pieno</span> 100%
-                        </button>
-                    </div>
-                    <input type="hidden" id="chkFuelLevel" value="4/4">
-                </div>
-
-                <!-- CHECKLIST ISPEZIONE VEICOLO -->
-                <div class="space-y-2.5 pt-2">
-                    <div class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-                        <i data-lucide="check-square" class="w-3.5 h-3.5 text-blue-500"></i>
-                        <span>Checklist Stato Veicolo & Dotazioni di Bordo</span>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                        <label class="flex items-center space-x-2.5 p-2 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-100">
-                            <input type="checkbox" id="chkBodyOk" checked class="w-4 h-4 text-blue-600 rounded">
-                            <span class="font-medium text-slate-800 dark:text-slate-200">Carrozzeria e Verniciatura OK</span>
-                        </label>
-                        <label class="flex items-center space-x-2.5 p-2 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-100">
-                            <input type="checkbox" id="chkGlassOk" checked class="w-4 h-4 text-blue-600 rounded">
-                            <span class="font-medium text-slate-800 dark:text-slate-200">Parabrezza & Cristalli Integri</span>
-                        </label>
-                        <label class="flex items-center space-x-2.5 p-2 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-100">
-                            <input type="checkbox" id="chkTiresOk" checked class="w-4 h-4 text-blue-600 rounded">
-                            <span class="font-medium text-slate-800 dark:text-slate-200">Pneumatici & Pressione OK</span>
-                        </label>
-                        <label class="flex items-center space-x-2.5 p-2 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-100">
-                            <input type="checkbox" id="chkToolsOk" checked class="w-4 h-4 text-blue-600 rounded">
-                            <span class="font-medium text-slate-800 dark:text-slate-200">Kit Bordo (Triangolo/Giubbino/Ruota)</span>
-                        </label>
-                        <label class="flex items-center space-x-2.5 p-2 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-100">
-                            <input type="checkbox" id="chkDocsOk" checked class="w-4 h-4 text-blue-600 rounded">
-                            <span class="font-medium text-slate-800 dark:text-slate-200">Libretto & Documenti di Bordo Presenti</span>
-                        </label>
-                        <label class="flex items-center space-x-2.5 p-2 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-100">
-                            <input type="checkbox" id="chkCleanOk" checked class="w-4 h-4 text-blue-600 rounded">
-                            <span class="font-medium text-slate-800 dark:text-slate-200">Pulizia Interna & Esterna Conforme</span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- NOTE DANNI & OSSERVAZIONI -->
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Note Danni Rilevati o Segnalazioni</label>
-                    <textarea id="chkNotes" rows="2" placeholder="Es. Lieve graffio paraurti anteriore destro già presente alla consegna..." class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
                 </div>
 
                 <!-- AZIONI SALVATAGGIO & STAMPA VERBALE PDF -->
@@ -757,15 +798,13 @@
                         <button type="button" onclick="closeCheckinModal()" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 cursor-pointer">Annulla</button>
                         <button type="button" onclick="saveCheckinReport()" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md cursor-pointer flex items-center gap-1.5">
                             <i data-lucide="check" class="w-4 h-4"></i>
-                            <span>Salva Verbale</span>
+                            <span id="btnSaveCheckinText">Salva Verbale Consegna</span>
                         </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-
     <!-- TOAST NOTIFICHE -->
     <div id="toast" class="fixed bottom-5 right-5 z-50 bg-slate-900 text-white py-3 px-5 rounded-2xl shadow-xl flex items-center space-x-3 transition-all duration-300 transform translate-y-20 opacity-0 pointer-events-none border border-slate-700">
         <div id="toastIcon"></div>
@@ -1689,24 +1728,36 @@
             const datesEl = document.getElementById('chkDates');
             if (datesEl) datesEl.innerText = formatDate(r.startDate) + ' → ' + formatDate(r.endDate);
 
-            const startKmEl = document.getElementById('chkStartKm');
-            if (startKmEl) startKmEl.value = r.startKm || 0;
-            
-            const endKmEl = document.getElementById('chkEndKm');
-            if (endKmEl) endKmEl.value = r.endKm || '';
+            // Populate Departure Fields
+            document.getElementById('chkDepKm').value = r.startKm || 0;
+            setDepFuel(r.depFuel || r.fuelLevel || '4/4');
+            document.getElementById('chkDepNotes').value = r.depNotes || r.checkinNotes || '';
+            if (r.depChecklist) {
+                document.getElementById('chkDepBody').checked = r.depChecklist.body !== false;
+                document.getElementById('chkDepGlass').checked = r.depChecklist.glass !== false;
+                document.getElementById('chkDepTires').checked = r.depChecklist.tires !== false;
+                document.getElementById('chkDepTools').checked = r.depChecklist.tools !== false;
+            }
 
+            // Populate Return Fields
+            document.getElementById('chkRetKm').value = r.endKm || '';
+            setRetFuel(r.retFuel || '4/4');
+            document.getElementById('chkRetNotes').value = r.retNotes || '';
+            if (r.retChecklist) {
+                document.getElementById('chkRetBody').checked = r.retChecklist.body !== false;
+                document.getElementById('chkRetGlass').checked = r.retChecklist.glass !== false;
+                document.getElementById('chkRetTires').checked = r.retChecklist.tires !== false;
+                document.getElementById('chkRetTools').checked = r.retChecklist.tools !== false;
+            }
+
+            // Default to return if concluded or endKm present, else departure
             if (r.status === 'concluso' || r.endKm) {
                 setCheckinPhase('return');
             } else {
                 setCheckinPhase('departure');
             }
 
-            setFuelLevel(r.fuelLevel || '4/4');
-            
-            const notesEl = document.getElementById('chkNotes');
-            if (notesEl) notesEl.value = r.checkinNotes || '';
-
-            calculateKmDiff();
+            calculateReturnDiff();
 
             const modal = document.getElementById('checkinModal');
             if (modal) {
@@ -1731,68 +1782,121 @@
             currentCheckinPhase = phase;
             const btnDep = document.getElementById('btnPhaseDeparture');
             const btnRet = document.getElementById('btnPhaseReturn');
+            const boxDep = document.getElementById('phaseDepartureBox');
+            const boxRet = document.getElementById('phaseReturnBox');
+            const btnSaveText = document.getElementById('btnSaveCheckinText');
+
             if (phase === 'departure') {
-                if (btnDep) btnDep.className = "py-2 rounded-xl text-xs font-extrabold transition cursor-pointer bg-blue-600 text-white shadow-sm flex items-center justify-center gap-1.5";
-                if (btnRet) btnRet.className = "py-2 rounded-xl text-xs font-extrabold transition cursor-pointer text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center justify-center gap-1.5";
+                if (btnDep) btnDep.className = "py-2.5 rounded-xl text-xs font-extrabold transition cursor-pointer bg-blue-600 text-white shadow-sm flex items-center justify-center gap-1.5";
+                if (btnRet) btnRet.className = "py-2.5 rounded-xl text-xs font-extrabold transition cursor-pointer text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center justify-center gap-1.5";
+                if (boxDep) boxDep.classList.remove('hidden');
+                if (boxRet) boxRet.classList.add('hidden');
+                if (btnSaveText) btnSaveText.innerText = "Salva Verbale Consegna";
             } else {
-                if (btnRet) btnRet.className = "py-2 rounded-xl text-xs font-extrabold transition cursor-pointer bg-indigo-600 text-white shadow-sm flex items-center justify-center gap-1.5";
-                if (btnDep) btnDep.className = "py-2 rounded-xl text-xs font-extrabold transition cursor-pointer text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center justify-center gap-1.5";
+                if (btnRet) btnRet.className = "py-2.5 rounded-xl text-xs font-extrabold transition cursor-pointer bg-indigo-600 text-white shadow-sm flex items-center justify-center gap-1.5";
+                if (btnDep) btnDep.className = "py-2.5 rounded-xl text-xs font-extrabold transition cursor-pointer text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center justify-center gap-1.5";
+                if (boxRet) boxRet.classList.remove('hidden');
+                if (boxDep) boxDep.classList.add('hidden');
+                if (btnSaveText) btnSaveText.innerText = "Salva Rientro & Concludi Noleggio";
             }
+            calculateReturnDiff();
         };
 
-        window.setFuelLevel = function(level) {
-            const input = document.getElementById('chkFuelLevel');
+        window.setDepFuel = function(level) {
+            const input = document.getElementById('chkDepFuelVal');
             if (input) input.value = level;
-            document.querySelectorAll('.fuel-btn').forEach(btn => {
-                if (btn.getAttribute('data-fuel') === level) {
-                    btn.className = "fuel-btn py-2 px-1 rounded-xl border border-blue-600 bg-blue-600 text-white text-center text-xs font-bold transition shadow-sm";
+            document.querySelectorAll('.dep-fuel-btn').forEach(btn => {
+                if (btn.getAttribute('data-depfuel') === level) {
+                    btn.className = "dep-fuel-btn py-2 px-1 rounded-xl border border-blue-600 bg-blue-600 text-white text-center text-xs font-bold transition shadow-sm";
                 } else {
-                    btn.className = "fuel-btn py-2 px-1 rounded-xl border border-slate-300 dark:border-slate-600 text-center text-xs font-bold transition hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200";
+                    btn.className = "dep-fuel-btn py-2 px-1 rounded-xl border border-slate-300 dark:border-slate-600 text-center text-xs font-bold transition hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200";
                 }
             });
         };
 
-        window.calculateKmDiff = function() {
-            const startKmEl = document.getElementById('chkStartKm');
-            const endKmEl = document.getElementById('chkEndKm');
-            const start = parseInt(startKmEl ? startKmEl.value : 0) || 0;
-            const end = parseInt(endKmEl ? endKmEl.value : 0) || 0;
-            const diffBox = document.getElementById('chkKmDiffBox');
-            const diffVal = document.getElementById('chkKmDiffVal');
+        window.setRetFuel = function(level) {
+            const input = document.getElementById('chkRetFuelVal');
+            if (input) input.value = level;
+            document.querySelectorAll('.ret-fuel-btn').forEach(btn => {
+                if (btn.getAttribute('data-retfuel') === level) {
+                    btn.className = "ret-fuel-btn py-2 px-1 rounded-xl border border-indigo-600 bg-indigo-600 text-white text-center text-xs font-bold transition shadow-sm";
+                } else {
+                    btn.className = "ret-fuel-btn py-2 px-1 rounded-xl border border-slate-300 dark:border-slate-600 text-center text-xs font-bold transition hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200";
+                }
+            });
+        };
 
-            if (end > start) {
-                const diff = end - start;
-                if (diffVal) diffVal.innerText = diff.toLocaleString() + ' Km';
-                if (diffBox) diffBox.classList.remove('hidden');
+        window.calculateReturnDiff = function() {
+            const depKm = parseInt(document.getElementById('chkDepKm')?.value) || 0;
+            const retKm = parseInt(document.getElementById('chkRetKm')?.value) || 0;
+
+            const sumDep = document.getElementById('chkSummaryDepKm');
+            const sumRet = document.getElementById('chkSummaryRetKm');
+            const sumTot = document.getElementById('chkSummaryTotalKm');
+
+            if (sumDep) sumDep.innerText = depKm.toLocaleString() + ' Km';
+            if (sumRet) sumRet.innerText = (retKm || '---') + (retKm ? ' Km' : '');
+
+            if (retKm > depKm) {
+                const diff = retKm - depKm;
+                if (sumTot) sumTot.innerText = diff.toLocaleString() + ' Km';
             } else {
-                if (diffBox) diffBox.classList.add('hidden');
+                if (sumTot) sumTot.innerText = '0 Km';
             }
         };
 
         window.saveCheckinReport = function() {
             if (!currentCheckinRental) return;
 
-            const startKm = parseInt(document.getElementById('chkStartKm')?.value) || 0;
-            const endKm = parseInt(document.getElementById('chkEndKm')?.value) || null;
-            const fuel = document.getElementById('chkFuelLevel')?.value || '4/4';
-            const notes = document.getElementById('chkNotes')?.value.trim() || '';
+            const depKm = parseInt(document.getElementById('chkDepKm')?.value) || 0;
+            const depFuel = document.getElementById('chkDepFuelVal')?.value || '4/4';
+            const depNotes = document.getElementById('chkDepNotes')?.value.trim() || '';
+            const depChecklist = {
+                body: document.getElementById('chkDepBody')?.checked,
+                glass: document.getElementById('chkDepGlass')?.checked,
+                tires: document.getElementById('chkDepTires')?.checked,
+                tools: document.getElementById('chkDepTools')?.checked
+            };
 
-            currentCheckinRental.startKm = startKm;
-            currentCheckinRental.fuelLevel = fuel;
-            currentCheckinRental.checkinNotes = notes;
+            currentCheckinRental.startKm = depKm;
+            currentCheckinRental.depFuel = depFuel;
+            currentCheckinRental.depNotes = depNotes;
+            currentCheckinRental.depChecklist = depChecklist;
 
-            if (currentCheckinPhase === 'return' && endKm) {
-                currentCheckinRental.endKm = endKm;
+            if (currentCheckinPhase === 'return') {
+                const retKm = parseInt(document.getElementById('chkRetKm')?.value);
+                if (!retKm || retKm < depKm) {
+                    showToast("⚠️ Inserisci un chilometraggio di rientro valido (maggiore della partenza)", "warning");
+                    return;
+                }
+
+                const retFuel = document.getElementById('chkRetFuelVal')?.value || '4/4';
+                const retNotes = document.getElementById('chkRetNotes')?.value.trim() || '';
+                const retChecklist = {
+                    body: document.getElementById('chkRetBody')?.checked,
+                    glass: document.getElementById('chkRetGlass')?.checked,
+                    tires: document.getElementById('chkRetTires')?.checked,
+                    tools: document.getElementById('chkRetTools')?.checked
+                };
+
+                currentCheckinRental.endKm = retKm;
+                currentCheckinRental.retFuel = retFuel;
+                currentCheckinRental.retNotes = retNotes;
+                currentCheckinRental.retChecklist = retChecklist;
                 currentCheckinRental.status = 'concluso';
-                
+
+                // Return vehicle to available status
                 const v = vehicles.find(item => item.id === currentCheckinRental.vehicleId);
                 if (v) v.status = 'disponibile';
+                
+                showToast(`✓ Noleggio ${currentCheckinRental.id} concluso e mezzo rientrato!`, "success");
+            } else {
+                showToast(`✓ Dati di consegna per ${currentCheckinRental.id} aggiornati!`, "success");
             }
 
             saveToStorage();
             closeCheckinModal();
             renderAll();
-            showToast("✓ Verbale salvato con successo!", "success");
         };
 
         window.printCheckinReportPDF = function() {
@@ -1801,10 +1905,12 @@
             const customer = customers.find(c => c.id === r.customerId) || {};
             const vehicle = vehicles.find(v => v.id === r.vehicleId) || {};
 
-            const startKm = document.getElementById('chkStartKm')?.value || '---';
-            const endKm = document.getElementById('chkEndKm')?.value || 'In corso';
-            const fuel = document.getElementById('chkFuelLevel')?.value || '4/4';
-            const notes = document.getElementById('chkNotes')?.value || 'Nessuna anomalia riscontrata.';
+            const depKm = document.getElementById('chkDepKm')?.value || r.startKm || '---';
+            const retKm = document.getElementById('chkRetKm')?.value || r.endKm || 'Non ancora effettuato';
+            const depFuel = document.getElementById('chkDepFuelVal')?.value || r.depFuel || '4/4';
+            const retFuel = document.getElementById('chkRetFuelVal')?.value || r.retFuel || '---';
+            const depNotes = document.getElementById('chkDepNotes')?.value || r.depNotes || 'Nessuna anomalia alla consegna.';
+            const retNotes = document.getElementById('chkRetNotes')?.value || r.retNotes || 'Nessun nuovo danno riscontrato.';
 
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
@@ -1830,7 +1936,7 @@
             doc.setFontSize(13);
             doc.setFont("helvetica", "bold");
             doc.setTextColor(15, 23, 42);
-            doc.text(`VERBALE DI CONSEGNA & RIENTRO VEICOLO (CONTRATTO ${r.id})`, 14, 38);
+            doc.text(`VERBALE COMPARATIVO CONSEGNA & RIENTRO VEICOLO (${r.id})`, 14, 38);
 
             doc.autoTable({
                 startY: 43,
@@ -1844,45 +1950,34 @@
                 ]
             });
 
+            // Comparative Table
             doc.autoTable({
                 startY: doc.lastAutoTable.finalY + 4,
-                head: [['Dati Mezzo', 'Chilometraggio & Carburante', 'Periodo']],
+                head: [['Punto di Ispezione / Parametro', 'Alla Consegna (Partenza)', 'Al Rientro (Restituzione)']],
                 body: [
-                    [
-                        `Targa: ${vehicle.plate || '---'}\nModello: ${vehicle.model || '---'}\nTipo: ${vehicle.type || '---'}`,
-                        `Km Partenza: ${startKm}\nKm Rientro: ${endKm}\nLivello Serbatoio: ${fuel}`,
-                        `Inizio: ${formatDate(r.startDate)}\nFine: ${formatDate(r.endDate)}\nFase: ${currentCheckinPhase === 'departure' ? 'CONSEGNA (Partenza)' : 'RIENTRO (Restituzione)'}`
-                    ]
+                    ['Mezzo Assegnato', `${vehicle.plate || '---'} - ${vehicle.model || ''}`, `${vehicle.plate || '---'} - ${vehicle.model || ''}`],
+                    ['Chilometri Contachilometri', `${depKm} Km`, `${retKm} Km`],
+                    ['Livello Serbatoio Carburante', `${depFuel}`, `${retFuel}`],
+                    ['Carrozzeria e Verniciatura', document.getElementById('chkDepBody')?.checked ? 'CONFORME [X]' : 'ANOMALIA [!]', document.getElementById('chkRetBody')?.checked ? 'CONFORME [X]' : 'ANOMALIA [!]'],
+                    ['Parabrezza e Cristalli', document.getElementById('chkDepGlass')?.checked ? 'CONFORME [X]' : 'ANOMALIA [!]', document.getElementById('chkRetGlass')?.checked ? 'CONFORME [X]' : 'ANOMALIA [!]'],
+                    ['Pneumatici e Battistrada', document.getElementById('chkDepTires')?.checked ? 'CONFORME [X]' : 'ANOMALIA [!]', document.getElementById('chkRetTires')?.checked ? 'CONFORME [X]' : 'ANOMALIA [!]'],
+                    ['Dotazioni e Kit di Bordo', document.getElementById('chkDepTools')?.checked ? 'PRESENTI [X]' : 'MANCANTI [!]', document.getElementById('chkRetTools')?.checked ? 'RESTITUITE [X]' : 'MANCANTI [!]']
                 ],
                 headStyles: { fillColor: [37, 99, 235], textColor: 255, fontStyle: 'bold' }
             });
 
-            const bodyOk = document.getElementById('chkBodyOk')?.checked ? 'CONFORME [X]' : 'ANOMALIA [!]';
-            const glassOk = document.getElementById('chkGlassOk')?.checked ? 'CONFORME [X]' : 'ANOMALIA [!]';
-            const tiresOk = document.getElementById('chkTiresOk')?.checked ? 'CONFORME [X]' : 'ANOMALIA [!]';
-            const toolsOk = document.getElementById('chkToolsOk')?.checked ? 'CONFORME [X]' : 'ANOMALIA [!]';
-            const docsOk = document.getElementById('chkDocsOk')?.checked ? 'CONFORME [X]' : 'ANOMALIA [!]';
-            const cleanOk = document.getElementById('chkCleanOk')?.checked ? 'CONFORME [X]' : 'ANOMALIA [!]';
-
-            doc.autoTable({
-                startY: doc.lastAutoTable.finalY + 4,
-                head: [['Punto Ispezione', 'Esito Ispezione', 'Punto Ispezione', 'Esito Ispezione']],
-                body: [
-                    ['Carrozzeria & Vernice', bodyOk, 'Parabrezza & Cristalli', glassOk],
-                    ['Pneumatici & Pressione', tiresOk, 'Kit Bordo & Triangolo', toolsOk],
-                    ['Libretto & Documenti', docsOk, 'Pulizia Interna/Esterna', cleanOk]
-                ],
-                styles: { fontSize: 8 },
-                headStyles: { fillColor: [71, 85, 105], textColor: 255 }
-            });
-
             doc.setFontSize(8.5);
             doc.setFont("helvetica", "bold");
-            doc.text("NOTE ED EVENTUALI DANNI RISCONTRATI:", 14, doc.lastAutoTable.finalY + 8);
+            doc.text("NOTE ALLA CONSEGNA:", 14, doc.lastAutoTable.finalY + 8);
             doc.setFont("helvetica", "normal");
-            doc.text(notes, 14, doc.lastAutoTable.finalY + 13, { maxWidth: 180 });
+            doc.text(depNotes, 14, doc.lastAutoTable.finalY + 13, { maxWidth: 180 });
 
-            const signY = doc.lastAutoTable.finalY + 38;
+            doc.setFont("helvetica", "bold");
+            doc.text("NOTE AL RIENTRO (DANNI RISCONTRATI):", 14, doc.lastAutoTable.finalY + 22);
+            doc.setFont("helvetica", "normal");
+            doc.text(retNotes, 14, doc.lastAutoTable.finalY + 27, { maxWidth: 180 });
+
+            const signY = doc.lastAutoTable.finalY + 45;
             doc.setFontSize(9);
             doc.setFont("helvetica", "bold");
             doc.text("Firma per il Locatore (Azienda)", 25, signY);
@@ -1891,8 +1986,8 @@
             doc.text("Firma per il Locatario (Cliente)", 125, signY);
             doc.line(120, signY + 15, 185, signY + 15);
 
-            doc.save(`Verbale_Consegna_${r.id}.pdf`);
-            showToast("✓ PDF del Verbale generato!", "success");
+            doc.save(`Verbale_Comparativo_${r.id}.pdf`);
+            showToast("✓ PDF del Verbale comparativo generato!", "success");
         };
 
         function openCustomerModal() {
