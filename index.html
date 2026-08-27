@@ -1271,8 +1271,8 @@
                 if (v.maintenanceHistory && v.maintenanceHistory.length > 0) {
                     expenses = v.maintenanceHistory.reduce((sum, item) => sum + parseFloat(item.cost), 0);
                 }
-                vehicleStats[v.plate] = {
-                    brand: v.brand,
+                vehicleStats[v.id] = {
+                    brand: "",
                     model: v.model,
                     plate: v.plate,
                     income: 0,
@@ -1288,9 +1288,9 @@
                     const price = parseFloat(r.totalPrice) || 0;
                     totalIncome += price;
                     
-                    if (vehicleStats[r.vehiclePlate]) {
-                        vehicleStats[r.vehiclePlate].income += price;
-                        vehicleStats[r.vehiclePlate].net += price;
+                    if (vehicleStats[r.vehicleId]) {
+                        vehicleStats[r.vehicleId].income += price;
+                        vehicleStats[r.vehicleId].net += price;
                     }
                 }
             });
