@@ -135,6 +135,41 @@
     <!-- Firebase Compat Libraries -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+    <!-- Top-Level Immediate Handlers -->
+    <script>
+        var onboardingLogoDataUrl = "";
+        function handleOnboardingLogoUpload(event) {
+            var input = (event && event.target) || document.getElementById('onboardingLogoInput');
+            var file = input && input.files && input.files[0];
+            if (!file) return;
+
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                onboardingLogoDataUrl = e.target.result;
+                var preview = document.getElementById('onboardingLogoPreview');
+                var placeholder = document.getElementById('onboardingLogoPlaceholder');
+                
+                if (preview) {
+                    preview.src = onboardingLogoDataUrl;
+                    preview.style.display = 'block';
+                    preview.classList.remove('hidden');
+                }
+                if (placeholder) {
+                    placeholder.style.display = 'none';
+                    placeholder.classList.add('hidden');
+                }
+                if (typeof companyProfile !== 'undefined') {
+                    companyProfile.logo = onboardingLogoDataUrl;
+                }
+                if (typeof showToast === 'function') {
+                    showToast("✓ Logo caricato con successo!", "success");
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    </script>
+
 </head>
 
 <body class="bg-slate-50 dark:bg-slate-900 min-h-screen text-slate-800 dark:text-slate-100 font-sans pb-4 transition-colors duration-200 flex flex-col justify-between">
