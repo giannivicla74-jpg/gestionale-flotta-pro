@@ -1659,6 +1659,242 @@
             showToast("Contratto eliminato", "info");
         }
 
+        // --- MODULO 1: ENGINE VERBALE CONSEGNA / RIENTRO (CHECK-IN / CHECK-OUT) ---
+        let currentCheckinRental = null;
+        let currentCheckinPhase = 'departure';
+
+        window.openCheckinModal = function(rentalId) {
+            const r = rentals.find(item => item.id === rentalId);
+            if (!r) {
+                console.error("Contratto non trovato:", rentalId);
+                return;
+            }
+            currentCheckinRental = r;
+
+            const cust = customers.find(c => c.id === r.customerId) || { name: 'Cliente Sconosciuto' };
+            const veh = vehicles.find(v => v.id === r.vehicleId) || { plate: '---', model: '' };
+
+            const idEl = document.getElementById('chkRentalId');
+            if (idEl) idEl.value = r.id;
+            
+            const subEl = document.getElementById('checkinContractSub');
+            if (subEl) subEl.innerText = 'Contratto N° ' + r.id;
+            
+            const nameEl = document.getElementById('chkCustomerName');
+            if (nameEl) nameEl.innerText = cust.name;
+            
+            const plateEl = document.getElementById('chkVehiclePlate');
+            if (plateEl) plateEl.innerText = veh.plate + ' - ' + veh.model;
+            
+            const datesEl = document.getElementById('chkDates');
+            if (datesEl) datesEl.innerText = formatDate(r.startDate) + ' → ' + formatDate(r.endDate);
+
+            const startKmEl = document.getElementById('chkStartKm');
+            if (startKmEl) startKmEl.value = r.startKm || 0;
+            
+            const endKmEl = document.getElementById('chkEndKm');
+            if (endKmEl) endKmEl.value = r.endKm || '';
+
+            if (r.status === 'concluso' || r.endKm) {
+                setCheckinPhase('return');
+            } else {
+                setCheckinPhase('departure');
+            }
+
+            setFuelLevel(r.fuelLevel || '4/4');
+            
+            const notesEl = document.getElementById('chkNotes');
+            if (notesEl) notesEl.value = r.checkinNotes || '';
+
+            calculateKmDiff();
+
+            const modal = document.getElementById('checkinModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.style.display = 'flex';
+            }
+            
+            if (typeof lucide !== 'undefined' && lucide.createIcons) {
+                lucide.createIcons();
+            }
+        };
+
+        window.closeCheckinModal = function() {
+            const modal = document.getElementById('checkinModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.style.display = 'none';
+            }
+        };
+
+        window.setCheckinPhase = function(phase) {
+            currentCheckinPhase = phase;
+            const btnDep = document.getElementById('btnPhaseDeparture');
+            const btnRet = document.getElementById('btnPhaseReturn');
+            if (phase === 'departure') {
+                if (btnDep) btnDep.className = "py-2 rounded-xl text-xs font-extrabold transition cursor-pointer bg-blue-600 text-white shadow-sm flex items-center justify-center gap-1.5";
+                if (btnRet) btnRet.className = "py-2 rounded-xl text-xs font-extrabold transition cursor-pointer text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center justify-center gap-1.5";
+            } else {
+                if (btnRet) btnRet.className = "py-2 rounded-xl text-xs font-extrabold transition cursor-pointer bg-indigo-600 text-white shadow-sm flex items-center justify-center gap-1.5";
+                if (btnDep) btnDep.className = "py-2 rounded-xl text-xs font-extrabold transition cursor-pointer text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center justify-center gap-1.5";
+            }
+        };
+
+        window.setFuelLevel = function(level) {
+            const input = document.getElementById('chkFuelLevel');
+            if (input) input.value = level;
+            document.querySelectorAll('.fuel-btn').forEach(btn => {
+                if (btn.getAttribute('data-fuel') === level) {
+                    btn.className = "fuel-btn py-2 px-1 rounded-xl border border-blue-600 bg-blue-600 text-white text-center text-xs font-bold transition shadow-sm";
+                } else {
+                    btn.className = "fuel-btn py-2 px-1 rounded-xl border border-slate-300 dark:border-slate-600 text-center text-xs font-bold transition hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200";
+                }
+            });
+        };
+
+        window.calculateKmDiff = function() {
+            const startKmEl = document.getElementById('chkStartKm');
+            const endKmEl = document.getElementById('chkEndKm');
+            const start = parseInt(startKmEl ? startKmEl.value : 0) || 0;
+            const end = parseInt(endKmEl ? endKmEl.value : 0) || 0;
+            const diffBox = document.getElementById('chkKmDiffBox');
+            const diffVal = document.getElementById('chkKmDiffVal');
+
+            if (end > start) {
+                const diff = end - start;
+                if (diffVal) diffVal.innerText = diff.toLocaleString() + ' Km';
+                if (diffBox) diffBox.classList.remove('hidden');
+            } else {
+                if (diffBox) diffBox.classList.add('hidden');
+            }
+        };
+
+        window.saveCheckinReport = function() {
+            if (!currentCheckinRental) return;
+
+            const startKm = parseInt(document.getElementById('chkStartKm')?.value) || 0;
+            const endKm = parseInt(document.getElementById('chkEndKm')?.value) || null;
+            const fuel = document.getElementById('chkFuelLevel')?.value || '4/4';
+            const notes = document.getElementById('chkNotes')?.value.trim() || '';
+
+            currentCheckinRental.startKm = startKm;
+            currentCheckinRental.fuelLevel = fuel;
+            currentCheckinRental.checkinNotes = notes;
+
+            if (currentCheckinPhase === 'return' && endKm) {
+                currentCheckinRental.endKm = endKm;
+                currentCheckinRental.status = 'concluso';
+                
+                const v = vehicles.find(item => item.id === currentCheckinRental.vehicleId);
+                if (v) v.status = 'disponibile';
+            }
+
+            saveToStorage();
+            closeCheckinModal();
+            renderAll();
+            showToast("✓ Verbale salvato con successo!", "success");
+        };
+
+        window.printCheckinReportPDF = function() {
+            if (!currentCheckinRental) return;
+            const r = currentCheckinRental;
+            const customer = customers.find(c => c.id === r.customerId) || {};
+            const vehicle = vehicles.find(v => v.id === r.vehicleId) || {};
+
+            const startKm = document.getElementById('chkStartKm')?.value || '---';
+            const endKm = document.getElementById('chkEndKm')?.value || 'In corso';
+            const fuel = document.getElementById('chkFuelLevel')?.value || '4/4';
+            const notes = document.getElementById('chkNotes')?.value || 'Nessuna anomalia riscontrata.';
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            if (companyProfile.logo) {
+                try { doc.addImage(companyProfile.logo, 'PNG', 14, 10, 28, 18); } catch(e) {}
+            }
+
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(15);
+            doc.setTextColor(30, 58, 138);
+            doc.text(companyProfile.name || "FLEET & RENTAL PRO", companyProfile.logo ? 46 : 14, 18);
+
+            doc.setFontSize(8.5);
+            doc.setFont("helvetica", "normal");
+            doc.setTextColor(100, 116, 139);
+            const compDetails = `P.IVA: ${companyProfile.vat || '---'} | Sede: ${companyProfile.legalAddress || '---'} | Tel: ${companyProfile.phone || '---'}`;
+            doc.text(compDetails, companyProfile.logo ? 46 : 14, 24);
+
+            doc.setDrawColor(203, 213, 225);
+            doc.line(14, 30, 196, 30);
+
+            doc.setFontSize(13);
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(15, 23, 42);
+            doc.text(`VERBALE DI CONSEGNA & RIENTRO VEICOLO (CONTRATTO ${r.id})`, 14, 38);
+
+            doc.autoTable({
+                startY: 43,
+                theme: 'plain',
+                styles: { fontSize: 8.5, cellPadding: 2 },
+                body: [
+                    [
+                        { content: 'LOCATORE (Azienda):\n' + (companyProfile.name || 'FLEET & RENTAL PRO') + '\nP.IVA: ' + (companyProfile.vat || '---'), styles: { fontStyle: 'bold', textColor: [30, 41, 59] } },
+                        { content: 'LOCATARIO (Cliente):\n' + (customer.name || '---') + '\nCF / P.IVA: ' + (customer.vat || '---') + '\nTel: ' + (customer.phone || '---'), styles: { fontStyle: 'bold', textColor: [30, 41, 59] } }
+                    ]
+                ]
+            });
+
+            doc.autoTable({
+                startY: doc.lastAutoTable.finalY + 4,
+                head: [['Dati Mezzo', 'Chilometraggio & Carburante', 'Periodo']],
+                body: [
+                    [
+                        `Targa: ${vehicle.plate || '---'}\nModello: ${vehicle.model || '---'}\nTipo: ${vehicle.type || '---'}`,
+                        `Km Partenza: ${startKm}\nKm Rientro: ${endKm}\nLivello Serbatoio: ${fuel}`,
+                        `Inizio: ${formatDate(r.startDate)}\nFine: ${formatDate(r.endDate)}\nFase: ${currentCheckinPhase === 'departure' ? 'CONSEGNA (Partenza)' : 'RIENTRO (Restituzione)'}`
+                    ]
+                ],
+                headStyles: { fillColor: [37, 99, 235], textColor: 255, fontStyle: 'bold' }
+            });
+
+            const bodyOk = document.getElementById('chkBodyOk')?.checked ? 'CONFORME [X]' : 'ANOMALIA [!]';
+            const glassOk = document.getElementById('chkGlassOk')?.checked ? 'CONFORME [X]' : 'ANOMALIA [!]';
+            const tiresOk = document.getElementById('chkTiresOk')?.checked ? 'CONFORME [X]' : 'ANOMALIA [!]';
+            const toolsOk = document.getElementById('chkToolsOk')?.checked ? 'CONFORME [X]' : 'ANOMALIA [!]';
+            const docsOk = document.getElementById('chkDocsOk')?.checked ? 'CONFORME [X]' : 'ANOMALIA [!]';
+            const cleanOk = document.getElementById('chkCleanOk')?.checked ? 'CONFORME [X]' : 'ANOMALIA [!]';
+
+            doc.autoTable({
+                startY: doc.lastAutoTable.finalY + 4,
+                head: [['Punto Ispezione', 'Esito Ispezione', 'Punto Ispezione', 'Esito Ispezione']],
+                body: [
+                    ['Carrozzeria & Vernice', bodyOk, 'Parabrezza & Cristalli', glassOk],
+                    ['Pneumatici & Pressione', tiresOk, 'Kit Bordo & Triangolo', toolsOk],
+                    ['Libretto & Documenti', docsOk, 'Pulizia Interna/Esterna', cleanOk]
+                ],
+                styles: { fontSize: 8 },
+                headStyles: { fillColor: [71, 85, 105], textColor: 255 }
+            });
+
+            doc.setFontSize(8.5);
+            doc.setFont("helvetica", "bold");
+            doc.text("NOTE ED EVENTUALI DANNI RISCONTRATI:", 14, doc.lastAutoTable.finalY + 8);
+            doc.setFont("helvetica", "normal");
+            doc.text(notes, 14, doc.lastAutoTable.finalY + 13, { maxWidth: 180 });
+
+            const signY = doc.lastAutoTable.finalY + 38;
+            doc.setFontSize(9);
+            doc.setFont("helvetica", "bold");
+            doc.text("Firma per il Locatore (Azienda)", 25, signY);
+            doc.line(20, signY + 15, 80, signY + 15);
+
+            doc.text("Firma per il Locatario (Cliente)", 125, signY);
+            doc.line(120, signY + 15, 185, signY + 15);
+
+            doc.save(`Verbale_Consegna_${r.id}.pdf`);
+            showToast("✓ PDF del Verbale generato!", "success");
+        };
+
         function openCustomerModal() {
             document.getElementById('custName').value = '';
             document.getElementById('custVat').value = '';
