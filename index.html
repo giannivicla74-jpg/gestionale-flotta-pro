@@ -213,14 +213,9 @@
             var nameInput = document.getElementById('obCompanyName');
             var name = nameInput ? nameInput.value.trim() : '';
 
-            // Validazione obbligatoria Ragione Sociale
-            if (!name || name.length < 2 || name.toLowerCase() === 'azienda') {
-                if (nameInput) {
-                    nameInput.focus();
-                    nameInput.style.borderColor = '#ef4444';
-                    nameInput.style.boxShadow = '0 0 0 4px rgba(239, 68, 68, 0.25)';
-                }
-                alert("⚠️ Per favore inserisci la Ragione Sociale dell'Azienda per entrare nel gestionale.");
+            if (!name || name.length < 2) {
+                alert("⚠️ Inserisci la Ragione Sociale dell'Azienda.");
+                if (nameInput) nameInput.focus();
                 return false;
             }
 
@@ -263,20 +258,13 @@
                 companyProfile.logoDataUrl = onboardingLogoDataUrl;
             }
 
-            // Salva flag e profilo in storage
             localStorage.setItem('fleet_rental_is_registered', 'true');
             localStorage.setItem('fleet_rental_company_profile', JSON.stringify(companyProfile));
 
-            // Rimuovi COMPLETAMENTE l'overlay di onboarding dal DOM
-            var obScreen = document.getElementById('onboardingScreen');
-            if (obScreen) {
-                obScreen.remove();
-            }
-
-            // Aggiorna l'header
+            closeOnboardingModal();
             applyCompanyProfileUI();
+            checkOnboardingStatus();
 
-            // Refresh UI in sicurezza
             try { if (typeof updateStatsPanel === "function") updateStatsPanel(); } catch(e) {}
             try { if (typeof renderVehicles === "function") renderVehicles(); } catch(e) {}
             try { if (typeof renderOperators === "function") renderOperators(); } catch(e) {}
@@ -286,7 +274,7 @@
 
             try {
                 if (typeof showToast === 'function') {
-                    showToast("Benvenuto in FLEET & RENTAL PRO, " + name + "!", "success");
+                    showToast("✓ Azienda salvata: " + name, "success");
                 }
             } catch(e) {}
 
@@ -295,26 +283,56 @@
 
         window.checkOnboardingStatus = function() {
             var isReg = localStorage.getItem('fleet_rental_is_registered') === 'true';
-            var hasValidName = companyProfile && companyProfile.name && companyProfile.name.trim() !== '' && companyProfile.name.toLowerCase() !== 'azienda';
-            var obScreen = document.getElementById('onboardingScreen');
-            var btnRegister = document.getElementById('btnHeaderCompanyRegister');
             var headerShort = document.getElementById('headerCompanyNameShort');
+            var btnRegister = document.getElementById('btnHeaderCompanyRegister');
 
-            if (!isReg || !hasValidName) {
-                if (obScreen) {
-                    obScreen.style.display = 'flex';
-                }
-                if (btnRegister) {
-                    btnRegister.classList.remove('hidden');
-                }
-                if (headerShort) headerShort.innerText = "Registra Azienda";
-            } else {
-                if (obScreen) {
-                    obScreen.remove(); // Rimuovi dal DOM se già registrato
-                }
+            if (isReg && companyProfile && companyProfile.name) {
                 if (headerShort) headerShort.innerText = companyProfile.shortName || companyProfile.name;
+                if (btnRegister) btnRegister.classList.remove('animate-pulse');
+            } else {
+                if (headerShort) headerShort.innerText = "Configura Azienda";
+                if (btnRegister) btnRegister.classList.add('animate-pulse');
             }
             applyCompanyProfileUI();
+        };
+
+        window.openOnboardingOrProfileModal = function() {
+            var obScreen = document.getElementById('onboardingScreen');
+            if (obScreen) {
+                obScreen.style.removeProperty('display');
+                obScreen.style.display = 'flex';
+                obScreen.classList.remove('hidden');
+                
+                // Pre-populate fields if companyProfile has data
+                if (companyProfile.name) {
+                    var el;
+                    if ((el = document.getElementById('obCompanyName'))) el.value = companyProfile.name;
+                    if ((el = document.getElementById('obCompanyShortName'))) el.value = companyProfile.shortName || '';
+                    if ((el = document.getElementById('obCompanyVat'))) el.value = companyProfile.vat || '';
+                    if ((el = document.getElementById('obCompanySdi'))) el.value = companyProfile.sdiCode || '';
+                    if ((el = document.getElementById('obCompanyPhone'))) el.value = companyProfile.phone || '';
+                    if ((el = document.getElementById('obCompanyLegalAddress'))) el.value = companyProfile.legalAddress || '';
+                    if ((el = document.getElementById('obCompanyOperativeAddress'))) el.value = companyProfile.operativeAddress || '';
+                    if ((el = document.getElementById('obCompanyEmail'))) el.value = companyProfile.email || '';
+                    if ((el = document.getElementById('obCompanyPec'))) el.value = companyProfile.pec || '';
+                    
+                    var targetLogo = companyProfile.logo || companyProfile.logoDataUrl;
+                    if (targetLogo) {
+                        var prev = document.getElementById('onboardingLogoPreview');
+                        var ph = document.getElementById('onboardingLogoPlaceholder');
+                        if (prev) { prev.src = targetLogo; prev.style.display = 'block'; }
+                        if (ph) { ph.style.display = 'none'; }
+                    }
+                }
+            }
+        };
+
+        window.closeOnboardingModal = function() {
+            var obScreen = document.getElementById('onboardingScreen');
+            if (obScreen) {
+                obScreen.style.display = 'none';
+                obScreen.classList.add('hidden');
+            }
         };
 
         window.applyCompanyProfileUI = function() {
@@ -383,7 +401,7 @@
 <body class="bg-slate-50 dark:bg-slate-900 min-h-screen text-slate-800 dark:text-slate-100 font-sans pb-4 transition-colors duration-200 flex flex-col justify-between">
 
     <!-- FULLSCREEN ONBOARDING / REGISTRAZIONE AZIENDA AL PRIMO AVVIO -->
-    <div id="onboardingScreen" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto" style="background-color: rgba(2, 6, 23, 0.92); backdrop-filter: blur(12px);">
+    <div id="onboardingScreen" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto hidden" style="display: none;">
         <div class="max-w-2xl w-full bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden my-auto animate-in fade-in zoom-in duration-300" style="border-radius: 24px; max-width: 680px; width: 100%;">
             
             <!-- Header Onboarding con Scudo Dorato Integrato -->
@@ -394,7 +412,7 @@
                         <path d="m9 12 2 2 4-4"></path>
                     </svg>
                 </div>
-                <button type="button" onclick="var el=document.getElementById('onboardingScreen');if(el)el.remove();localStorage.setItem('fleet_rental_is_registered','true');" class="absolute top-4 right-4 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-xl text-xs font-bold transition flex items-center gap-1 cursor-pointer" title="Chiudi / Salta">
+                <button type="button" onclick="closeOnboardingModal()" class="absolute top-4 right-4 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-xl text-xs font-bold transition flex items-center gap-1 cursor-pointer" title="Chiudi / Salta">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                     <span>Entra Subito</span>
                 </button>
@@ -490,7 +508,7 @@
 
                 <!-- PULSANTE REGISTRAZIONE -->
                 <div style="margin-top: 20px;">
-                    <button type="button" onclick="try{submitOnboardingRegistration(event);}catch(e){console.error(e);}var el=document.getElementById('onboardingScreen');if(el)el.remove();localStorage.setItem('fleet_rental_is_registered','true');" style="background: linear-gradient(90deg, #2563eb 0%, #4f46e5 50%, #1d4ed8 100%); color: #ffffff; font-weight: 800; font-size: 15px; padding: 14px 20px; border-radius: 16px; width: 100%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);" class="hover:opacity-95 active:scale-[0.99] transition">
+                    <button type="button" onclick="submitOnboardingRegistration(event)" style="background: linear-gradient(90deg, #2563eb 0%, #4f46e5 50%, #1d4ed8 100%); color: #ffffff; font-weight: 800; font-size: 15px; padding: 14px 20px; border-radius: 16px; width: 100%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);" class="hover:opacity-95 active:scale-[0.99] transition">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg>
                         <span>Registra Azienda & Entra nel Gestionale</span>
                     </button>
