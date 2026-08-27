@@ -156,7 +156,8 @@
             email: "",
             legalAddress: "",
             operativeAddress: "",
-            logo: ""
+            logo: "",
+            logoDataUrl: ""
         };
 
         // Load profile immediately on startup
@@ -188,6 +189,7 @@
             reader.onload = function(e) {
                 onboardingLogoDataUrl = e.target.result;
                 companyProfile.logo = onboardingLogoDataUrl;
+                companyProfile.logoDataUrl = onboardingLogoDataUrl;
                 
                 var prev = document.getElementById('onboardingLogoPreview');
                 var ph = document.getElementById('onboardingLogoPlaceholder');
@@ -202,7 +204,7 @@
             reader.readAsDataURL(file);
         }
 
-        function submitOnboardingRegistration(event) {
+        window.submitOnboardingRegistration = function(event) {
             if (event) {
                 if (event.preventDefault) event.preventDefault();
                 if (event.stopPropagation) event.stopPropagation();
@@ -218,17 +220,8 @@
                     nameInput.style.borderColor = '#ef4444';
                     nameInput.style.boxShadow = '0 0 0 4px rgba(239, 68, 68, 0.25)';
                 }
-                if (typeof showToast === 'function') {
-                    showToast("⚠️ Inserisci la Ragione Sociale dell'Azienda per procedere!", "warning");
-                } else {
-                    alert("⚠️ Inserisci la Ragione Sociale dell'Azienda per procedere!");
-                }
+                alert("⚠️ Per favore inserisci la Ragione Sociale dell'Azienda per entrare nel gestionale.");
                 return false;
-            }
-
-            if (nameInput) {
-                nameInput.style.borderColor = '';
-                nameInput.style.boxShadow = '';
             }
 
             var shortNameInput = document.getElementById('obCompanyShortName');
@@ -267,16 +260,17 @@
             companyProfile.pec = pec;
             if (onboardingLogoDataUrl) {
                 companyProfile.logo = onboardingLogoDataUrl;
+                companyProfile.logoDataUrl = onboardingLogoDataUrl;
             }
 
             // Salva flag e profilo in storage
             localStorage.setItem('fleet_rental_is_registered', 'true');
             localStorage.setItem('fleet_rental_company_profile', JSON.stringify(companyProfile));
 
-            // Chiudi immediatamente la schermata onboarding
+            // Rimuovi COMPLETAMENTE l'overlay di onboarding dal DOM
             var obScreen = document.getElementById('onboardingScreen');
             if (obScreen) {
-                obScreen.style.setProperty('display', 'none', 'important');
+                obScreen.remove();
             }
 
             // Aggiorna l'header
@@ -297,9 +291,9 @@
             } catch(e) {}
 
             return false;
-        }
+        };
 
-        function checkOnboardingStatus() {
+        window.checkOnboardingStatus = function() {
             var isReg = localStorage.getItem('fleet_rental_is_registered') === 'true';
             var hasValidName = companyProfile && companyProfile.name && companyProfile.name.trim() !== '' && companyProfile.name.toLowerCase() !== 'azienda';
             var obScreen = document.getElementById('onboardingScreen');
@@ -316,14 +310,14 @@
                 if (headerShort) headerShort.innerText = "Registra Azienda";
             } else {
                 if (obScreen) {
-                    obScreen.style.setProperty('display', 'none', 'important');
+                    obScreen.remove(); // Rimuovi dal DOM se già registrato
                 }
                 if (headerShort) headerShort.innerText = companyProfile.shortName || companyProfile.name;
             }
             applyCompanyProfileUI();
-        }
+        };
 
-        function applyCompanyProfileUI() {
+        window.applyCompanyProfileUI = function() {
             var headerName = document.getElementById('headerCompanyName');
             if (headerName) headerName.innerText = companyProfile.name || 'FLEET & RENTAL PRO';
 
@@ -338,9 +332,12 @@
 
             var headerLogo = document.getElementById('headerCompanyLogo');
             var headerIcon = document.getElementById('headerDefaultIcon');
+            var headerLogoImg = document.getElementById('headerCompanyLogoImg');
+            
+            var targetLogo = companyProfile.logo || companyProfile.logoDataUrl;
             if (headerLogo) {
-                if (companyProfile.logo) {
-                    headerLogo.src = companyProfile.logo;
+                if (targetLogo) {
+                    headerLogo.src = targetLogo;
                     headerLogo.style.display = 'block';
                     headerLogo.classList.remove('hidden');
                     if (headerIcon) headerIcon.style.display = 'none';
@@ -350,26 +347,22 @@
                     if (headerIcon) headerIcon.style.display = 'flex';
                 }
             }
-        }
+            if (headerLogoImg) {
+                if (targetLogo) {
+                    headerLogoImg.src = targetLogo;
+                    headerLogoImg.classList.remove('hidden');
+                } else {
+                    headerLogoImg.classList.add('hidden');
+                }
+            }
+        };
 
-        // Run check as soon as DOM is ready
         document.addEventListener('DOMContentLoaded', function() {
             var btn = document.getElementById('btnSubmitOnboarding');
             if (btn) {
-                btn.onclick = submitOnboardingRegistration;
+                btn.onclick = window.submitOnboardingRegistration;
             }
-            
-            var inputs = document.querySelectorAll('#onboardingFormContainer input');
-            inputs.forEach(function(inp) {
-                inp.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        submitOnboardingRegistration(e);
-                    }
-                });
-            });
-            
-            checkOnboardingStatus();
+            window.checkOnboardingStatus();
         });
     </script>
 
