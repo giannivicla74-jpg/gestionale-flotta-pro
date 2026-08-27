@@ -710,6 +710,14 @@
                                 <input type="checkbox" id="chkDepTools" checked class="w-4 h-4 text-blue-600 rounded">
                                 <span class="font-medium text-slate-800 dark:text-slate-200">Dotazioni Bordo / Triangolo Presenti</span>
                             </label>
+                            <label class="flex items-center space-x-2.5 p-2 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer">
+                                <input type="checkbox" id="chkDepDocs" checked class="w-4 h-4 text-blue-600 rounded">
+                                <span class="font-medium text-slate-800 dark:text-slate-200">Libretto & Documenti di Bordo Presenti</span>
+                            </label>
+                            <label class="flex items-center space-x-2.5 p-2 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer">
+                                <input type="checkbox" id="chkDepClean" checked class="w-4 h-4 text-blue-600 rounded">
+                                <span class="font-medium text-slate-800 dark:text-slate-200">Pulizia Interna & Esterna Conforme</span>
+                            </label>
                         </div>
                     </div>
 
@@ -774,6 +782,18 @@
                             <label class="flex items-center space-x-2.5 p-2 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer">
                                 <input type="checkbox" id="chkRetTires" checked class="w-4 h-4 text-indigo-600 rounded">
                                 <span class="font-medium text-slate-800 dark:text-slate-200">Pneumatici Senza Tagli o Usure Anomale</span>
+                            </label>
+                            <label class="flex items-center space-x-2.5 p-2 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer">
+                                <input type="checkbox" id="chkRetTools" checked class="w-4 h-4 text-indigo-600 rounded">
+                                <span class="font-medium text-slate-800 dark:text-slate-200">Tutte le Dotazioni Riconsegnate</span>
+                            </label>
+                            <label class="flex items-center space-x-2.5 p-2 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer">
+                                <input type="checkbox" id="chkRetDocs" checked class="w-4 h-4 text-indigo-600 rounded">
+                                <span class="font-medium text-slate-800 dark:text-slate-200">Libretto & Documenti di Bordo Riconsegnati</span>
+                            </label>
+                            <label class="flex items-center space-x-2.5 p-2 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer">
+                                <input type="checkbox" id="chkRetClean" checked class="w-4 h-4 text-indigo-600 rounded">
+                                <span class="font-medium text-slate-800 dark:text-slate-200">Pulizia Interna & Esterna Conforme</span>
                             </label>
                             <label class="flex items-center space-x-2.5 p-2 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer">
                                 <input type="checkbox" id="chkRetTools" checked class="w-4 h-4 text-indigo-600 rounded">
@@ -1982,7 +2002,9 @@
                     ['Carrozzeria e Verniciatura', tempDepState.checklist.body ? 'CONFORME [X]' : 'ANOMALIA [!]', tempRetState.checklist.body ? 'CONFORME [X]' : 'ANOMALIA [!]'],
                     ['Parabrezza e Cristalli', tempDepState.checklist.glass ? 'CONFORME [X]' : 'ANOMALIA [!]', tempRetState.checklist.glass ? 'CONFORME [X]' : 'ANOMALIA [!]'],
                     ['Pneumatici e Battistrada', tempDepState.checklist.tires ? 'CONFORME [X]' : 'ANOMALIA [!]', tempRetState.checklist.tires ? 'CONFORME [X]' : 'ANOMALIA [!]'],
-                    ['Dotazioni e Kit di Bordo', tempDepState.checklist.tools ? 'PRESENTI [X]' : 'MANCANTI [!]', tempRetState.checklist.tools ? 'RESTITUITE [X]' : 'MANCANTI [!]']
+                    ['Dotazioni e Kit di Bordo', tempDepState.checklist.tools ? 'PRESENTI [X]' : 'MANCANTI [!]', tempRetState.checklist.tools ? 'RESTITUITE [X]' : 'MANCANTI [!]'],
+                    ['Libretto & Documenti di Bordo', tempDepState.checklist.docs ? 'PRESENTI [X]' : 'MANCANTI [!]', tempRetState.checklist.docs ? 'RICONSEGNATI [X]' : 'MANCANTI [!]'],
+                    ['Pulizia Interna & Esterna', tempDepState.checklist.clean ? 'CONFORME [X]' : 'NON CONFORME [!]', tempRetState.checklist.clean ? 'CONFORME [X]' : 'NON CONFORME [!]']
                 ],
                 headStyles: { fillColor: [37, 99, 235], textColor: 255, fontStyle: 'bold' }
             });
