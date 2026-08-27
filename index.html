@@ -9646,7 +9646,23 @@
             if (event && event.preventDefault) event.preventDefault();
 
             try {
-                const name = document.getElementById('obCompanyName')?.value?.trim() || 'Azienda';
+                const nameInput = document.getElementById('obCompanyName');
+                const name = nameInput?.value?.trim();
+
+                // Validazione: la Ragione Sociale deve essere inserita obbligatoriamente
+                if (!name) {
+                    if (nameInput) {
+                        nameInput.focus();
+                        nameInput.classList.add('ring-2', 'ring-red-500', 'border-red-500');
+                    }
+                    showToast("⚠️ Inserisci la Ragione Sociale dell'Azienda per procedere!", "warning");
+                    return;
+                } else {
+                    if (nameInput) {
+                        nameInput.classList.remove('ring-2', 'ring-red-500', 'border-red-500');
+                    }
+                }
+
                 const shortName = document.getElementById('obCompanyShortName')?.value?.trim() || name.split(' ')[0];
                 const vat = document.getElementById('obCompanyVat')?.value?.trim() || '';
                 const sdi = document.getElementById('obCompanySdi')?.value?.trim() || '';
@@ -9698,6 +9714,9 @@
                     console.log('Toast skipped', err);
                 }
             } catch(e) {
+                console.error("Error in submitOnboardingRegistration:", e);
+            }
+        } catch(e) {
                 console.error("Error in submitOnboardingRegistration:", e);
                 // Fallback force close onboarding
                 const obScreen = document.getElementById('onboardingScreen');
