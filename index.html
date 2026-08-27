@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>FLEET & RENTAL PRO - Gestionale Flotta & Noleggio Mezzi</title>
     
-    <!-- Meta & Favicon -->
     <meta name="theme-color" content="#1e3a8a">
     <meta name="description" content="Gestionale professionale per il controllo scadenze flotta mezzi e contratti di noleggio veicoli">
     
@@ -44,43 +43,25 @@
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         .dark ::-webkit-scrollbar-thumb { background: #475569; }
         
-        @keyframes pulse-subtle {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-        .pulse-badge { animation: pulse-subtle 2s infinite; }
-        
         .tab-btn.active {
             background-color: #2563eb;
             color: #ffffff;
             font-weight: 700;
             box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
         }
-        
-        .gantt-bar {
-            transition: all 0.2s ease;
-        }
-        .gantt-bar:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-        }
     </style>
 </head>
 
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col font-sans transition-colors duration-200">
 
-    <!-- ========================================== -->
-    <!-- 1. ONBOARDING / REGISTRAZIONE AZIENDA     -->
-    <!-- ========================================== -->
-    <div id="onboardingScreen" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto hidden">
+    <!-- ========================================================= -->
+    <!-- 1. SCHERMATA INIZIALE DI ONBOARDING (REGISTRAZIONE AZIENDA) -->
+    <!-- ========================================================= -->
+    <div id="onboardingScreen" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
         <div class="max-w-2xl w-full bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden my-auto animate-in fade-in zoom-in duration-300">
             
-            <!-- Header Onboarding con Scudo Dorato -->
+            <!-- Header con Scudo Dorato -->
             <div class="bg-gradient-to-r from-blue-700 via-indigo-700 to-slate-900 p-6 sm:p-8 text-white text-center relative">
-                <button type="button" onclick="closeOnboardingModal()" class="absolute top-4 right-4 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-xl text-xs font-bold transition flex items-center gap-1 cursor-pointer" title="Entra subito">
-                    <i data-lucide="x" class="w-4 h-4"></i>
-                    <span>Entra Subito</span>
-                </button>
                 <div class="w-16 h-16 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
                     <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
@@ -106,7 +87,7 @@
                         <h4 class="text-sm font-bold text-slate-900 dark:text-white">Logo Azienda (Opzionale)</h4>
                         <p class="text-xs text-slate-500 dark:text-slate-400">Apparirà nell'intestazione e su tutti i contratti di noleggio e verbali PDF.</p>
                         <div>
-                            <button type="button" onclick="document.getElementById('onboardingLogoInput').click()" class="bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800 hover:bg-blue-100 text-xs font-bold px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow-sm">
+                            <button type="button" onclick="document.getElementById('onboardingLogoInput').click()" class="bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800 hover:bg-blue-100 text-xs font-bold px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow-sm mx-auto sm:mx-0">
                                 <i data-lucide="upload" class="w-3.5 h-3.5"></i>
                                 <span>Scegli File Immagine</span>
                             </button>
@@ -135,33 +116,33 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Partita IVA</label>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Partita IVA *</label>
                             <input type="text" id="obCompanyVat" placeholder="Es. IT12345678901" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl text-sm font-mono focus:ring-2 focus:ring-blue-500 focus:outline-none text-slate-900 dark:text-white">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Codice SDI</label>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Codice Destinatario SDI</label>
                             <input type="text" id="obCompanySdi" placeholder="Es. ABC1234" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl text-sm font-mono focus:ring-2 focus:ring-blue-500 focus:outline-none text-slate-900 dark:text-white">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Telefono</label>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Telefono Principale</label>
                             <input type="text" id="obCompanyPhone" placeholder="+39 081 ..." class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none text-slate-900 dark:text-white">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Sede Legale</label>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Indirizzo Sede Legale *</label>
                             <input type="text" id="obCompanyLegalAddress" placeholder="Via / Viale, Civico, Città (Prov)" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none text-slate-900 dark:text-white">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Sede Operativa / Deposito</label>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Sede Operativa / Deposito Mezzi</label>
                             <input type="text" id="obCompanyOperativeAddress" placeholder="Indirizzo Cantiere o Deposito" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none text-slate-900 dark:text-white">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Email Aziendale</label>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Email Aziendale *</label>
                             <input type="email" id="obCompanyEmail" placeholder="info@azienda.it" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none text-slate-900 dark:text-white">
                         </div>
                         <div>
@@ -184,9 +165,9 @@
     </div>
 
 
-    <!-- ========================================== -->
-    <!-- 2. HEADER PRINCIPALE DELL'APPLICAZIONE     -->
-    <!-- ========================================== -->
+    <!-- ========================================================= -->
+    <!-- 2. HEADER PRINCIPALE DELL'APPLICAZIONE                    -->
+    <!-- ========================================================= -->
     <header class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-40 shadow-sm transition-colors duration-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-[4.2rem] py-2.5 flex items-center justify-between gap-3">
             
@@ -195,7 +176,7 @@
                 <div id="headerDefaultIcon" class="bg-gradient-to-tr from-blue-600 to-indigo-600 p-2.5 rounded-2xl text-white shadow-md shadow-blue-500/20 shrink-0">
                     <i data-lucide="shield-check" class="w-6 h-6 text-amber-300"></i>
                 </div>
-                <img id="headerCompanyLogo" class="hidden h-10 max-w-[130px] object-contain rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-1 bg-white shrink-0" alt="Logo">
+                <img id="headerCompanyLogo" class="hidden h-10 max-w-[140px] object-contain rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-1 bg-white shrink-0" alt="Logo Aziendale">
                 <div class="min-w-0">
                     <h1 class="text-base sm:text-lg font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2 truncate leading-tight">
                         <span id="headerCompanyName">FLEET & RENTAL PRO</span>
@@ -208,23 +189,23 @@
             <!-- Action Controls -->
             <div class="flex items-center space-x-2">
                 <!-- Bottone Profilo Azienda -->
-                <button onclick="openOnboardingModal()" class="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md transition font-bold" title="Configura Profilo Azienda e Logo">
+                <button onclick="openOnboardingModal()" class="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md transition font-bold" title="Modifica Dati Azienda o Cambia Logo">
                     <i data-lucide="building-2" class="w-4 h-4"></i>
                     <span class="text-xs font-bold hidden sm:inline" id="headerCompanyNameShort">Profilo Azienda</span>
                 </button>
 
                 <!-- Export PDF Flotta -->
-                <button onclick="exportFleetPDF()" class="p-2.5 rounded-xl bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition dark:bg-red-950/40 dark:text-red-400 dark:border-red-800/50" title="Esporta Report PDF">
+                <button onclick="exportFleetPDF()" class="p-2.5 rounded-xl bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition dark:bg-red-950/40 dark:text-red-400 dark:border-red-800/50" title="Esporta Report Flotta PDF">
                     <i data-lucide="file-text" class="w-4 h-4"></i>
                 </button>
 
                 <!-- Export Excel -->
-                <button onclick="exportFleetExcel()" class="p-2.5 rounded-xl bg-green-50 text-green-600 border border-green-200 hover:bg-green-100 transition dark:bg-green-950/40 dark:text-green-400 dark:border-green-800/50" title="Esporta Excel">
+                <button onclick="exportFleetExcel()" class="p-2.5 rounded-xl bg-green-50 text-green-600 border border-green-200 hover:bg-green-100 transition dark:bg-green-950/40 dark:text-green-400 dark:border-green-800/50" title="Esporta Flotta Excel">
                     <i data-lucide="sheet" class="w-4 h-4"></i>
                 </button>
 
                 <!-- Toggle Dark/Light Mode -->
-                <button onclick="toggleTheme()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-600 transition" title="Cambia Tema">
+                <button onclick="toggleTheme()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-600 transition" title="Cambia Tema Chiaro/Scuro">
                     <i data-lucide="moon" id="themeIcon" class="w-4 h-4"></i>
                 </button>
             </div>
@@ -232,9 +213,9 @@
     </header>
 
 
-    <!-- ========================================== -->
-    <!-- 3. NAVIGATION TABS BAR                     -->
-    <!-- ========================================== -->
+    <!-- ========================================================= -->
+    <!-- 3. NAVIGATION TABS BAR                                    -->
+    <!-- ========================================================= -->
     <div class="bg-white dark:bg-slate-800/90 border-b border-slate-200 dark:border-slate-700 sticky top-[4.2rem] z-30 shadow-sm backdrop-blur-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex space-x-1.5 sm:space-x-3 overflow-x-auto py-2.5 no-scrollbar">
@@ -270,12 +251,12 @@
     </div>
 
 
-    <!-- ========================================== -->
-    <!-- 4. CONTENUTO PRINCIPALE (TABS)             -->
-    <!-- ========================================== -->
+    <!-- ========================================================= -->
+    <!-- 4. CONTENUTO PRINCIPALE (DASHBOARD & TABS)                -->
+    <!-- ========================================================= -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full space-y-6">
 
-        <!-- STATS BAR -->
+        <!-- STATS COUNTER BAR -->
         <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 sm:gap-4">
             <div onclick="filterFleetByStatus('all')" class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm cursor-pointer hover:border-blue-500 transition">
                 <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wide">Totale Mezzi</div>
@@ -299,15 +280,13 @@
             </div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- TAB 1: PARCO MEZZI & SCADENZE             -->
-        <!-- ========================================== -->
+        <!-- TAB 1: PARCO MEZZI & SCADENZE -->
         <section id="tabVehiclesContent" class="space-y-4">
             <div class="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
                 <!-- Ricerca -->
                 <div class="relative w-full sm:w-96">
                     <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                    <input type="text" id="vehicleSearchInput" oninput="renderVehicles()" placeholder="Cerca targa, marca, modello, autista..." class="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <input type="text" id="vehicleSearchInput" oninput="renderVehicles()" placeholder="Cerca targa, marca, modello..." class="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none">
                 </div>
                 <!-- Pulsante Aggiungi Mezzo -->
                 <button onclick="openVehicleModal()" class="w-full sm:w-auto px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-1.5 cursor-pointer">
@@ -318,14 +297,12 @@
 
             <!-- Griglia Schede Veicoli -->
             <div id="vehiclesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <!-- Rendered dynamically -->
+                <!-- Popolato dinamicamente -->
             </div>
         </section>
 
 
-        <!-- ========================================== -->
-        <!-- TAB 2: NOLEGGI & CONTRATTI                -->
-        <!-- ========================================== -->
+        <!-- TAB 2: NOLEGGI & CONTRATTI -->
         <section id="tabRentalsContent" class="space-y-4 hidden">
             <div class="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
                 <div class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
@@ -354,7 +331,7 @@
                             </tr>
                         </thead>
                         <tbody id="rentalsTableBody" class="divide-y divide-slate-100 dark:divide-slate-700/60">
-                            <!-- Rendered dynamically -->
+                            <!-- Popolato dinamicamente -->
                         </tbody>
                     </table>
                 </div>
@@ -362,9 +339,7 @@
         </section>
 
 
-        <!-- ========================================== -->
-        <!-- TAB 3: PLANNING GRAFICO NOLEGGI           -->
-        <!-- ========================================== -->
+        <!-- TAB 3: PLANNING GRAFICO NOLEGGI -->
         <section id="tabPlanningContent" class="space-y-4 hidden">
             <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
                 <div class="flex items-center justify-between mb-4">
@@ -375,15 +350,13 @@
                     <span class="text-xs text-slate-400 font-medium" id="planningCurrentMonth"></span>
                 </div>
                 <div id="planningGanttContainer" class="overflow-x-auto">
-                    <!-- Rendered dynamically -->
+                    <!-- Popolato dinamicamente -->
                 </div>
             </div>
         </section>
 
 
-        <!-- ========================================== -->
-        <!-- TAB 4: CLIENTI & CONDUCENTI               -->
-        <!-- ========================================== -->
+        <!-- TAB 4: CLIENTI & CONDUCENTI -->
         <section id="tabCustomersContent" class="space-y-4 hidden">
             <div class="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
                 <div class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
@@ -396,14 +369,12 @@
                 </button>
             </div>
             <div id="customersGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <!-- Rendered dynamically -->
+                <!-- Popolato dinamicamente -->
             </div>
         </section>
 
 
-        <!-- ========================================== -->
-        <!-- TAB 5: CALENDARIO SCADENZE                 -->
-        <!-- ========================================== -->
+        <!-- TAB 5: CALENDARIO SCADENZE -->
         <section id="tabCalendarContent" class="space-y-4 hidden">
             <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
                 <div class="flex items-center justify-between mb-4">
@@ -413,7 +384,7 @@
                     </h3>
                 </div>
                 <div id="upcomingDeadlinesList" class="space-y-2.5">
-                    <!-- Rendered dynamically -->
+                    <!-- Popolato dinamicamente -->
                 </div>
             </div>
         </section>
@@ -421,9 +392,9 @@
     </main>
 
 
-    <!-- ========================================== -->
-    <!-- MODALI GESTIONALI                          -->
-    <!-- ========================================== -->
+    <!-- ========================================================= -->
+    <!-- MODALI DI GESTIONE                                        -->
+    <!-- ========================================================= -->
 
     <!-- MODALE AGGIUNGI/MODIFICA MEZZO -->
     <div id="vehicleModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto hidden">
@@ -515,13 +486,11 @@
                     <div>
                         <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Cliente Locatario *</label>
                         <select id="rentCustomerSelect" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                            <!-- Populated dynamically -->
                         </select>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Mezzo Flotta *</label>
                         <select id="rentVehicleSelect" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl text-xs font-bold focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                            <!-- Populated dynamically -->
                         </select>
                     </div>
                 </div>
@@ -609,11 +578,10 @@
     </div>
 
 
-    <!-- ========================================== -->
-    <!-- 5. JAVASCRIPT APPLICATION CORE ENGINE      -->
-    <!-- ========================================== -->
+    <!-- ========================================================= -->
+    <!-- 5. JAVASCRIPT APPLICATION CORE ENGINE                     -->
+    <!-- ========================================================= -->
     <script>
-        // --- STORAGE KEYS ---
         const KEY_PROFILE = 'fleet_rental_v3_company';
         const KEY_REGISTERED = 'fleet_rental_v3_registered';
         const KEY_VEHICLES = 'fleet_rental_v3_vehicles';
@@ -621,15 +589,14 @@
         const KEY_CUSTOMERS = 'fleet_rental_v3_customers';
         const KEY_THEME = 'fleet_rental_v3_theme';
 
-        // --- GLOBAL STATE ---
         let currentTab = 'vehicles';
         let currentFilter = 'all';
         let onboardingLogoDataUrl = "";
 
         let companyProfile = {
             id: "company-main",
-            name: "FLEET & RENTAL PRO",
-            shortName: "FLEET PRO",
+            name: "",
+            shortName: "",
             vat: "",
             sdiCode: "",
             phone: "",
@@ -639,7 +606,6 @@
             logo: ""
         };
 
-        // Demo Initial Data (Clean Generic Fleet)
         const DEFAULT_VEHICLES = [
             { id: "v1", plate: "GA123BC", type: "Trattore Stradale", model: "Scania 500S Super", status: "disponibile", dateRevisione: "2026-11-15", dateAssicurazione: "2026-10-10", dateBollo: "2026-12-31", dateTachigrafo: "2027-02-20" },
             { id: "v2", plate: "FP456TX", type: "Semirimorchio", model: "Schmitz Cargobull Frigo", status: "noleggio", dateRevisione: "2026-09-20", dateAssicurazione: "2026-09-05", dateBollo: "2026-12-31", dateTachigrafo: "2026-10-15" },
@@ -660,12 +626,12 @@
         let customers = [];
         let rentals = [];
 
-        // --- INITIALIZATION ---
+        // STARTUP
         document.addEventListener('DOMContentLoaded', () => {
             loadFromStorage();
             initTheme();
             renderAll();
-            checkFirstLaunch();
+            checkRegistrationOnStartup();
             lucide.createIcons();
         });
 
@@ -683,7 +649,6 @@
                 const storedR = localStorage.getItem(KEY_RENTALS);
                 rentals = storedR ? JSON.parse(storedR) : JSON.parse(JSON.stringify(DEFAULT_RENTALS));
             } catch(e) {
-                console.error("Storage load error:", e);
                 vehicles = DEFAULT_VEHICLES;
                 customers = DEFAULT_CUSTOMERS;
                 rentals = DEFAULT_RENTALS;
@@ -698,21 +663,23 @@
             localStorage.setItem(KEY_RENTALS, JSON.stringify(rentals));
         }
 
-        // --- CHECK FIRST LAUNCH ---
-        function checkFirstLaunch() {
+        // CONTROL ONBOARDING VISIBILITY
+        function checkRegistrationOnStartup() {
             const isReg = localStorage.getItem(KEY_REGISTERED) === 'true';
-            if (!isReg || !companyProfile.name || companyProfile.name === "FLEET & RENTAL PRO") {
-                openOnboardingModal();
+            const ob = document.getElementById('onboardingScreen');
+            if (!isReg || !companyProfile.name || companyProfile.name.trim() === '') {
+                if (ob) ob.style.display = 'flex';
+            } else {
+                if (ob) ob.style.display = 'none';
             }
         }
 
         function openOnboardingModal() {
             const ob = document.getElementById('onboardingScreen');
             if (ob) {
-                ob.classList.remove('hidden');
-                // Pre-fill fields if any
-                if (companyProfile.name && companyProfile.name !== "FLEET & RENTAL PRO") {
-                    document.getElementById('obCompanyName').value = companyProfile.name;
+                ob.style.display = 'flex';
+                if (companyProfile.name) {
+                    document.getElementById('obCompanyName').value = companyProfile.name || '';
                     document.getElementById('obCompanyShortName').value = companyProfile.shortName || '';
                     document.getElementById('obCompanyVat').value = companyProfile.vat || '';
                     document.getElementById('obCompanySdi').value = companyProfile.sdiCode || '';
@@ -722,10 +689,11 @@
                     document.getElementById('obCompanyEmail').value = companyProfile.email || '';
                     document.getElementById('obCompanyPec').value = companyProfile.pec || '';
                 }
-                if (companyProfile.logo) {
+                const targetLogo = companyProfile.logo || onboardingLogoDataUrl;
+                if (targetLogo) {
                     const prev = document.getElementById('onboardingLogoPreview');
                     const ph = document.getElementById('onboardingLogoPlaceholder');
-                    if (prev) { prev.src = companyProfile.logo; prev.classList.remove('hidden'); }
+                    if (prev) { prev.src = targetLogo; prev.classList.remove('hidden'); }
                     if (ph) { ph.classList.add('hidden'); }
                 }
                 lucide.createIcons();
@@ -734,7 +702,7 @@
 
         function closeOnboardingModal() {
             const ob = document.getElementById('onboardingScreen');
-            if (ob) ob.classList.add('hidden');
+            if (ob) ob.style.display = 'none';
         }
 
         function handleLogoUpload(event) {
@@ -752,7 +720,7 @@
                 const ph = document.getElementById('onboardingLogoPlaceholder');
                 if (prev) { prev.src = onboardingLogoDataUrl; prev.classList.remove('hidden'); }
                 if (ph) { ph.classList.add('hidden'); }
-                showToast("✓ Logo caricato correttamente!", "success");
+                showToast("✓ Logo caricato con successo!", "success");
             };
             reader.readAsDataURL(file);
         }
@@ -784,15 +752,17 @@
             saveToStorage();
             applyCompanyProfileUI();
             closeOnboardingModal();
+            renderAll();
             showToast(`Benvenuto in FLEET & RENTAL PRO, ${name}!`, "success");
         }
 
         function applyCompanyProfileUI() {
+            const isReg = localStorage.getItem(KEY_REGISTERED) === 'true';
             const headerName = document.getElementById('headerCompanyName');
-            if (headerName) headerName.innerText = companyProfile.name || 'FLEET & RENTAL PRO';
+            if (headerName) headerName.innerText = isReg && companyProfile.name ? companyProfile.name : 'FLEET & RENTAL PRO';
 
             const headerShort = document.getElementById('headerCompanyNameShort');
-            if (headerShort) headerShort.innerText = companyProfile.shortName || companyProfile.name || 'Profilo Azienda';
+            if (headerShort) headerShort.innerText = isReg && (companyProfile.shortName || companyProfile.name) ? (companyProfile.shortName || companyProfile.name) : 'Profilo Azienda';
 
             const logoImg = document.getElementById('headerCompanyLogo');
             const defaultIcon = document.getElementById('headerDefaultIcon');
@@ -808,7 +778,7 @@
             }
         }
 
-        // --- NAVIGATION TABS ---
+        // TABS
         function switchTab(tabId) {
             currentTab = tabId;
             ['vehicles', 'rentals', 'planning', 'customers', 'calendar'].forEach(t => {
@@ -830,7 +800,6 @@
             lucide.createIcons();
         }
 
-        // --- RENDER ALL MODULES ---
         function renderAll() {
             updateStats();
             renderVehicles();
@@ -841,7 +810,6 @@
             lucide.createIcons();
         }
 
-        // --- STATS CALCULATION ---
         function updateStats() {
             const total = vehicles.length;
             let ok = 0, warning = 0, expired = 0, rented = 0;
@@ -883,7 +851,6 @@
             renderVehicles();
         }
 
-        // --- TAB 1: VEHICLES RENDER ---
         function renderVehicles() {
             const grid = document.getElementById('vehiclesGrid');
             if (!grid) return;
@@ -978,7 +945,6 @@
             }).join('');
         }
 
-        // --- TAB 2: RENTALS RENDER ---
         function renderRentals() {
             const tbody = document.getElementById('rentalsTableBody');
             if (!tbody) return;
@@ -1016,7 +982,6 @@
             }).join('');
         }
 
-        // --- TAB 3: PLANNING RENDER ---
         function renderPlanning() {
             const container = document.getElementById('planningGanttContainer');
             if (!container) return;
@@ -1049,7 +1014,7 @@
                     });
 
                     dayCells += `<div class="w-7 h-9 border-r border-slate-100 dark:border-slate-800 flex items-center justify-center ${isRented ? 'bg-indigo-500/20' : ''}">
-                        ${isRented ? '<div class="w-full h-4 bg-indigo-600 rounded-sm gantt-bar" title="Noleggiato"></div>' : ''}
+                        ${isRented ? '<div class="w-full h-4 bg-indigo-600 rounded-sm" title="Noleggiato"></div>' : ''}
                     </div>`;
                 }
 
@@ -1071,7 +1036,6 @@
             </div>`;
         }
 
-        // --- TAB 4: CUSTOMERS RENDER ---
         function renderCustomers() {
             const grid = document.getElementById('customersGrid');
             if (!grid) return;
@@ -1102,7 +1066,6 @@
             }).join('');
         }
 
-        // --- TAB 5: CALENDAR DEADLINES ---
         function renderUpcomingDeadlines() {
             const list = document.getElementById('upcomingDeadlinesList');
             if (!list) return;
@@ -1152,7 +1115,7 @@
             }).join('');
         }
 
-        // --- CRUD VEHICLES ---
+        // CRUD MODALS
         function openVehicleModal() {
             document.getElementById('vehId').value = '';
             document.getElementById('vehPlate').value = '';
@@ -1222,7 +1185,6 @@
             showToast("Mezzo eliminato", "info");
         }
 
-        // --- CRUD RENTALS ---
         function openRentalModal() {
             const custSelect = document.getElementById('rentCustomerSelect');
             const vehSelect = document.getElementById('rentVehicleSelect');
@@ -1266,7 +1228,6 @@
 
             const days = Math.max(1, Math.ceil((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24)));
             const totalAmount = days * dailyRate;
-
             const contractId = 'RNT-' + new Date().getFullYear() + '-' + String(rentals.length + 1).padStart(3, '0');
 
             const rental = {
@@ -1284,8 +1245,6 @@
             };
 
             rentals.push(rental);
-
-            // Update vehicle status to 'noleggio'
             const veh = vehicles.find(v => v.id === vehId);
             if (veh) veh.status = 'noleggio';
 
@@ -1320,7 +1279,6 @@
             showToast("Contratto eliminato", "info");
         }
 
-        // --- CRUD CUSTOMERS ---
         function openCustomerModal() {
             document.getElementById('custName').value = '';
             document.getElementById('custVat').value = '';
@@ -1363,7 +1321,7 @@
             showToast("Cliente eliminato", "info");
         }
 
-        // --- PDF GENERATION: RENTAL CONTRACT ---
+        // PDF GENERATION
         function printRentalContractPDF(rentalId) {
             const r = rentals.find(item => item.id === rentalId);
             if (!r) return;
@@ -1373,7 +1331,6 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
-            // Header con Logo Azienda o Titolo
             if (companyProfile.logo) {
                 try {
                     doc.addImage(companyProfile.logo, 'PNG', 14, 10, 30, 20);
@@ -1394,13 +1351,11 @@
             doc.setDrawColor(203, 213, 225);
             doc.line(14, 34, 196, 34);
 
-            // Titolo Contratto
             doc.setFontSize(14);
             doc.setFont("helvetica", "bold");
             doc.setTextColor(15, 23, 42);
             doc.text(`CONTRATTO DI NOLEGGIO MEZZO N° ${r.id}`, 14, 44);
 
-            // Dati Locatore e Locatario
             doc.autoTable({
                 startY: 50,
                 theme: 'plain',
@@ -1413,7 +1368,6 @@
                 ]
             });
 
-            // Dati Veicolo & Condizioni Noleggio
             doc.autoTable({
                 startY: doc.lastAutoTable.finalY + 6,
                 head: [['Dettagli Veicolo', 'Periodo Noleggio', 'Condizioni Economiche']],
@@ -1427,14 +1381,12 @@
                 headStyles: { fillColor: [37, 99, 235], textColor: 255, fontStyle: 'bold' }
             });
 
-            // Clausole Contrattuali
             doc.setFontSize(8);
             doc.setTextColor(100, 116, 139);
             doc.text("CONDIZIONI GENERALI DI LOCAZIONE:", 14, doc.lastAutoTable.finalY + 10);
             const clauses = "1. Il Locatario dichiara di ricevere il mezzo in perfetto stato di manutenzione e funzionamento.\n2. Il mezzo deve essere riconsegnato entro la data stabilita con lo stesso livello di carburante.\n3. Il Locatario è responsabile per qualsiasi contravvenzione o danno causato durante il periodo di noleggio.";
             doc.text(clauses, 14, doc.lastAutoTable.finalY + 16);
 
-            // Firme
             doc.setFontSize(10);
             doc.setFont("helvetica", "bold");
             doc.setTextColor(15, 23, 42);
@@ -1449,7 +1401,6 @@
             showToast("✓ PDF del contratto generato!", "success");
         }
 
-        // --- EXPORT FLEET PDF ---
         function exportFleetPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
@@ -1480,7 +1431,6 @@
             showToast("✓ Report Flotta PDF scaricato!", "success");
         }
 
-        // --- EXPORT FLEET EXCEL ---
         function exportFleetExcel() {
             const data = vehicles.map(v => ({
                 "Targa": v.plate,
@@ -1500,7 +1450,6 @@
             showToast("✓ File Excel scaricato!", "success");
         }
 
-        // --- HELPERS ---
         function formatDate(dateStr) {
             if (!dateStr) return '---';
             const parts = dateStr.split('-');
