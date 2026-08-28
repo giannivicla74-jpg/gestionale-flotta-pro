@@ -3135,6 +3135,62 @@ function exportFleetPDF() {
         });
       }
     </script>
+
+    <!-- Secret Admin Button -->
+    <div id="secretAdminBtn" class="fixed bottom-4 right-4 z-50 opacity-30 hover:opacity-100 transition-opacity cursor-pointer">
+        <img src="admin-logo.jpg" alt="Admin" class="w-10 h-10 rounded-lg shadow-lg border border-slate-300 dark:border-slate-600">
+    </div>
+
+    <!-- Admin Pin Modal -->
+    <div id="adminPinModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[100] hidden flex items-center justify-center">
+        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-2xl max-w-sm w-full mx-4 border border-slate-200 dark:border-slate-700 text-center">
+            <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-4">Accesso Super Admin</h3>
+            <input type="password" id="adminPinInput" class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-xl mb-4 text-center text-2xl tracking-[0.5em] bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none" placeholder="****" maxlength="4">
+            <div class="flex space-x-3">
+                <button onclick="closeAdminModal()" class="flex-1 py-3 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-semibold hover:bg-slate-300 dark:hover:bg-slate-600 transition">Annulla</button>
+                <button onclick="verifyAdminPin()" class="flex-1 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-bold shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition">Accedi</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Script -->
+    <script>
+        let adminClickCount = 0;
+        let adminClickTimer = null;
+
+        document.getElementById('secretAdminBtn').addEventListener('click', () => {
+            adminClickCount++;
+            
+            clearTimeout(adminClickTimer);
+            adminClickTimer = setTimeout(() => {
+                adminClickCount = 0; // reset after 2 seconds
+            }, 2000);
+
+            if (adminClickCount >= 5) {
+                adminClickCount = 0;
+                document.getElementById('adminPinModal').classList.remove('hidden');
+                setTimeout(() => document.getElementById('adminPinInput').focus(), 100);
+            }
+        });
+
+        function closeAdminModal() {
+            document.getElementById('adminPinModal').classList.add('hidden');
+            document.getElementById('adminPinInput').value = '';
+        }
+
+        function verifyAdminPin() {
+            const pin = document.getElementById('adminPinInput').value;
+            if (pin === '8528') {
+                closeAdminModal();
+                alert('Accesso Super Admin consentito!\n\n(Qui potremo aggiungere il pannello di controllo per la gestione aziendale)');
+                // Future logic for admin panel
+            } else {
+                alert('PIN non valido!');
+                document.getElementById('adminPinInput').value = '';
+            }
+        }
+    </script>
+
 </body>
 
 </html>
