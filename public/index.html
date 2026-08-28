@@ -652,19 +652,23 @@
                       <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Tipologia Noleggio</label>
                       <div class="flex items-center gap-4 bg-slate-50 dark:bg-slate-800 p-2 rounded-xl border border-slate-300 dark:border-slate-600">
                           <label class="flex items-center gap-2 cursor-pointer">
-                              <input type="radio" name="rentType" value="freddo" class="w-4 h-4 text-blue-600" checked>
+                              <input type="radio" name="rentType" value="freddo" class="w-4 h-4 text-blue-600" checked onchange="toggleOperatorSelect()">
                               <span class="text-xs font-bold dark:text-slate-300">Nolo a Freddo (Senza Operatore)</span>
                           </label>
                           <label class="flex items-center gap-2 cursor-pointer">
-                              <input type="radio" name="rentType" value="caldo" class="w-4 h-4 text-blue-600">
+                              <input type="radio" name="rentType" value="caldo" class="w-4 h-4 text-blue-600" onchange="toggleOperatorSelect()">
                               <span class="text-xs font-bold dark:text-slate-300">Nolo a Caldo (Con Operatore)</span>
                           </label>
                       </div>
                   </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Data Inizio Noleggio</label>
+                  <div class="mb-3 hidden" id="rentOperatorContainer">
+                      <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Operatore Assegnato</label>
+                      <select id="rentOperatorSelect" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                      </select>
+                  </div>
+                  <div class="grid grid-cols-2 gap-3">
+                      <div>
+                          <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Data Inizio Noleggio</label>
                         <input type="date" id="rentStartDate" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none">
                     </div>
                     <div>
@@ -2093,6 +2097,14 @@
 
             custSelect.innerHTML = customers.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
             vehSelect.innerHTML = vehicles.map(v => `<option value="${v.id}">${v.plate} - ${v.model} (${v.status})</option>`).join('');
+            
+            const opSelect = document.getElementById('rentOperatorSelect');
+            const drivers = operators.filter(o => o.type === 'driver');
+            opSelect.innerHTML = drivers.map(d => `<option value="${d.id}">${d.name} ${d.surname}</option>`).join('');
+            
+            const opSelect = document.getElementById('rentOperatorSelect');
+            const drivers = operators.filter(o => o.type === 'driver');
+            opSelect.innerHTML = drivers.map(d => `<option value="${d.id}">${d.name} ${d.surname}</option>`).join('');
 
             const todayStr = new Date().toISOString().split('T')[0];
             document.getElementById('rentId').value = '';
@@ -2105,6 +2117,7 @@
             
             const freddoRadio = document.querySelector('input[name="rentType"][value="freddo"]');
             if (freddoRadio) freddoRadio.checked = true;
+            toggleOperatorSelect();
 
             document.getElementById('rentalModal').classList.remove('hidden');
             lucide.createIcons();
@@ -2121,6 +2134,10 @@
             custSelect.innerHTML = customers.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
             // Se il mezzo è stato chiuso o è in un altro stato, dobbiamo comunque mostrarlo
             vehSelect.innerHTML = vehicles.map(v => `<option value="${v.id}">${v.plate} - ${v.model} (${v.status})</option>`).join('');
+            
+            const opSelect = document.getElementById('rentOperatorSelect');
+            const drivers = operators.filter(o => o.type === 'driver');
+            opSelect.innerHTML = drivers.map(d => `<option value="${d.id}">${d.name} ${d.surname}</option>`).join('');
 
             document.getElementById('rentId').value = r.id;
             document.getElementById('rentCustomerSelect').value = r.customerId;
@@ -2144,6 +2161,16 @@
             lucide.createIcons();
         }
 
+        function toggleOperatorSelect() {
+            const isCaldo = document.querySelector('input[name="rentType"][value="caldo"]').checked;
+            const container = document.getElementById('rentOperatorContainer');
+            if (isCaldo) {
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+            }
+        }
+        
         function closeRentalModal() {
             document.getElementById('rentalModal').classList.add('hidden');
         }
@@ -2165,6 +2192,7 @@
             const startKm = parseInt(document.getElementById('rentStartKm').value) || 0;
             const rentTypeEl = document.querySelector('input[name="rentType"]:checked');
             const rentalType = rentTypeEl ? rentTypeEl.value : 'freddo';
+            const driverId = rentalType === 'caldo' ? document.getElementById('rentOperatorSelect').value : null;
 
             if (!startDate || !endDate) {
                 showToast("Seleziona le date del noleggio", "warning");
@@ -2199,6 +2227,7 @@
                 deposit: deposit,
                 startKm: startKm,
                   rentalType: rentalType,
+                  driverId: driverId,
                   endKm: existingIdx >= 0 ? rentals[existingIdx].endKm : null,
                 status: statusStr
             };
@@ -2694,7 +2723,7 @@
             }
 
             addSectionTitle("PREMESSE E OGGETTO DEL CONTRATTO");
-            addArticle("", `Le premesse formano parte integrante e sostanziale del presente contratto. Il Noleggiatore concede in locazione all'Utilizzatore, che accetta ai termini e condizioni di seguito specificati, il macchinario/attrezzatura descritto nella Scheda Tecnica dell'Ordine generata dal Software Gestionale (di seguito "Mezzo").\n\nMezzo Noleggiato: ${vehicle.brand || ''} ${vehicle.model || ''} - Targa: ${vehicle.plate || ''}\nPeriodo: dal ${formatDate(r.startDate)} al ${formatDate(r.endDate)}\nTipologia: ${r.rentalType === 'caldo' ? 'A Caldo (con operatore)' : 'A Freddo (senza operatore)'}\nCorrispettivo Pattuito: ${r.totalAmount} EUR (Cauzione: ${r.deposit} EUR)`);
+            addArticle("", `Le premesse formano parte integrante e sostanziale del presente contratto. Il Noleggiatore concede in locazione all'Utilizzatore, che accetta ai termini e condizioni di seguito specificati, il macchinario/attrezzatura descritto nella Scheda Tecnica dell'Ordine generata dal Software Gestionale (di seguito "Mezzo").\n\nMezzo Noleggiato: ${vehicle.brand || ''} ${vehicle.model || ''} - Targa: ${vehicle.plate || ''}\nPeriodo: dal ${formatDate(r.startDate)} al ${formatDate(r.endDate)}\nTipologia: ${r.rentalType === 'caldo' ? 'A Caldo (con operatore)' : 'A Freddo (senza operatore)'}${r.rentalType === 'caldo' && r.driverId ? '\nOperatore Assegnato: ' + (operators.find(o => o.id === r.driverId)?.name || '') + ' ' + (operators.find(o => o.id === r.driverId)?.surname || '') : ''}\nCorrispettivo Pattuito: ${r.totalAmount} EUR (Cauzione: ${r.deposit} EUR)`);
 
             addSectionTitle("SEZIONE I - DISPOSIZIONI GENERALI E NORMATIVA DI SICUREZZA");
             addArticle("ART. 1 - TIPOLOGIA DI NOLEGGIO", "Il noleggio potra' perfezionarsi secondo una delle seguenti modalita', come definita nell'ordine gestionale:\n- a) Nolo a Freddo (Solo Macchina): Concessione in godimento del solo Mezzo, privo di operatore. L'Utilizzatore assume la piena e totale responsabilita' dell'uso, della custodia e della conduzione del Mezzo.\n- b) Nolo a Caldo (Macchina con Operatore): Messa a disposizione del Mezzo unitamente a personale qualificato messo a disposizione dal Noleggiatore. L'operatore rispondera' esclusivamente delle manovre del Mezzo, rimanendo l'organizzazione del cantiere e la direzione dei lavori a carico esclusivo dell'Utilizzatore.");
