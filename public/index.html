@@ -3136,10 +3136,7 @@ function exportFleetPDF() {
       }
     </script>
 
-    <!-- Secret Admin Button -->
-    <div id="secretAdminBtn" class="fixed bottom-4 right-4 z-50 opacity-100 transition-opacity cursor-pointer">
-        <img src="admin-logo.jpg" alt="Admin" class="w-10 h-10 rounded-lg shadow-lg border border-slate-300 dark:border-slate-600">
-    </div>
+    
 
     <!-- Admin Pin Modal -->
     <div id="adminPinModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[100] hidden flex items-center justify-center">
@@ -3158,7 +3155,30 @@ function exportFleetPDF() {
         let adminClickCount = 0;
         let adminClickTimer = null;
 
-        document.getElementById('secretAdminBtn').addEventListener('click', () => {
+        
+        function handleAdminClick() {
+            adminClickCount++;
+            clearTimeout(adminClickTimer);
+            adminClickTimer = setTimeout(() => { adminClickCount = 0; }, 2000);
+            if (adminClickCount >= 5) {
+                adminClickCount = 0;
+                document.getElementById('adminPinModal').classList.remove('hidden');
+                setTimeout(() => document.getElementById('adminPinInput').focus(), 100);
+            }
+        }
+        
+        const defaultIcon = document.getElementById('headerDefaultIcon');
+        if(defaultIcon) {
+            defaultIcon.style.cursor = 'pointer';
+            defaultIcon.addEventListener('click', handleAdminClick);
+        }
+        const customLogo = document.getElementById('headerCompanyLogo');
+        if(customLogo) {
+            customLogo.style.cursor = 'pointer';
+            customLogo.addEventListener('click', handleAdminClick);
+        }
+        // Remove the old secretAdminBtn listener logic line:
+        // 
             adminClickCount++;
             
             clearTimeout(adminClickTimer);
@@ -3171,8 +3191,7 @@ function exportFleetPDF() {
                 document.getElementById('adminPinModal').classList.remove('hidden');
                 setTimeout(() => document.getElementById('adminPinInput').focus(), 100);
             }
-        });
-
+        
         function closeAdminModal() {
             document.getElementById('adminPinModal').classList.add('hidden');
             document.getElementById('adminPinInput').value = '';
