@@ -107,6 +107,20 @@
     }
 
     /* === Tasti di Navigazione (Tabs) === */
+    /* Tasti di navigazione inattivi (Tabs) */
+    html:not(.dark) .tab-btn:not(.active) {
+      background: #ffffff !important;
+      border: 1px solid #cbd5e1 !important;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02) !important;
+      transition: all 0.2s ease;
+    }
+    html:not(.dark) .tab-btn:not(.active):hover {
+      background: #f8fafc !important;
+      border-color: #94a3b8 !important;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05) !important;
+      transform: translateY(-1px);
+    }
+
     html:not(.dark) .tab-btn.active {
       background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
       color: #ffffff !important;
