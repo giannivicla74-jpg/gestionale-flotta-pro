@@ -109,6 +109,18 @@
 
     /* === Tasti di Navigazione (Tabs) === */
 
+    /* Colori specifici per le icone dei tab inattivi (visione giorno) */
+    html:not(.dark) #tabVehiclesBtn:not(.active) i { color: #3b82f6 !important; } /* Blue */
+    html:not(.dark) #tabRentalsBtn:not(.active) i { color: #8b5cf6 !important; } /* Violet */
+    html:not(.dark) #tabGanttBtn:not(.active) i { color: #10b981 !important; } /* Emerald */
+    html:not(.dark) #tabCustomersBtn:not(.active) i { color: #f59e0b !important; } /* Amber */
+    html:not(.dark) #tabDashboardBtn:not(.active) i { color: #ef4444 !important; } /* Red */
+    html:not(.dark) #tabCalendarBtn:not(.active) i { color: #0ea5e9 !important; } /* Sky */
+    
+    /* Assicuriamoci che quando il tab è attivo, l'icona diventi bianca */
+    html:not(.dark) .tab-btn.active i { color: #ffffff !important; }
+
+
     /* Fix per i badge numerici dentro i tab attivi (visione giorno) */
     html:not(.dark) .tab-btn.active span[id^="badge"] {
       background-color: rgba(255, 255, 255, 0.25) !important;
