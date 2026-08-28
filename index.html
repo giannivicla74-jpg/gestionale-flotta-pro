@@ -226,7 +226,13 @@
       box-shadow: 0 6px 14px rgba(37, 99, 235, 0.4) !important;
     }
   </style>
-  </head>
+  
+    <!-- PWA Settings -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#2563eb">
+    <link rel="apple-touch-icon" href="/icon.jpg">
+
+</head>
 
 <body class="overflow-y-scroll bg-slate-200 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col font-sans transition-colors duration-200">
 
@@ -3116,5 +3122,19 @@ function exportFleetPDF() {
             }
         }
     </script>
+
+    <!-- PWA Service Worker -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').then(registration => {
+            console.log('SW registered: ', registration);
+          }).catch(registrationError => {
+            console.log('SW registration failed: ', registrationError);
+          });
+        });
+      }
+    </script>
 </body>
+
 </html>

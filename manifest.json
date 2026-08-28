@@ -1,22 +1,16 @@
 {
-  "name": "Fleet Deadline Manager v2.0 SaaS - VI.CLA FUTURE S.R.L.",
-  "short_name": "FleetDeadline",
-  "description": "Controllo Avanzato Parco Mezzi d'Opera & Scadenze Card Autisti",
-  "start_url": "index.html",
+  "name": "Fleet Rentals Pro",
+  "short_name": "FleetRentals",
+  "description": "Noleggio Mezzi & Gestione Scadenze",
+  "start_url": "/",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#1e3a8a",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
   "icons": [
     {
-      "src": "logo-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "logo-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
+      "src": "/icon.jpg",
+      "sizes": "192x192 512x512",
+      "type": "image/jpeg",
       "purpose": "any maskable"
     }
   ]
