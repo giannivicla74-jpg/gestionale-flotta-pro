@@ -414,24 +414,59 @@
         <!-- STATS COUNTER BAR -->
         <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 sm:gap-4">
             <div onclick="filterFleetByStatus('all')" class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm cursor-pointer hover:border-blue-500 transition">
-                <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wide">Totale Mezzi</div>
-                <div class="text-2xl font-black text-slate-900 dark:text-white mt-1" id="statTotalVehicles">0</div>
+                <div class="flex justify-between items-center">
+                    <div>
+                        <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wide">Totale Mezzi</div>
+                        <div class="text-2xl font-black text-slate-900 dark:text-white mt-1" id="statTotalVehicles">0</div>
+                    </div>
+                    <div class="p-2 bg-slate-100 dark:bg-slate-700 rounded-lg text-slate-500 dark:text-slate-400">
+                        <i data-lucide="truck" class="w-6 h-6"></i>
+                    </div>
+                </div>
             </div>
             <div onclick="filterFleetByStatus('ok')" class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-emerald-200 dark:border-emerald-900/40 shadow-sm cursor-pointer hover:border-emerald-500 transition">
-                <div class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wide">In Regola</div>
-                <div class="text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-1" id="statOkVehicles">0</div>
+                <div class="flex justify-between items-center">
+                    <div>
+                        <div class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wide">In Regola</div>
+                        <div class="text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-1" id="statOkVehicles">0</div>
+                    </div>
+                    <div class="p-2 bg-emerald-100 dark:bg-emerald-900/40 rounded-lg text-emerald-600 dark:text-emerald-400">
+                        <i data-lucide="shield-check" class="w-6 h-6"></i>
+                    </div>
+                </div>
             </div>
             <div onclick="filterFleetByStatus('warning')" class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-amber-200 dark:border-amber-900/40 shadow-sm cursor-pointer hover:border-amber-500 transition">
-                <div class="text-[11px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wide">In Scadenza (&le;30gg)</div>
-                <div class="text-2xl font-black text-amber-600 dark:text-amber-400 mt-1" id="statWarningVehicles">0</div>
+                <div class="flex justify-between items-center">
+                    <div>
+                        <div class="text-[11px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wide">In Scadenza (&le;30gg)</div>
+                        <div class="text-2xl font-black text-amber-600 dark:text-amber-400 mt-1" id="statWarningVehicles">0</div>
+                    </div>
+                    <div class="p-2 bg-amber-100 dark:bg-amber-900/40 rounded-lg text-amber-600 dark:text-amber-400">
+                        <i data-lucide="clock" class="w-6 h-6"></i>
+                    </div>
+                </div>
             </div>
             <div onclick="filterFleetByStatus('expired')" class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-red-200 dark:border-red-900/40 shadow-sm cursor-pointer hover:border-red-500 transition">
-                <div class="text-[11px] font-bold text-red-600 dark:text-red-400 uppercase tracking-wide">Scaduti</div>
-                <div class="text-2xl font-black text-red-600 dark:text-red-400 mt-1" id="statExpiredVehicles">0</div>
+                <div class="flex justify-between items-center">
+                    <div>
+                        <div class="text-[11px] font-bold text-red-600 dark:text-red-400 uppercase tracking-wide">Scaduti</div>
+                        <div class="text-2xl font-black text-red-600 dark:text-red-400 mt-1" id="statExpiredVehicles">0</div>
+                    </div>
+                    <div class="p-2 bg-red-100 dark:bg-red-900/40 rounded-lg text-red-600 dark:text-red-400">
+                        <i data-lucide="alert-octagon" class="w-6 h-6"></i>
+                    </div>
+                </div>
             </div>
             <div onclick="switchTab('rentals')" class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-indigo-200 dark:border-indigo-900/40 shadow-sm cursor-pointer hover:border-indigo-500 transition col-span-2 sm:col-span-1">
-                <div class="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wide">A Noleggio</div>
-                <div class="text-2xl font-black text-indigo-600 dark:text-indigo-400 mt-1" id="statRentedVehicles">0</div>
+                <div class="flex justify-between items-center">
+                    <div>
+                        <div class="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wide">A Noleggio</div>
+                        <div class="text-2xl font-black text-indigo-600 dark:text-indigo-400 mt-1" id="statRentedVehicles">0</div>
+                    </div>
+                    <div class="p-2 bg-indigo-100 dark:bg-indigo-900/40 rounded-lg text-indigo-600 dark:text-indigo-400">
+                        <i data-lucide="key-round" class="w-6 h-6"></i>
+                    </div>
+                </div>
             </div>
         </div>
 
