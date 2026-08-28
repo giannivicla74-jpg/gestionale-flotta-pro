@@ -2139,6 +2139,8 @@
             const dailyRate = parseFloat(document.getElementById('rentDailyRate').value) || 100;
             const deposit = parseFloat(document.getElementById('rentDeposit').value) || 0;
             const startKm = parseInt(document.getElementById('rentStartKm').value) || 0;
+            const rentTypeEl = document.querySelector('input[name="rentType"]:checked');
+            const rentalType = rentTypeEl ? rentTypeEl.value : 'freddo';
 
             if (!startDate || !endDate) {
                 showToast("Seleziona le date del noleggio", "warning");
@@ -2667,7 +2669,7 @@
             }
 
             addSectionTitle("PREMESSE E OGGETTO DEL CONTRATTO");
-            addArticle("", `Le premesse formano parte integrante e sostanziale del presente contratto. Il Noleggiatore concede in locazione all'Utilizzatore, che accetta ai termini e condizioni di seguito specificati, il macchinario/attrezzatura descritto nella Scheda Tecnica dell'Ordine generata dal Software Gestionale (di seguito "Mezzo").\n\nMezzo Noleggiato: ${vehicle.brand || ''} ${vehicle.model || ''} - Targa: ${vehicle.plate || ''}\nPeriodo: dal ${formatDate(r.startDate)} al ${formatDate(r.endDate)}\nCorrispettivo Pattuito: ${r.totalAmount} EUR (Cauzione: ${r.deposit} EUR)`);
+            addArticle("", `Le premesse formano parte integrante e sostanziale del presente contratto. Il Noleggiatore concede in locazione all'Utilizzatore, che accetta ai termini e condizioni di seguito specificati, il macchinario/attrezzatura descritto nella Scheda Tecnica dell'Ordine generata dal Software Gestionale (di seguito "Mezzo").\n\nMezzo Noleggiato: ${vehicle.brand || ''} ${vehicle.model || ''} - Targa: ${vehicle.plate || ''}\nPeriodo: dal ${formatDate(r.startDate)} al ${formatDate(r.endDate)}\nTipologia: ${r.rentalType === 'caldo' ? 'A Caldo (con operatore)' : 'A Freddo (senza operatore)'}\nCorrispettivo Pattuito: ${r.totalAmount} EUR (Cauzione: ${r.deposit} EUR)`);
 
             addSectionTitle("SEZIONE I - DISPOSIZIONI GENERALI E NORMATIVA DI SICUREZZA");
             addArticle("ART. 1 - TIPOLOGIA DI NOLEGGIO", "Il noleggio potra' perfezionarsi secondo una delle seguenti modalita', come definita nell'ordine gestionale:\n- a) Nolo a Freddo (Solo Macchina): Concessione in godimento del solo Mezzo, privo di operatore. L'Utilizzatore assume la piena e totale responsabilita' dell'uso, della custodia e della conduzione del Mezzo.\n- b) Nolo a Caldo (Macchina con Operatore): Messa a disposizione del Mezzo unitamente a personale qualificato messo a disposizione dal Noleggiatore. L'operatore rispondera' esclusivamente delle manovre del Mezzo, rimanendo l'organizzazione del cantiere e la direzione dei lavori a carico esclusivo dell'Utilizzatore.");
