@@ -130,6 +130,19 @@
     }
 
     
+    
+    /* === Evidenzia TUTTE le righe divisorie (tabelle, calendari, liste, gantt) in visione giorno === */
+    html:not(.dark) .border-slate-100,
+    html:not(.dark) .border-slate-50,
+    html:not(.dark) table tr {
+      border-color: #cbd5e1 !important; /* Colore slate-300 per renderle belle marcate */
+    }
+    
+    /* Righe verticali e orizzontali del Planning (Gantt) */
+    html:not(.dark) #ganttGrid div {
+      border-color: #cbd5e1 !important;
+    }
+
     /* === Evidenzia le righe divisorie interne alle Card (visione giorno) === */
     html:not(.dark) #vehiclesGrid > div .border-slate-100,
     html:not(.dark) #customersGrid > div .border-slate-100,
