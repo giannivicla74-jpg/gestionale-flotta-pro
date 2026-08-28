@@ -2582,78 +2582,187 @@
 
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
+            let y = 15;
+
+            doc.setFillColor(30, 58, 138); 
+            doc.rect(0, 0, 210, 25, 'F');
+            
+            doc.setTextColor(255, 255, 255);
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(15);
+            doc.text(`CONTRATTO QUADRO DI NOLEGGIO - N. ${r.id}`, 105, 12, { align: 'center' });
+            
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(8.5);
+            doc.text("Modello Standard per Noleggio a Freddo / Nolo a Caldo di Piattaforme di Lavoro Mobili Elevabili (PLE) e Macchine da Cantiere", 105, 18, { align: 'center' });
+            
+            doc.setDrawColor(220, 38, 38);
+            doc.setLineWidth(1.5);
+            doc.line(0, 25, 210, 25);
+
+            y = 35;
 
             if (companyProfile.logo) {
                 try {
-                    doc.addImage(companyProfile.logo, 'PNG', 14, 10, 30, 20);
-                } catch(e) {}
+                    let imgFormat = 'PNG';
+                    if (companyProfile.logo.startsWith('data:image/jpeg')) imgFormat = 'JPEG';
+                    if (companyProfile.logo.startsWith('data:image/webp')) imgFormat = 'WEBP';
+                    doc.addImage(companyProfile.logo, imgFormat, 155, 30, 40, 20, '', 'FAST');
+                } catch(e) {
+                    console.error("Error adding logo to PDF:", e);
+                }
             }
 
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(16);
-            doc.setTextColor(30, 58, 138);
-            doc.text(companyProfile.name || "FLEET & RENTAL PRO", companyProfile.logo ? 50 : 14, 18);
-
-            doc.setFontSize(9);
-            doc.setFont("helvetica", "normal");
-            doc.setTextColor(100, 116, 139);
-            const compDetails = `P.IVA: ${companyProfile.vat || '---'} | Sede: ${companyProfile.legalAddress || '---'} | Tel: ${companyProfile.phone || '---'} | Email: ${companyProfile.email || '---'}`;
-            doc.text(compDetails, companyProfile.logo ? 50 : 14, 25);
-
-            doc.setDrawColor(203, 213, 225);
-            doc.line(14, 34, 196, 34);
-
-            doc.setFontSize(14);
-            doc.setFont("helvetica", "bold");
-            doc.setTextColor(15, 23, 42);
-            doc.text(`CONTRATTO DI NOLEGGIO MEZZO N° ${r.id}`, 14, 44);
-
             doc.autoTable({
-                startY: 50,
-                theme: 'plain',
-                styles: { fontSize: 9, cellPadding: 2 },
+                startY: 55,
+                theme: 'grid',
+                head: [['IL NOLEGGIATORE (LOCATORE)', "L'UTILIZZATORE (LOCATARIO / CLIENTE)"]],
                 body: [
                     [
-                        { content: 'LOCATORE (Azienda Proprietaria):\n' + (companyProfile.name || 'FLEET & RENTAL PRO') + '\nP.IVA: ' + (companyProfile.vat || '---') + '\nIndirizzo: ' + (companyProfile.legalAddress || '---'), styles: { fontStyle: 'bold', textColor: [30, 41, 59] } },
-                        { content: 'LOCATARIO (Cliente):\n' + (customer.name || '---') + '\nP.IVA / CF: ' + (customer.vat || '---') + '\nIndirizzo: ' + (customer.address || '---') + '\nTel: ' + (customer.phone || '---'), styles: { fontStyle: 'bold', textColor: [30, 41, 59] } }
-                    ]
-                ]
-            });
-
-            doc.autoTable({
-                startY: doc.lastAutoTable.finalY + 6,
-                head: [['Dettagli Veicolo', 'Periodo Noleggio', 'Condizioni Economiche']],
-                body: [
-                    [
-                        `Targa: ${vehicle.plate || '---'}\nModello: ${vehicle.model || '---'}\nTipo: ${vehicle.type || '---'}\nKm Partenza: ${r.startKm || '---'}`,
-                        `Inizio: ${formatDate(r.startDate)}\nFine: ${formatDate(r.endDate)}\nStato: ${r.status.toUpperCase()}`,
-                        `Tariffa: ${r.dailyRate} € / giorno\nTotale Noleggio: ${r.totalAmount} €\nCauzione: ${r.deposit} €`
+                        `Ragione Sociale: ${companyProfile.name || 'FLEET & RENTAL PRO'}\nSede Legale: ${companyProfile.legalAddress || '---'}\nC.F. / P.IVA: ${companyProfile.vat || '---'}\nPEC / Cod. Destinatario: ${companyProfile.email || '---'}\nRappresentante Legale: ${companyProfile.legalRepresentative || '---'}`,
+                        `Ragione Sociale / Nome: ${customer.name || '---'}\nSede / Residenza: ${customer.address || '---'}\nC.F. / P.IVA: ${customer.vat || '---'}\nPEC / Email: ${customer.email || '---'}\nRappresentante Legale: ${customer.legalRepresentative || '---'}`
                     ]
                 ],
-                headStyles: { fillColor: [37, 99, 235], textColor: 255, fontStyle: 'bold' }
+                headStyles: { fillColor: [241, 245, 249], textColor: [15, 23, 42], fontStyle: 'bold', fontSize: 10 },
+                styles: { fontSize: 9, cellPadding: 3, textColor: [51, 65, 85] },
+                columnStyles: { 0: { cellWidth: 90 }, 1: { cellWidth: 90 } },
+                margin: { left: 15, right: 15 }
+            });
+            
+            y = (doc.lastAutoTable ? doc.lastAutoTable.finalY : 90) + 10;
+
+            function addSectionTitle(title) {
+                if (y > 270) { doc.addPage(); y = 20; }
+                doc.setFont("helvetica", "bold");
+                doc.setFontSize(11);
+                doc.setTextColor(30, 58, 138);
+                doc.text(title, 15, y);
+                doc.setDrawColor(203, 213, 225);
+                doc.setLineWidth(0.5);
+                doc.line(15, y + 2, 195, y + 2);
+                y += 8;
+            }
+
+            function addArticle(title, text) {
+                if (y > 270) { doc.addPage(); y = 20; }
+                doc.setFont("helvetica", "bold");
+                doc.setFontSize(9);
+                doc.setTextColor(30, 58, 138);
+                if (title) {
+                    doc.text(title, 15, y);
+                    y += 4;
+                }
+                
+                doc.setFont("helvetica", "normal");
+                doc.setTextColor(15, 23, 42);
+                const splitText = doc.splitTextToSize(text, 180);
+                
+                if (y + (splitText.length * 4) > 280) {
+                    doc.addPage();
+                    y = 20;
+                }
+                
+                doc.text(splitText, 15, y);
+                y += (splitText.length * 4.5) + 4;
+            }
+
+            addSectionTitle("PREMESSE E OGGETTO DEL CONTRATTO");
+            addArticle("", `Le premesse formano parte integrante e sostanziale del presente contratto. Il Noleggiatore concede in locazione all'Utilizzatore, che accetta ai termini e condizioni di seguito specificati, il macchinario/attrezzatura descritto nella Scheda Tecnica dell'Ordine generata dal Software Gestionale (di seguito "Mezzo").\n\nMezzo Noleggiato: ${vehicle.brand || ''} ${vehicle.model || ''} - Targa: ${vehicle.plate || ''}\nPeriodo: dal ${formatDate(r.startDate)} al ${formatDate(r.endDate)}\nCorrispettivo Pattuito: ${r.totalAmount} EUR (Cauzione: ${r.deposit} EUR)`);
+
+            addSectionTitle("SEZIONE I - DISPOSIZIONI GENERALI E NORMATIVA DI SICUREZZA");
+            addArticle("ART. 1 - TIPOLOGIA DI NOLEGGIO", "Il noleggio potra' perfezionarsi secondo una delle seguenti modalita', come definita nell'ordine gestionale:\n- a) Nolo a Freddo (Solo Macchina): Concessione in godimento del solo Mezzo, privo di operatore. L'Utilizzatore assume la piena e totale responsabilita' dell'uso, della custodia e della conduzione del Mezzo.\n- b) Nolo a Caldo (Macchina con Operatore): Messa a disposizione del Mezzo unitamente a personale qualificato messo a disposizione dal Noleggiatore. L'operatore rispondera' esclusivamente delle manovre del Mezzo, rimanendo l'organizzazione del cantiere e la direzione dei lavori a carico esclusivo dell'Utilizzatore.");
+            
+            addArticle("ART. 2 - OBBLIGHI DI ABILITAZIONE ED IDONEITA' OPERATORI (D.LGS. 81/2008)", "Nel Nolo a Freddo, l'Utilizzatore dichiara sotto la propria responsabilita' che il Mezzo sara' condotto esclusivamente da personale addetto ed abilitato ai sensi dell'Art. 73 del D.Lgs. 81/2008 ed in possesso di regolare attestato di formazione (cd. \"Patentino PLE\") conforme all'Accordo Stato-Regioni del 22/02/2012 in corso di validita'. L'Utilizzatore ha l'obbligo di trasmettere e far registrare nel sistema gestionale copia dei patentini di tutti gli operatori autorizzati prima della consegna del Mezzo. E' fatto severo divieto di far condurre il Mezzo a soggetti non preventivamente registrati e verificati.");
+
+            addArticle("ART. 3 - CONFORMITA' DEL MEZZO E VERIFICHE PERIODICHE", "Il Noleggiatore garantisce che il Mezzo e' conforme alla Direttiva Macchine 2006/42/CE, provvisto di marcatura CE, corredato dal Manuale di Uso e Manutenzione in lingua italiana e in regola con le verifiche periodiche annuali di cui all'Art. 71, comma 11, del D.Lgs. 81/2008 (Registro di Controllo vidimato/aggiornato).");
+
+            addSectionTitle("SEZIONE II - CONSEGNA, USO E RESTITUZIONE DEL MEZZO");
+            addArticle("ART. 4 - VERBALE DI CONSEGNA DIGITALIZZATO (CHECK-IN)", "La consegna del Mezzo avviene previa compilazione del Verbale di Check-in. L'Utilizzatore (o suo delegato) ha l'onere di ispezionare il Mezzo unitamente all'incaricato del Noleggiatore e sottoscrivere il verbale corredato dalle fotografie dello stato iniziale gestite a sistema. La firma del Verbale di Check-in attesta che il Mezzo viene consegnato in perfetto stato di funzionamento, privo di vizi e idoneo all'uso convenuto.");
+            
+            addArticle("ART. 5 - CONDOTTA, CUSTODIA E IDONEITA' DEL CANTIERE", "L'Utilizzatore si obbliga a:\n- Custodire il Mezzo con la massima diligenza e ad utilizzarlo esclusivamente per l'uso a cui e' destinato, nel rispetto dei limiti di carico, d'altezza e delle istruzioni del costruttore.\n- Verificare l'idoneita' del terreno di appoggio (portata del suolo, assenza di cavita' sottostanti, distanze di sicurezza da linee elettriche aeree non isolate ai sensi dell'Art. 83 D.Lgs. 81/08).\n- Fornire ai propri lavoratori i Dispositivi di Protezione Individuale (DPI) necessari, comprese imbracature di trattenuta ed elmetti di protezione per lavori in quota.\n- Non manomettere, modificare o rimuovere i dispositivi di sicurezza ed i sigilli apposti sul Mezzo.");
+
+            doc.addPage();
+            y = 20;
+
+            addArticle("ART. 6 - DIVIETO ASSOLUTO DI SUB-NOLEGGIO E CESSIONE", "E' fatto divieto assoluto all'Utilizzatore di sub-noleggiare, cedere a qualsiasi titolo, concedere in uso o prestito a terzi il Mezzo oggetto del presente contratto senza previa autorizzazione scritta del Noleggiatore. L'inadempimento comportera' la risoluzione di diritto del contratto ed una penale pari al doppio del canone di noleggio previsto.");
+
+            addArticle("ART. 7 - MANUTENZIONE, GUASTI E FERMI MACCHINA", "La manutenzione ordinaria e' a carico del Noleggiatore. In caso di guasto, anomalia o malfunzionamento, l'Utilizzatore deve sospendere immediatamente l'uso del Mezzo ed inviare segnalazione tempestiva al Noleggiatore. E' fatto divieto all'Utilizzatore di effettuare riparazioni o interventi diretti senza autorizzazione. Il Noleggiatore non rispondera' dei danni diretti o indiretti causati dal fermo macchina in cantiere.");
+
+            addArticle("ART. 8 - RESTITUZIONE E CHECK-OUT", "Alla scadenza del contratto, il Mezzo dovra' essere restituito pulito, in perfetto stato operativo (salvo il normale deterioramento d'uso) e con il medesimo livello di carburante/ricarica iniziale. In sede di restituzione verra' redatto il Verbale di Check-out. Eventuali danni, parti mancanti o pulizie straordinarie verranno addebitati all'Utilizzatore o trattenuti dalla cauzione.");
+
+            addSectionTitle("SEZIONE III - CONDIZIONI ECONOMICHE, CAUZIONE E GARANZIE");
+            addArticle("ART. 9 - CANONE, FATTURAZIONE E RITARDI", "I corrispettivi di noleggio e di trasporto sono stabiliti nell'Ordine registrato a sistema. I pagamenti avvengono secondo le modalita' concordate. Il ritardo nel pagamento autorizza il Noleggiatore a sospendere l'esecuzione del servizio e ad addebitare interessi moratori ai sensi del D.Lgs. 231/2002.");
+
+            addArticle("ART. 10 - DEPOSITO CAUZIONALE", "A garanzia del perfetto adempimento degli obblighi contrattuali e dell'eventuale risarcimento danni, viene richiesta una garanzia o versamento di un Deposito Cauzionale dell'importo indicato nella scheda d'ordine. La cauzione verra' svincolata a seguito della chiusura del Verbale di Check-out, previa verifica della regolarita' dei pagamenti e dell'assenza di danni.");
+
+            addArticle("ART. 11 - COPERTURE ASSICURATIVE E FRANCHIGIE", "Il Mezzo e' coperto da assicurazione R.C.T. (Responsabilita' Civile Verso Terzi). Restano a carico dell'Utilizzatore gli scoperti e le franchigie previsti dalla polizza Kasko/Furto/Incendio, nonche' i danni derivanti da dolo, colpa grave, uso improprio, errata stabilizzazione o inosservanza delle norme di sicurezza.");
+
+            addSectionTitle("SEZIONE IV - FIRMA E CONDIZIONI VESSATORIE");
+            addArticle("ART. 12 - FORO COMPETENTE E LEGGE APPLICABILE", "Il presente contratto e' regolato dalla legge italiana. Per qualsiasi controversia derivante dall'interpretazione, esecuzione o risoluzione del presente contratto, sara' esclusivamente competente il Foro della sede legale del Noleggiatore.");
+
+            if (y > 170) { doc.addPage(); y = 20; }
+            y += 10;
+            
+            doc.setFont("helvetica", "italic");
+            doc.setFontSize(8);
+            doc.text("Il presente contratto viene sottoscritto mediante firma autografa o procedura di firma digitale / elettronica registrata nel\nsistema gestionale.", 15, y);
+            y += 15;
+
+            doc.autoTable({
+                startY: y,
+                theme: 'plain',
+                head: [['IL NOLEGGIATORE', "L'UTILIZZATORE (CLIENTE)"]],
+                body: [
+                    [
+                        { content: '\n\n\n\nFIRMA NOLEGGIATORE', styles: { halign: 'center', cellPadding: 10, textColor: [156, 163, 175] } },
+                        { content: '\n\n\n\nFIRMA CLIENTE', styles: { halign: 'center', cellPadding: 10, textColor: [156, 163, 175] } }
+                    ]
+                ],
+                headStyles: { fillColor: [255, 255, 255], textColor: [15, 23, 42], fontStyle: 'bold', fontSize: 10 },
+                styles: { fontSize: 10, textColor: [15, 23, 42], lineWidth: 0.5, lineColor: [203, 213, 225], minCellHeight: 30 },
+                columnStyles: { 0: { cellWidth: 90 }, 1: { cellWidth: 90 } },
+                margin: { left: 15, right: 15 }
             });
 
-            doc.setFontSize(8);
+            doc.setFontSize(7.5);
+            doc.setFont("helvetica", "normal");
             doc.setTextColor(100, 116, 139);
-            doc.text("CONDIZIONI GENERALI DI LOCAZIONE:", 14, doc.lastAutoTable.finalY + 10);
-            const clauses = "1. Il Locatario dichiara di ricevere il mezzo in perfetto stato di manutenzione e funzionamento.\n2. Il mezzo deve essere riconsegnato entro la data stabilita con lo stesso livello di carburante.\n3. Il Locatario è responsabile per qualsiasi contravvenzione o danno causato durante il periodo di noleggio.";
-            doc.text(clauses, 14, doc.lastAutoTable.finalY + 16);
+            doc.text("Firma / Timbro o Firma Digitale", 20, y + 10);
+            doc.text("Firma / Timbro o Firma Elettronica", 110, y + 10);
 
-            doc.setFontSize(10);
+            y = (doc.lastAutoTable ? doc.lastAutoTable.finalY : y + 40) + 15;
+
+            doc.setFillColor(248, 250, 252);
+            doc.setDrawColor(203, 213, 225);
+            doc.rect(15, y, 180, 50, 'FD');
+            
             doc.setFont("helvetica", "bold");
+            doc.setFontSize(8);
             doc.setTextColor(15, 23, 42);
-            const signY = doc.lastAutoTable.finalY + 45;
-            doc.text("Firma per il Locatore", 25, signY);
-            doc.line(20, signY + 15, 80, signY + 15);
+            doc.text("APPROVAZIONE ESPRESSA DELLE CLAUSOLE VESSATORIE (ART. 1341 e 1342 C.C.)", 20, y + 8);
+            
+            doc.setFont("helvetica", "normal");
+            const vessText = "L'Utilizzatore dichiara di aver letto attentamente e di approvare specificamente ed espressamente le seguenti clausole: Art. 1 (Tipologia nolo e manleva operatore nel nolo a caldo); Art. 2 (Obbligo di patentino ex D.Lgs. 81/08 e divieto di conduzione a terzi); Art. 5 (Idoneita' del terreno, responsabilita' di cantiere e DPI); Art. 6 (Divieto assoluto di sub-noleggio e penale); Art. 7 (Esclusione responsabilita' per fermo macchina); Art. 10 (Trattenuta deposito cauzionale); Art. 12 (Foro competente esclusivo).";
+            const splitVess = doc.splitTextToSize(vessText, 170);
+            doc.text(splitVess, 20, y + 14);
 
-            doc.text("Firma per il Locatario (Cliente)", 125, signY);
-            doc.line(120, signY + 15, 185, signY + 15);
+            doc.setFont("helvetica", "bold");
+            doc.text("FIRMA PER ACCETTAZIONE CLAUSOLE VESSATORIE: ________________________", 20, y + 42);
 
-            doc.save(`Contratto_Noleggio_${r.id}.pdf`);
-            showToast("✓ PDF del contratto generato!", "success");
+            const totalPages = doc.internal.getNumberOfPages();
+            for(let i = 1; i <= totalPages; i++) {
+                doc.setPage(i);
+                doc.setFont("helvetica", "normal");
+                doc.setFontSize(8);
+                doc.setTextColor(150);
+                doc.text(`Contratto di Noleggio PLE / Macchine da Cantiere`, 15, 290);
+                doc.text(`Pagina ${i} di ${totalPages}`, 195, 290, {align: 'right'});
+            }
+
+            doc.save(`Contratto_Quadro_${r.id}.pdf`);
+            showToast("[PDF] Contratto aggiornato generato!", "success");
         }
-
-        function exportFleetPDF() {
+function exportFleetPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
