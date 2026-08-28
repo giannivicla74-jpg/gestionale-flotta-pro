@@ -535,7 +535,7 @@
                 <div class="w-6 h-6 rounded bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-md">
                     <i data-lucide="code-2" class="w-3.5 h-3.5"></i>
                 </div>
-                <span><strong>GC CodeLab</strong> &bull; Sviluppato da Giovanni Cavallo &bull; <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded text-[10px] font-black border border-indigo-200 dark:border-indigo-800">v2.0.5 Pro</span></span>
+                <span><strong>GC CodeLab</strong> &bull; Sviluppato da Giovanni Cavallo &bull; <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded text-[10px] font-black border border-indigo-200 dark:border-indigo-800">v2.0.6 Pro</span></span>
             </div>
             <div>
                 &copy; 2026 GC CodeLab. Tutti i diritti riservati.
@@ -648,6 +648,19 @@
                         </select>
                     </div>
                 </div>
+                  <div class="mb-3">
+                      <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Tipologia Noleggio</label>
+                      <div class="flex items-center gap-4 bg-slate-50 dark:bg-slate-800 p-2 rounded-xl border border-slate-300 dark:border-slate-600">
+                          <label class="flex items-center gap-2 cursor-pointer">
+                              <input type="radio" name="rentType" value="freddo" class="w-4 h-4 text-blue-600" checked>
+                              <span class="text-xs font-bold dark:text-slate-300">Nolo a Freddo (Senza Operatore)</span>
+                          </label>
+                          <label class="flex items-center gap-2 cursor-pointer">
+                              <input type="radio" name="rentType" value="caldo" class="w-4 h-4 text-blue-600">
+                              <span class="text-xs font-bold dark:text-slate-300">Nolo a Caldo (Con Operatore)</span>
+                          </label>
+                      </div>
+                  </div>
 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
@@ -2089,6 +2102,9 @@
             const nextWeek = new Date();
             nextWeek.setDate(nextWeek.getDate() + 7);
             document.getElementById('rentEndDate').value = nextWeek.toISOString().split('T')[0];
+            
+            const freddoRadio = document.querySelector('input[name="rentType"][value="freddo"]');
+            if (freddoRadio) freddoRadio.checked = true;
 
             document.getElementById('rentalModal').classList.remove('hidden');
             lucide.createIcons();
@@ -2114,6 +2130,14 @@
             document.getElementById('rentDailyRate').value = r.dailyRate;
             document.getElementById('rentDeposit').value = r.deposit || 0;
             document.getElementById('rentStartKm').value = r.startKm || 0;
+            
+            if (r.rentalType === 'caldo') {
+                const caldoR = document.querySelector('input[name="rentType"][value="caldo"]');
+                if(caldoR) caldoR.checked = true;
+            } else {
+                const freddoR = document.querySelector('input[name="rentType"][value="freddo"]');
+                if(freddoR) freddoR.checked = true;
+            }
             
             document.getElementById('rentalModalTitle').innerHTML = '<i data-lucide="file-signature" class="w-4 h-4"></i><span>Modifica ' + r.id + '</span>';
             document.getElementById('rentalModal').classList.remove('hidden');
@@ -2174,7 +2198,8 @@
                 totalAmount: totalAmount,
                 deposit: deposit,
                 startKm: startKm,
-                endKm: existingIdx >= 0 ? rentals[existingIdx].endKm : null,
+                  rentalType: rentalType,
+                  endKm: existingIdx >= 0 ? rentals[existingIdx].endKm : null,
                 status: statusStr
             };
 
