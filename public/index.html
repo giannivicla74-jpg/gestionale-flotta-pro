@@ -2182,7 +2182,7 @@
             const listDiv = document.getElementById('maintenanceList');
             if (!vehicle.maintenanceHistory || vehicle.maintenanceHistory.length === 0) {
                 listDiv.innerHTML = `<div class="text-center py-10 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
-                    <i data-lucide="tool" class="w-10 h-10 mx-auto mb-3 text-slate-300 dark:text-slate-600"></i>
+                    <i data-lucide="tool" class="w-16 h-16 mx-auto mb-3 text-slate-300 dark:text-slate-600"></i>
                     <p class="text-sm font-bold text-slate-500">Nessun intervento registrato.</p>
                 </div>`;
                 document.getElementById('maintenanceTotalCost').innerText = '€ 0,00';
@@ -3137,7 +3137,7 @@ function exportFleetPDF() {
     </script>
 
     <!-- Secret Admin Button -->
-    <div id="secretAdminBtn" class="fixed bottom-4 right-4 z-50 opacity-30 hover:opacity-100 transition-opacity cursor-pointer">
+    <div id="secretAdminBtn" class="fixed bottom-4 right-4 z-50 opacity-100 transition-opacity cursor-pointer">
         <img src="admin-logo.jpg" alt="Admin" class="w-10 h-10 rounded-lg shadow-lg border border-slate-300 dark:border-slate-600">
     </div>
 
