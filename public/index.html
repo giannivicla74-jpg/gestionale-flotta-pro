@@ -128,6 +128,14 @@
       border: 1px solid #2563eb !important;
     }
 
+    
+    /* === Evidenzia le righe divisorie interne alle Card (visione giorno) === */
+    html:not(.dark) #vehiclesGrid > div .border-slate-100,
+    html:not(.dark) #customersGrid > div .border-slate-100,
+    html:not(.dark) #tabRentalsContent .border-slate-100 {
+      border-color: #cbd5e1 !important; /* Colore più scuro (slate-300) per farle risaltare */
+    }
+
     /* === Card Statistiche (In alto) === */
     html:not(.dark) div[onclick="filterFleetByStatus('all')"] {
       background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%) !important;
