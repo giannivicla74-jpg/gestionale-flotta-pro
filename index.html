@@ -355,7 +355,7 @@
             
             <!-- Brand & Company Info -->
             <div class="flex items-center space-x-3 min-w-0">
-                <div id="headerDefaultIcon" class="bg-gradient-to-tr from-blue-600 to-indigo-600 p-2.5 rounded-2xl text-white shadow-md shadow-blue-500/20 shrink-0">
+                <div id="headerDefaultIcon" onclick="handleAdminClick()" style="cursor: pointer" class="bg-gradient-to-tr from-blue-600 to-indigo-600 p-2.5 rounded-2xl text-white shadow-md shadow-blue-500/20 shrink-0">
                     <i data-lucide="shield-check" class="w-6 h-6 text-amber-300"></i>
                 </div>
                 <img id="headerCompanyLogo" class="hidden h-10 max-w-[140px] object-contain rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-1 bg-white shrink-0" alt="Logo Aziendale">
@@ -3150,65 +3150,41 @@ function exportFleetPDF() {
         </div>
     </div>
 
+    
     <!-- Admin Script -->
     <script>
         let adminClickCount = 0;
         let adminClickTimer = null;
 
-        
-        function handleAdminClick() {
+        window.handleAdminClick = function() {
             adminClickCount++;
             clearTimeout(adminClickTimer);
             adminClickTimer = setTimeout(() => { adminClickCount = 0; }, 2000);
-            if (adminClickCount >= 5) {
-                adminClickCount = 0;
-                document.getElementById('adminPinModal').classList.remove('hidden');
-                setTimeout(() => document.getElementById('adminPinInput').focus(), 100);
-            }
-        }
-        
-        const defaultIcon = document.getElementById('headerDefaultIcon');
-        if(defaultIcon) {
-            defaultIcon.style.cursor = 'pointer';
-            defaultIcon.addEventListener('click', handleAdminClick);
-        }
-        const customLogo = document.getElementById('headerCompanyLogo');
-        if(customLogo) {
-            customLogo.style.cursor = 'pointer';
-            customLogo.addEventListener('click', handleAdminClick);
-        }
-        // Remove the old secretAdminBtn listener logic line:
-        // 
-            adminClickCount++;
             
-            clearTimeout(adminClickTimer);
-            adminClickTimer = setTimeout(() => {
-                adminClickCount = 0; // reset after 2 seconds
-            }, 2000);
-
             if (adminClickCount >= 5) {
                 adminClickCount = 0;
                 document.getElementById('adminPinModal').classList.remove('hidden');
                 setTimeout(() => document.getElementById('adminPinInput').focus(), 100);
             }
+        };
         
-        function closeAdminModal() {
+        window.closeAdminModal = function() {
             document.getElementById('adminPinModal').classList.add('hidden');
             document.getElementById('adminPinInput').value = '';
-        }
+        };
 
-        function verifyAdminPin() {
+        window.verifyAdminPin = function() {
             const pin = document.getElementById('adminPinInput').value;
             if (pin === '8528') {
                 closeAdminModal();
                 alert('Accesso Super Admin consentito!\n\n(Qui potremo aggiungere il pannello di controllo per la gestione aziendale)');
-                // Future logic for admin panel
             } else {
                 alert('PIN non valido!');
                 document.getElementById('adminPinInput').value = '';
             }
-        }
+        };
     </script>
+
 
 </body>
 
