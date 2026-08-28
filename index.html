@@ -50,7 +50,77 @@
             box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
         }
     </style>
-</head>
+
+  <style id="light-mode-enhancements">
+    /* Solo Modalità Chiara (l'HTML NON ha la classe .dark) */
+    html:not(.dark) body {
+      /* Migliora le ombre delle card dei mezzi e clienti */
+    }
+    
+    html:not(.dark) #vehiclesGrid > div,
+    html:not(.dark) #customersGrid > div {
+      border: 1px solid #cbd5e1 !important;
+      border-left: 4px solid #6366f1 !important; /* Bordino colorato indaco a sinistra */
+      box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.1), 0 2px 4px -1px rgba(99, 102, 241, 0.06) !important;
+      transition: all 0.3s ease !important;
+    }
+    
+    html:not(.dark) #vehiclesGrid > div:hover,
+    html:not(.dark) #customersGrid > div:hover {
+      border-left-color: #4f46e5 !important;
+      box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.2), 0 4px 6px -2px rgba(99, 102, 241, 0.1) !important;
+      transform: translateY(-3px);
+    }
+
+    /* Tasti di navigazione (Tabs) */
+    html:not(.dark) .tab-btn.active {
+      box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3) !important;
+      border: 1px solid #6366f1 !important;
+    }
+
+    /* Card Statistiche (in alto) */
+    /* Totale Mezzi */
+    html:not(.dark) div[onclick="filterFleetByStatus('all')"] {
+      border: 1px solid #93c5fd !important;
+      border-bottom: 3px solid #3b82f6 !important;
+      box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.15) !important;
+    }
+    /* In Regola */
+    html:not(.dark) div[onclick="filterFleetByStatus('ok')"] {
+      border: 1px solid #86efac !important;
+      border-bottom: 3px solid #22c55e !important;
+      box-shadow: 0 4px 6px -1px rgba(34, 197, 94, 0.15) !important;
+    }
+    /* In Scadenza */
+    html:not(.dark) div[onclick="filterFleetByStatus('warning')"] {
+      border: 1px solid #fde047 !important;
+      border-bottom: 3px solid #eab308 !important;
+      box-shadow: 0 4px 6px -1px rgba(234, 179, 8, 0.15) !important;
+    }
+    /* Scaduti */
+    html:not(.dark) div[onclick="filterFleetByStatus('expired')"] {
+      border: 1px solid #fca5a5 !important;
+      border-bottom: 3px solid #ef4444 !important;
+      box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.15) !important;
+    }
+    /* A Noleggio */
+    html:not(.dark) div[onclick="filterFleetByStatus('rented')"] {
+      border: 1px solid #c4b5fd !important;
+      border-bottom: 3px solid #8b5cf6 !important;
+      box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.15) !important;
+    }
+
+    /* Ombre colorate sui bottoni principali blu */
+    html:not(.dark) button.bg-blue-600 {
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3) !important;
+      border: 1px solid #3b82f6 !important;
+    }
+    html:not(.dark) button.bg-blue-600:hover {
+      box-shadow: 0 6px 14px rgba(37, 99, 235, 0.4) !important;
+    }
+
+  </style>
+  </head>
 
 <body class="bg-slate-200 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col font-sans transition-colors duration-200">
 
