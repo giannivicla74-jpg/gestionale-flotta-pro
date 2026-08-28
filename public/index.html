@@ -108,6 +108,19 @@
     }
 
     /* === Tasti di Navigazione (Tabs) === */
+
+    /* Fix per i badge numerici dentro i tab attivi (visione giorno) */
+    html:not(.dark) .tab-btn.active span[id^="badge"] {
+      background-color: rgba(255, 255, 255, 0.25) !important;
+      color: #ffffff !important;
+    }
+    
+    /* Colore corretto per i badge nei tab inattivi */
+    html:not(.dark) .tab-btn:not(.active) span[id^="badge"] {
+      background-color: #e2e8f0 !important;
+      color: #475569 !important;
+    }
+
     /* Tasti di navigazione inattivi (Tabs) */
     html:not(.dark) .tab-btn:not(.active) {
       background: #ffffff !important;
