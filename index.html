@@ -53,10 +53,25 @@
 
   
   
+  
   <style id="light-mode-enhancements">
     /* Solo Modalità Chiara (l'HTML NON ha la classe .dark) */
     
-    /* Card Mezzi e Clienti: Sfumatura grigio-azzurra leggerissima */
+    /* === Header & Barra Navigazione (Sfumatura Orizzontale) === */
+    html:not(.dark) header {
+      background: linear-gradient(90deg, #f1f5f9 0%, #e2e8f0 50%, #f8fafc 100%) !important;
+      border-bottom: 1px solid #cbd5e1 !important;
+      box-shadow: 0 4px 12px -2px rgba(0,0,0,0.05) !important;
+    }
+    
+    html:not(.dark) .sticky.top-\[73px\] {
+      background: linear-gradient(90deg, rgba(241, 245, 249, 0.9) 0%, rgba(226, 232, 240, 0.9) 50%, rgba(248, 250, 252, 0.9) 100%) !important;
+      backdrop-filter: blur(12px) !important;
+      -webkit-backdrop-filter: blur(12px) !important;
+      border-bottom: 1px solid #cbd5e1 !important;
+    }
+
+    /* === Card Mezzi e Clienti === */
     html:not(.dark) #vehiclesGrid > div,
     html:not(.dark) #customersGrid > div {
       background: linear-gradient(145deg, #f8fafc 0%, #f1f5f9 100%) !important;
@@ -74,7 +89,15 @@
       transform: translateY(-3px);
     }
 
-    /* Card Noleggi (Tabella) */
+    /* === Modulo Noleggi (Pannelli Principali) === */
+    /* Il contenitore "Elenco Contratti" e la Tabella stessa */
+    html:not(.dark) #tabRentalsContent > div {
+      background: linear-gradient(145deg, #f8fafc 0%, #f1f5f9 100%) !important;
+      border: 1px solid #cbd5e1 !important;
+      box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.1) !important;
+    }
+
+    /* Card Noleggi (Righe Tabella) */
     html:not(.dark) #rentalsTableBody tr {
       background: linear-gradient(90deg, #f8fafc 0%, #f1f5f9 100%) !important;
       transition: all 0.2s ease;
@@ -83,45 +106,39 @@
       background: linear-gradient(90deg, #f1f5f9 0%, #e2e8f0 100%) !important;
     }
 
-    /* Tasti di navigazione (Tabs) */
+    /* === Tasti di Navigazione (Tabs) === */
     html:not(.dark) .tab-btn.active {
-      /* Manteniamo il colore di sfondo blu originale di Tailwind, aggiungiamo solo l'ombra */
       background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
       color: #ffffff !important;
       box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3) !important;
       border: 1px solid #2563eb !important;
     }
 
-    /* Card Statistiche (in alto) - Sfumature di colore interno più decise (50 -> 100) */
-    /* Totale Mezzi (Blu) */
+    /* === Card Statistiche (In alto) === */
     html:not(.dark) div[onclick="filterFleetByStatus('all')"] {
       background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%) !important;
       border: 1px solid #93c5fd !important;
       border-bottom: 3px solid #3b82f6 !important;
       box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.15) !important;
     }
-    /* In Regola (Verde) */
     html:not(.dark) div[onclick="filterFleetByStatus('ok')"] {
       background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%) !important;
       border: 1px solid #86efac !important;
       border-bottom: 3px solid #22c55e !important;
       box-shadow: 0 4px 6px -1px rgba(34, 197, 94, 0.15) !important;
     }
-    /* In Scadenza (Giallo) */
     html:not(.dark) div[onclick="filterFleetByStatus('warning')"] {
       background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%) !important;
       border: 1px solid #fde047 !important;
       border-bottom: 3px solid #eab308 !important;
       box-shadow: 0 4px 6px -1px rgba(234, 179, 8, 0.15) !important;
     }
-    /* Scaduti (Rosso) */
     html:not(.dark) div[onclick="filterFleetByStatus('expired')"] {
       background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%) !important;
       border: 1px solid #fca5a5 !important;
       border-bottom: 3px solid #ef4444 !important;
       box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.15) !important;
     }
-    /* A Noleggio (Viola) */
     html:not(.dark) div[onclick="filterFleetByStatus('rented')"] {
       background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%) !important;
       border: 1px solid #c4b5fd !important;
@@ -129,12 +146,14 @@
       box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.15) !important;
     }
 
-    /* Ombre colorate sui bottoni principali blu */
-    html:not(.dark) button.bg-blue-600 {
+    /* === Pulsanti Principali Blu === */
+    html:not(.dark) button.bg-blue-600,
+    html:not(.dark) button.bg-gradient-to-r.from-blue-600 {
       box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3) !important;
       border: 1px solid #3b82f6 !important;
     }
-    html:not(.dark) button.bg-blue-600:hover {
+    html:not(.dark) button.bg-blue-600:hover,
+    html:not(.dark) button.bg-gradient-to-r.from-blue-600:hover {
       box-shadow: 0 6px 14px rgba(37, 99, 235, 0.4) !important;
     }
   </style>
