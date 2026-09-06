@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FLEET & RENTAL PRO - Gestionale Flotta & Noleggio Mezzi</title><!-- cache-bust: 1787866322018 -->
+    <title>GC-FleetControl - Gestione Flotta, Scadenziario & Noleggio Mezzi | GC CodeLab</title><!-- cache-bust: 1787866322018 -->
     
     <meta name="theme-color" content="#1e3a8a">
     <meta name="description" content="Gestionale professionale per il controllo scadenze flotta mezzi e contratti di noleggio veicoli">
@@ -236,6 +236,50 @@
 
 <body class="overflow-y-scroll bg-slate-200 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col font-sans transition-colors duration-200">
 
+    <!-- ========================================== -->
+    <!-- 🚀 GC CODELAB - AURORA GLOW SPLASH SCREEN  -->
+    <!-- ========================================== -->
+    <div id="gcAppSplashScreen" class="fixed inset-0 bg-slate-950 z-[200] flex flex-col items-center justify-center transition-all duration-700 select-none">
+        <!-- Aurora Neon Glow Background Balls -->
+        <div class="absolute w-72 h-72 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-500 to-purple-600 blur-3xl opacity-40 animate-pulse"></div>
+        <div class="absolute w-56 h-56 rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 blur-2xl opacity-30 animate-pulse delay-700"></div>
+
+        <!-- Glassmorphism Card Central Box -->
+        <div class="relative z-10 flex flex-col items-center p-6 sm:p-8 rounded-3xl bg-slate-900/85 border border-slate-700/60 backdrop-blur-2xl shadow-2xl max-w-md w-full mx-4 text-center">
+            
+            <!-- Logo with Glowing Halo (Full-Width Widescreen to show full logo beauty) -->
+            <div class="relative mb-6 w-full flex items-center justify-center">
+                <div class="absolute -inset-3 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 rounded-3xl blur-xl opacity-80 animate-pulse"></div>
+                <div id="splashLogoContainer" class="relative w-full h-44 sm:h-48 rounded-2xl bg-slate-950/90 border border-slate-700/90 p-1.5 flex items-center justify-center shadow-2xl overflow-hidden">
+                    <img id="splashAppLogo" src="logo_noleggio_mezzi.jpg" alt="Logo" class="w-full h-full object-cover rounded-xl shadow-inner">
+                </div>
+            </div>
+
+            <!-- App Title & Subtitle -->
+            <h1 id="splashCompanyName" class="text-2xl font-black tracking-tight text-white mb-1">Fleet & Rental Pro</h1>
+            <p class="text-xs text-indigo-400 font-extrabold uppercase tracking-widest mb-6">Software Gestionale Flotta &amp; Noleggio</p>
+
+            <!-- Loading Progress Bar -->
+            <div class="w-full bg-slate-800/90 rounded-full h-2 p-0.5 overflow-hidden border border-slate-700/80 mb-3">
+                <div id="splashProgressBar" class="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 rounded-full transition-all duration-1000 ease-out shadow-sm" style="width: 15%;"></div>
+            </div>
+            
+            <div class="flex items-center justify-between w-full text-[11px] text-slate-400 font-medium">
+                <span class="flex items-center gap-1.5 font-semibold">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    Caricamento database...
+                </span>
+                <span class="font-black text-slate-200">v2.4 Pro</span>
+            </div>
+        </div>
+
+        <!-- Footer Signature -->
+        <div class="absolute bottom-6 text-center text-slate-400 text-xs font-medium">
+            &copy; 2026 <span class="font-bold text-indigo-400">GC CodeLab</span> &bull; Sviluppato da <span class="font-bold text-white">Giovanni Cavallo</span> &bull; Tutti i diritti riservati.
+        </div>
+    </div>
+
+
     <!-- ========================================================= -->
     <!-- 1. SCHERMATA INIZIALE DI ONBOARDING (REGISTRAZIONE AZIENDA) -->
     <!-- ========================================================= -->
@@ -275,6 +319,20 @@
                             </button>
                             <input type="file" id="onboardingLogoInput" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
                         </div>
+                    </div>
+                </div>
+
+                <!-- BANNER BLINDATURA DATI FISCALI ANTI-CESSIONE -->
+                <div id="obCompanyLockBanner" class="hidden p-3.5 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex items-center gap-3 text-xs text-amber-700 dark:text-amber-300 font-bold">
+                    <div class="w-8 h-8 rounded-xl bg-amber-500/20 flex items-center justify-center shrink-0 text-amber-500">
+                        <i data-lucide="lock" class="w-4 h-4"></i>
+                    </div>
+                    <div>
+                        <div class="font-extrabold text-slate-900 dark:text-white flex items-center gap-1.5">
+                            <span>🔒 Dati Fiscali Blindati con Licenza Attiva</span>
+                            <span class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 text-[10px] uppercase font-bold">Protezione Anti-Cessione</span>
+                        </div>
+                        <p class="text-[11px] font-normal text-slate-600 dark:text-slate-400 mt-0.5">La Ragione Sociale e la Partita IVA sono vincolate alla licenza commerciale attiva. Per variazioni straordinarie accedi come Super Admin (PIN 8528).</p>
                     </div>
                 </div>
 
@@ -350,6 +408,32 @@
     <!-- ========================================================= -->
     <!-- 2. HEADER PRINCIPALE DELL'APPLICAZIONE                    -->
     <!-- ========================================================= -->
+    <!-- BANNER PERMANENTE MODALITÀ SOLA CONSULTAZIONE (GARANZIA ACCESSO DATI) -->
+    <div id="readOnlyTopBanner" class="hidden bg-gradient-to-r from-amber-700 via-rose-700 to-amber-800 text-white px-4 py-2.5 shadow-xl sticky top-0 z-[100] border-b border-amber-400/30 select-none">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 text-xs">
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-xl bg-black/30 border border-white/20 flex items-center justify-center shrink-0">
+                    <i data-lucide="eye" class="w-4 h-4 text-amber-300"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="font-extrabold tracking-wide uppercase text-amber-200 text-xs">Modalità Sola Consultazione Attiva</span>
+                        <span class="text-[10px] bg-black/40 px-2 py-0.5 rounded-full border border-white/10 text-slate-200">Dati al Sicuro 100%</span>
+                    </div>
+                    <p class="text-[11px] text-white/90">Il tuo archivio è sempre accessibile. Per registrare nuovi contratti o aggiungere mezzi, rinnova la licenza d'uso.</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 w-full md:w-auto shrink-0 justify-end">
+                <button onclick="exportFullDatabaseJSON()" class="px-3 py-1.5 bg-black/40 hover:bg-black/60 border border-white/20 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs active:scale-95">
+                    <i data-lucide="download" class="w-3.5 h-3.5 text-teal-300"></i> <span>Scarica Backup Dati</span>
+                </button>
+                <button onclick="openLicenseModal()" class="px-3.5 py-1.5 bg-white text-rose-700 hover:bg-amber-50 rounded-lg text-xs font-black transition flex items-center justify-center gap-1.5 cursor-pointer shadow-md active:scale-95">
+                    <i data-lucide="key" class="w-3.5 h-3.5"></i> <span>Rinnova / Attiva Licenza</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <header class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-40 shadow-sm transition-colors duration-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-[4.2rem] py-2.5 flex items-center justify-between gap-3">
             
@@ -370,6 +454,12 @@
             
             <!-- Action Controls -->
             <div class="flex items-center space-x-2">
+                <!-- Badge Licenza / Abbonamento -->
+                <button id="headerLicenseBadge" onclick="openLicenseModal()" class="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 hover:bg-amber-500/25 transition shadow-sm font-bold cursor-pointer" title="Gestione Licenza e Abbonamento">
+                    <span id="headerLicenseIconBox"><i data-lucide="hourglass" class="w-4 h-4"></i></span>
+                    <span class="text-xs font-bold" id="headerLicenseText">Trial: 30 gg</span>
+                </button>
+
                 <!-- Bottone Profilo Azienda -->
                 <button onclick="openOnboardingModal()" class="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md transition font-bold" title="Modifica Dati Azienda o Cambia Logo">
                     <i data-lucide="building-2" class="w-4 h-4"></i>
@@ -443,69 +533,103 @@
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full space-y-6">
 
         <!-- STATS COUNTER BAR -->
-        <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 sm:gap-4">
-            <div onclick="filterFleetByStatus('all')" class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm cursor-pointer hover:border-blue-500 transition">
-                <div class="flex justify-between items-center">
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-3.5 sm:gap-4 select-none">
+            
+            <!-- 1. Totale Mezzi -->
+            <div id="cardStatAll" onclick="filterFleetByStatus('all')" class="stat-card relative overflow-hidden bg-white/80 dark:bg-slate-900/80 p-4 sm:p-5 rounded-2xl border-2 border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-blue-500/50 hover:-translate-y-1 transition-all duration-300 cursor-pointer backdrop-blur-md group active:scale-95">
+                <div class="absolute -right-6 -bottom-6 w-20 h-20 bg-blue-500/10 rounded-full blur-xl group-hover:bg-blue-500/20 transition duration-500 pointer-events-none"></div>
+                <div class="relative z-10 flex justify-between items-center">
                     <div>
-                        <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wide">Totale Mezzi</div>
-                        <div class="text-2xl font-black text-slate-900 dark:text-white mt-1" id="statTotalVehicles">0</div>
+                        <div class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider group-hover:text-blue-500 transition flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                            Totale Mezzi
+                        </div>
+                        <div class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mt-1.5 tracking-tight" id="statTotalVehicles">0</div>
                     </div>
-                    <div class="p-2 bg-slate-100 dark:bg-slate-700 rounded-lg text-slate-500 dark:text-slate-400">
-                        <i data-lucide="truck" class="w-6 h-6"></i>
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-500 text-white flex items-center justify-center shadow-lg shadow-blue-500/25 ring-1 ring-blue-400/30 group-hover:scale-110 group-hover:rotate-3 transition duration-300 shrink-0">
+                        <i data-lucide="layers" class="w-5 h-5"></i>
                     </div>
                 </div>
             </div>
-            <div onclick="filterFleetByStatus('ok')" class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-emerald-200 dark:border-emerald-900/40 shadow-sm cursor-pointer hover:border-emerald-500 transition">
-                <div class="flex justify-between items-center">
+
+            <!-- 2. In Regola -->
+            <div id="cardStatOk" onclick="filterFleetByStatus('ok')" class="stat-card relative overflow-hidden bg-white/80 dark:bg-slate-900/80 p-4 sm:p-5 rounded-2xl border-2 border-emerald-500/25 dark:border-emerald-500/25 shadow-sm hover:shadow-xl hover:border-emerald-500/60 hover:-translate-y-1 transition-all duration-300 cursor-pointer backdrop-blur-md group active:scale-95">
+                <div class="absolute -right-6 -bottom-6 w-20 h-20 bg-emerald-500/10 rounded-full blur-xl group-hover:bg-emerald-500/20 transition duration-500 pointer-events-none"></div>
+                <div class="relative z-10 flex justify-between items-center">
                     <div>
-                        <div class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wide">In Regola</div>
-                        <div class="text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-1" id="statOkVehicles">0</div>
+                        <div class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                            In Regola
+                        </div>
+                        <div class="text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400 mt-1.5 tracking-tight" id="statOkVehicles">0</div>
                     </div>
-                    <div class="p-2 bg-emerald-100 dark:bg-emerald-900/40 rounded-lg text-emerald-600 dark:text-emerald-400">
-                        <i data-lucide="shield-check" class="w-6 h-6"></i>
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 text-white flex items-center justify-center shadow-lg shadow-emerald-500/25 ring-1 ring-emerald-400/30 group-hover:scale-110 group-hover:rotate-3 transition duration-300 shrink-0">
+                        <i data-lucide="shield-check" class="w-5 h-5"></i>
                     </div>
                 </div>
             </div>
-            <div onclick="filterFleetByStatus('warning')" class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-amber-200 dark:border-amber-900/40 shadow-sm cursor-pointer hover:border-amber-500 transition">
-                <div class="flex justify-between items-center">
+
+            <!-- 3. In Scadenza (<=30gg) -->
+            <div id="cardStatWarning" onclick="filterFleetByStatus('warning')" class="stat-card relative overflow-hidden bg-white/80 dark:bg-slate-900/80 p-4 sm:p-5 rounded-2xl border-2 border-amber-500/25 dark:border-amber-500/25 shadow-sm hover:shadow-xl hover:border-amber-500/60 hover:-translate-y-1 transition-all duration-300 cursor-pointer backdrop-blur-md group active:scale-95">
+                <div class="absolute -right-6 -bottom-6 w-20 h-20 bg-amber-500/10 rounded-full blur-xl group-hover:bg-amber-500/20 transition duration-500 pointer-events-none"></div>
+                <div class="relative z-10 flex justify-between items-center">
                     <div>
-                        <div class="text-[11px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wide">In Scadenza (&le;30gg)</div>
-                        <div class="text-2xl font-black text-amber-600 dark:text-amber-400 mt-1" id="statWarningVehicles">0</div>
+                        <div class="text-[11px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                            In Scadenza (&le;30gg)
+                        </div>
+                        <div class="text-2xl sm:text-3xl font-black text-amber-600 dark:text-amber-400 mt-1.5 tracking-tight" id="statWarningVehicles">0</div>
                     </div>
-                    <div class="p-2 bg-amber-100 dark:bg-amber-900/40 rounded-lg text-amber-600 dark:text-amber-400">
-                        <i data-lucide="clock" class="w-6 h-6"></i>
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-400 text-white flex items-center justify-center shadow-lg shadow-amber-500/25 ring-1 ring-amber-400/30 group-hover:scale-110 group-hover:rotate-3 transition duration-300 shrink-0">
+                        <i data-lucide="hourglass" class="w-5 h-5"></i>
                     </div>
                 </div>
             </div>
-            <div onclick="filterFleetByStatus('expired')" class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-red-200 dark:border-red-900/40 shadow-sm cursor-pointer hover:border-red-500 transition">
-                <div class="flex justify-between items-center">
+
+            <!-- 4. Scaduti -->
+            <div id="cardStatExpired" onclick="filterFleetByStatus('expired')" class="stat-card relative overflow-hidden bg-white/80 dark:bg-slate-900/80 p-4 sm:p-5 rounded-2xl border-2 border-rose-500/30 dark:border-rose-500/30 shadow-sm hover:shadow-xl hover:border-rose-500/60 hover:-translate-y-1 transition-all duration-300 cursor-pointer backdrop-blur-md group active:scale-95">
+                <div class="absolute -right-6 -bottom-6 w-20 h-20 bg-rose-500/10 rounded-full blur-xl group-hover:bg-rose-500/20 transition duration-500 pointer-events-none"></div>
+                <div class="relative z-10 flex justify-between items-center">
                     <div>
-                        <div class="text-[11px] font-bold text-red-600 dark:text-red-400 uppercase tracking-wide">Scaduti</div>
-                        <div class="text-2xl font-black text-red-600 dark:text-red-400 mt-1" id="statExpiredVehicles">0</div>
+                        <div class="text-[11px] font-bold text-rose-600 dark:text-rose-400 uppercase tracking-wider flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping"></span>
+                            Scaduti
+                        </div>
+                        <div class="text-2xl sm:text-3xl font-black text-rose-600 dark:text-rose-400 mt-1.5 tracking-tight" id="statExpiredVehicles">0</div>
                     </div>
-                    <div class="p-2 bg-red-100 dark:bg-red-900/40 rounded-lg text-red-600 dark:text-red-400">
-                        <i data-lucide="alert-octagon" class="w-6 h-6"></i>
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-rose-600 to-red-500 text-white flex items-center justify-center shadow-lg shadow-rose-500/30 ring-1 ring-rose-400/30 group-hover:scale-110 group-hover:rotate-3 transition duration-300 shrink-0 animate-pulse">
+                        <i data-lucide="alert-octagon" class="w-5 h-5"></i>
                     </div>
                 </div>
             </div>
-            <div onclick="switchTab('rentals')" class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-indigo-200 dark:border-indigo-900/40 shadow-sm cursor-pointer hover:border-indigo-500 transition col-span-2 sm:col-span-1">
-                <div class="flex justify-between items-center">
+
+            <!-- 5. A Noleggio -->
+            <div id="cardStatRented" onclick="filterFleetByStatus('rented')" class="stat-card relative overflow-hidden bg-white/80 dark:bg-slate-900/80 p-4 sm:p-5 rounded-2xl border-2 border-indigo-500/25 dark:border-indigo-500/25 shadow-sm hover:shadow-xl hover:border-indigo-500/60 hover:-translate-y-1 transition-all duration-300 cursor-pointer backdrop-blur-md group active:scale-95 col-span-2 sm:col-span-1">
+                <div class="absolute -right-6 -bottom-6 w-20 h-20 bg-indigo-500/10 rounded-full blur-xl group-hover:bg-indigo-500/20 transition duration-500 pointer-events-none"></div>
+                <div class="relative z-10 flex justify-between items-center">
                     <div>
-                        <div class="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wide">A Noleggio</div>
-                        <div class="text-2xl font-black text-indigo-600 dark:text-indigo-400 mt-1" id="statRentedVehicles">0</div>
+                        <div class="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+                            A Noleggio
+                        </div>
+                        <div class="text-2xl sm:text-3xl font-black text-indigo-600 dark:text-indigo-400 mt-1.5 tracking-tight" id="statRentedVehicles">0</div>
                     </div>
-                    <div class="p-2 bg-indigo-100 dark:bg-indigo-900/40 rounded-lg text-indigo-600 dark:text-indigo-400">
-                        <i data-lucide="key-round" class="w-6 h-6"></i>
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-blue-500 text-white flex items-center justify-center shadow-lg shadow-indigo-500/25 ring-1 ring-purple-400/30 group-hover:scale-110 group-hover:rotate-3 transition duration-300 shrink-0">
+                        <i data-lucide="key-round" class="w-5 h-5"></i>
                     </div>
                 </div>
             </div>
+
         </div>
+
+        
 
         <!-- TAB 1: PARCO MEZZI & SCADENZE -->
         <section id="tabVehiclesContent" class="space-y-4">
             <div class="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
                 <!-- Ricerca -->
-                <div class="relative w-full sm:w-96">
+                <div id="activeFilterBadge" class="hidden items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold shadow-xs"></div>
+                <div class="relative w-full sm:w-80">
                     <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
                     <input type="text" id="vehicleSearchInput" oninput="renderVehicles()" placeholder="Cerca targa, marca, modello..." class="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none">
                 </div>
@@ -746,16 +870,31 @@
     </main>
 
     <!-- FOOTER -->
-    <footer class="mt-8 py-6 border-t border-slate-200 dark:border-slate-800 bg-transparent text-center">
-        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-medium text-slate-500 dark:text-slate-400">
-            <div class="flex items-center gap-2">
-                <div onclick="handleAdminClick()" class="cursor-pointer w-6 h-6 rounded bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-md hover:scale-110 transition-transform" title="Sviluppato da GC CodeLab">
+    <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 transition-colors duration-200 mt-auto">
+        <!-- DISCLAIMER LICENZA GRATUITA / PRO BONO (ATTIVABILE DA SUPER ADMIN) -->
+        <div id="footerFreeLicenseNotice" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-0">
+            <div class="p-3.5 bg-gradient-to-r from-teal-500/10 via-emerald-500/10 to-blue-500/10 border border-teal-500/30 rounded-2xl text-xs text-teal-800 dark:text-teal-200 font-medium flex items-start sm:items-center gap-3 shadow-xs">
+                <div class="w-7 h-7 rounded-xl bg-teal-500/20 text-teal-600 dark:text-teal-300 flex items-center justify-center shrink-0">
+                    <i data-lucide="scale" class="w-4 h-4"></i>
+                </div>
+                <div class="flex-1 leading-relaxed">
+                    <span class="font-bold text-teal-900 dark:text-teal-100 uppercase tracking-wider text-[10px] block sm:inline mr-1.5">📜 Licenza d'Uso Gratuita:</span>
+                    <span id="footerFreeLicenseNoticeText"></span>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
+            <div class="flex items-center gap-2.5 flex-wrap justify-center sm:justify-start">
+                <div onclick="handleAdminClick()" class="w-6 h-6 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-xs select-none cursor-default" title="GC CodeLab">
                     <i data-lucide="code-2" class="w-3.5 h-3.5"></i>
                 </div>
-                <span><strong>GC CodeLab</strong> &bull; Sviluppato da Giovanni Cavallo &bull; <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded text-[10px] font-black border border-indigo-200 dark:border-indigo-800">v2.0.6 Pro</span></span>
+                <span>&copy; 2026 <strong>GC CodeLab</strong> &bull; Sviluppato da <strong>Giovanni Cavallo</strong> &bull; Tutti i diritti riservati.</span>
+                <span class="px-2 py-0.5 rounded-md bg-indigo-500/15 text-indigo-400 font-bold text-[10px] border border-indigo-500/30">v2.4.0 Pro</span>
             </div>
-            <div>
-                &copy; 2026 GC CodeLab. Tutti i diritti riservati.
+            <div class="flex items-center gap-3 text-[11px] text-slate-400">
+                <span>Cloud &amp; LocalStorage</span>
+                <span>&bull;</span>
+                <span>PWA Offline Ready</span>
             </div>
         </div>
     </footer>
@@ -1316,12 +1455,16 @@
         let rentals = [];
 
         // STARTUP
+                // STARTUP
         document.addEventListener('DOMContentLoaded', () => {
             loadFromStorage();
             initTheme();
             renderAll();
             checkRegistrationOnStartup();
-            lucide.createIcons();
+            checkLicenseStatus();
+            if (typeof initFreeLicenseUI === 'function') initFreeLicenseUI();
+            initSplashScreen();
+            if (window.lucide) lucide.createIcons();
         });
 
         function loadFromStorage() {
@@ -1363,7 +1506,7 @@
             }
         }
 
-        function openOnboardingModal() {
+        function openOnboardingModal(isSuperAdmin = false) {
             const ob = document.getElementById('onboardingScreen');
             if (ob) {
                 ob.style.display = 'flex';
@@ -1385,6 +1528,40 @@
                     if (prev) { prev.src = targetLogo; prev.classList.remove('hidden'); }
                     if (ph) { ph.classList.add('hidden'); }
                 }
+
+                // CONTROLLO BLINDATURA DATI AZIENDALI ANTI-CESSIONE
+                const lic = typeof getLicenseData === 'function' ? getLicenseData() : { type: 'trial' };
+                const isCommercial = lic && lic.type && lic.type !== 'trial';
+                const lockBanner = document.getElementById('obCompanyLockBanner');
+                const nameInput = document.getElementById('obCompanyName');
+                const vatInput = document.getElementById('obCompanyVat');
+
+                if (isCommercial && !isSuperAdmin && companyProfile.name) {
+                    if (lockBanner) lockBanner.classList.remove('hidden');
+                    if (nameInput) {
+                        nameInput.readOnly = true;
+                        nameInput.classList.add('bg-slate-200/80', 'dark:bg-slate-800/80', 'cursor-not-allowed', 'border-amber-500/40');
+                        nameInput.title = 'Campo bloccato dalla licenza commerciale attiva';
+                    }
+                    if (vatInput) {
+                        vatInput.readOnly = true;
+                        vatInput.classList.add('bg-slate-200/80', 'dark:bg-slate-800/80', 'cursor-not-allowed', 'border-amber-500/40');
+                        vatInput.title = 'Campo bloccato dalla licenza commerciale attiva';
+                    }
+                } else {
+                    if (lockBanner) lockBanner.classList.add('hidden');
+                    if (nameInput) {
+                        nameInput.readOnly = false;
+                        nameInput.classList.remove('bg-slate-200/80', 'dark:bg-slate-800/80', 'cursor-not-allowed', 'border-amber-500/40');
+                        nameInput.title = '';
+                    }
+                    if (vatInput) {
+                        vatInput.readOnly = false;
+                        vatInput.classList.remove('bg-slate-200/80', 'dark:bg-slate-800/80', 'cursor-not-allowed', 'border-amber-500/40');
+                        vatInput.title = '';
+                    }
+                }
+
                 lucide.createIcons();
             }
         }
@@ -1631,11 +1808,66 @@
             document.getElementById('badgeVehiclesCount').innerText = total;
             document.getElementById('badgeRentalsCount').innerText = rentals.length;
             document.getElementById('badgeCustomersCount').innerText = customers.length;
+            updateStatCardsVisual();
+        }
+
+        function updateStatCardsVisual() {
+            const cards = {
+                all: { id: 'cardStatAll', activeBorder: 'border-blue-500 ring-2 ring-blue-500/40 bg-blue-50/30 dark:bg-blue-950/40', label: 'Tutti i Mezzi', colorClass: 'bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300 border border-blue-300 dark:border-blue-800' },
+                ok: { id: 'cardStatOk', activeBorder: 'border-emerald-500 ring-2 ring-emerald-500/40 bg-emerald-50/30 dark:bg-emerald-950/40', label: 'In Regola', colorClass: 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800' },
+                warning: { id: 'cardStatWarning', activeBorder: 'border-amber-500 ring-2 ring-amber-500/40 bg-amber-50/30 dark:bg-amber-950/40', label: 'In Scadenza (≤30gg)', colorClass: 'bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800' },
+                expired: { id: 'cardStatExpired', activeBorder: 'border-red-500 ring-2 ring-red-500/40 bg-red-50/30 dark:bg-red-950/40', label: 'Scaduti', colorClass: 'bg-red-100 dark:bg-red-950 text-red-800 dark:text-red-300 border border-red-300 dark:border-red-800' },
+                rented: { id: 'cardStatRented', activeBorder: 'border-indigo-500 ring-2 ring-indigo-500/40 bg-indigo-50/30 dark:bg-indigo-950/40', label: 'A Noleggio', colorClass: 'bg-indigo-100 dark:bg-indigo-950 text-indigo-800 dark:text-indigo-300 border border-indigo-300 dark:border-indigo-800' }
+            };
+
+            Object.keys(cards).forEach(key => {
+                const el = document.getElementById(cards[key].id);
+                if (!el) return;
+                const activeClasses = cards[key].activeBorder.split(' ');
+                if (currentFilter === key) {
+                    activeClasses.forEach(c => el.classList.add(c));
+                    el.classList.add('shadow-md', 'scale-[1.02]');
+                } else {
+                    activeClasses.forEach(c => el.classList.remove(c));
+                    el.classList.remove('shadow-md', 'scale-[1.02]');
+                }
+            });
+
+            // Aggiorna indicatore filtro attivo nella toolbar
+            const badge = document.getElementById('activeFilterBadge');
+            if (badge) {
+                if (currentFilter !== 'all') {
+                    const currentCfg = cards[currentFilter] || cards.all;
+                    badge.className = `flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold ${currentCfg.colorClass}`;
+                    badge.innerHTML = `
+                        <span>Filtro attivo: <strong>${currentCfg.label}</strong></span>
+                        <button onclick="filterFleetByStatus('all')" class="hover:opacity-75 cursor-pointer ml-1 text-xs font-black" title="Rimuovi filtro">&times; Mostra Tutti</button>
+                    `;
+                } else {
+                    badge.className = "hidden";
+                    badge.innerHTML = "";
+                }
+            }
         }
 
         function filterFleetByStatus(filter) {
-            currentFilter = filter;
-            renderVehicles();
+            // 1. Toggle: se riclicco sullo stesso filtro già attivo (diverso da 'all'), torna ad 'all'
+            if (currentFilter === filter && filter !== 'all') {
+                currentFilter = 'all';
+            } else {
+                currentFilter = filter;
+            }
+
+            // 2. Se ci troviamo su Clienti, Noleggi, Planning, Dashboard o Calendario, passiamo subito a 'vehicles'
+            if (currentTab !== 'vehicles') {
+                switchTab('vehicles');
+            } else {
+                renderVehicles();
+            }
+
+            // 3. Aggiorna grafica card evidenziate e icone
+            updateStatCardsVisual();
+            if (window.lucide) lucide.createIcons();
         }
 
         function renderVehicles() {
@@ -1652,6 +1884,7 @@
                     return false;
                 }
                 if (currentFilter === 'all') return true;
+                if (currentFilter === 'rented') return v.status === 'noleggio';
 
                 const dates = [v.dateRevisione, v.dateAssicurazione, v.dateBollo, v.dateTachigrafo].filter(Boolean);
                 let vStatus = 'ok';
@@ -1700,33 +1933,36 @@
                     statusBadge = '<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-200 dark:border-amber-800">Manutenzione</span>';
                 }
 
-                return `<div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm p-4 hover:shadow-md transition">
-                    <div class="flex items-start justify-between gap-2 pb-3 border-b border-slate-100 dark:border-slate-700">
+                return `<div class="vehicle-card relative overflow-hidden bg-white/95 dark:bg-slate-800/90 rounded-3xl border border-slate-200/90 dark:border-slate-700/80 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/10 dark:hover:shadow-blue-900/30 hover:-translate-y-2 hover:border-blue-500/50 dark:hover:border-blue-400/50 transition-all duration-300 ease-out transform cursor-default group p-5 backdrop-blur-md">
+                    <!-- Ambient Light Halo on Card Hover -->
+                    <div class="absolute -right-12 -top-12 w-32 h-32 bg-gradient-to-br from-blue-500/10 via-indigo-500/10 to-purple-500/10 rounded-full blur-2xl group-hover:scale-150 group-hover:opacity-100 opacity-0 transition-all duration-500 pointer-events-none"></div>
+
+                    <div class="relative z-10 flex items-start justify-between gap-2 pb-3.5 border-b border-slate-100 dark:border-slate-700/70">
                         <div>
-                            <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">${v.type}</span>
+                            <span class="text-[11px] text-slate-400 font-extrabold uppercase tracking-wider block mb-1 group-hover:text-blue-500 transition-colors">${v.type}</span>
                             <div class="flex items-center gap-2 mt-0.5">
-                                <span class="text-base font-black font-mono tracking-tight text-slate-900 dark:text-white px-2 py-0.5 bg-slate-100 dark:bg-slate-900 rounded-lg border border-slate-300 dark:border-slate-600">${v.plate}</span>
-                                <span class="text-xs font-bold text-slate-700 dark:text-slate-200 truncate">${v.model}</span>
+                                <span class="text-base font-black font-mono tracking-tight text-slate-900 dark:text-white px-2.5 py-1 bg-slate-100 dark:bg-slate-900/90 rounded-xl border border-slate-300 dark:border-slate-700 group-hover:border-blue-500/60 group-hover:shadow-md group-hover:shadow-blue-500/10 transition-all duration-300">${v.plate}</span>
+                                <span class="text-xs font-bold text-slate-700 dark:text-slate-200 truncate max-w-[150px] sm:max-w-[180px]">${v.model}</span>
                             </div>
                         </div>
-                        ${statusBadge}
+                        <div class="shrink-0 group-hover:scale-105 transition-transform duration-300">${statusBadge}</div>
                     </div>
 
-                    <div class="py-2.5 space-y-0.5">
+                    <div class="relative z-10 py-3 space-y-1">
                         ${getBadge(v.dateRevisione, 'Revisione')}
                         ${getBadge(v.dateAssicurazione, 'Assicurazione')}
                         ${getBadge(v.dateBollo, 'Bollo')}
                         ${getBadge(v.dateTachigrafo, 'Tachigrafo 2A')}
                     </div>
 
-                    <div class="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-700">
-                        <button onclick="openQuickRental('${v.id}')" class="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1 cursor-pointer">
+                    <div class="relative z-10 flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-700/70">
+                        <button onclick="openQuickRental('${v.id}')" class="px-3 py-1.5 rounded-xl bg-indigo-500/10 hover:bg-indigo-600 text-indigo-600 dark:text-indigo-400 hover:text-white text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95">
                             <i data-lucide="key" class="w-3.5 h-3.5"></i> Noleggia
                         </button>
-                        <div class="flex items-center gap-2">
-                            <button onclick="openMaintenanceModal('${v.id}')" class="p-1.5 text-slate-400 hover:text-emerald-600 transition" title="Libretto Manutenzioni"><i data-lucide="wrench" class="w-4 h-4"></i></button>
-                            <button onclick="editVehicle('${v.id}')" class="p-1.5 text-slate-400 hover:text-blue-600 transition" title="Modifica"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
-                            <button onclick="deleteVehicle('${v.id}')" class="p-1.5 text-slate-400 hover:text-red-600 transition" title="Elimina"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        <div class="flex items-center gap-1.5">
+                            <button onclick="openMaintenanceModal('${v.id}')" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800/80 text-slate-400 hover:text-emerald-500 hover:bg-emerald-500/15 hover:scale-110 active:scale-90 transition cursor-pointer" title="Libretto Manutenzioni"><i data-lucide="wrench" class="w-4 h-4"></i></button>
+                            <button onclick="editVehicle('${v.id}')" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800/80 text-slate-400 hover:text-blue-500 hover:bg-blue-500/15 hover:scale-110 active:scale-90 transition cursor-pointer" title="Modifica"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
+                            <button onclick="deleteVehicle('${v.id}')" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800/80 text-slate-400 hover:text-red-500 hover:bg-red-500/15 hover:scale-110 active:scale-90 transition cursor-pointer" title="Elimina"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                         </div>
                     </div>
                 </div>`;
@@ -1761,7 +1997,7 @@
                         <span class="text-slate-500 text-[11px] ml-1">${vehicle.model}</span>
                     </td>
                     <td class="p-3.5 font-medium">${formatDate(r.startDate)} &rarr; ${formatDate(r.endDate)} <span class="text-slate-400 text-xs ml-1 font-bold">(${days} gg)</span></td>
-                    <td class="p-3.5 font-mono font-bold">${r.dailyRate} €/gg <span class="text-slate-400 font-normal">(${r.totalAmount} €)</span></td>
+                    <td class="p-3.5 font-mono font-bold">${r.dailyRate} €/gg <span class="text-slate-400 font-normal">(${r.totalAmount} €)</span></span></td>
                     <td class="p-3.5">${statusBadge}</td>
                     <td class="p-3.5 text-right space-x-1.5">
                         <div class="inline-flex items-center gap-1.5 justify-end">
@@ -2841,192 +3077,214 @@
 
         // PDF GENERATION
         function printRentalContractPDF(rentalId) {
-            const r = rentals.find(item => item.id === rentalId);
-            if (!r) return;
-            const customer = customers.find(c => c.id === r.customerId) || {};
-            const vehicle = vehicles.find(v => v.id === r.vehicleId) || {};
-
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            let y = 15;
-
-            doc.setFillColor(30, 58, 138); 
-            doc.rect(0, 0, 210, 25, 'F');
-            
-            doc.setTextColor(255, 255, 255);
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(15);
-            doc.text(`CONTRATTO QUADRO DI NOLEGGIO - N. ${r.id}`, 105, 12, { align: 'center' });
-            
-            doc.setFont("helvetica", "normal");
-            doc.setFontSize(8.5);
-            doc.text("Modello Standard per Noleggio a Freddo / Nolo a Caldo di Piattaforme di Lavoro Mobili Elevabili (PLE) e Macchine da Cantiere", 105, 18, { align: 'center' });
-            
-            doc.setDrawColor(220, 38, 38);
-            doc.setLineWidth(1.5);
-            doc.line(0, 25, 210, 25);
-
-            y = 35;
-
-            if (companyProfile.logo) {
-                try {
-                    let imgFormat = 'PNG';
-                    if (companyProfile.logo.startsWith('data:image/jpeg')) imgFormat = 'JPEG';
-                    if (companyProfile.logo.startsWith('data:image/webp')) imgFormat = 'WEBP';
-                    doc.addImage(companyProfile.logo, imgFormat, 14, 28, 40, 20, '', 'FAST');
-                } catch(e) {
-                    console.error("Error adding logo to PDF:", e);
+            try {
+                const r = rentals.find(item => String(item.id) === String(rentalId));
+                if (!r) {
+                    showToast("Contratto non trovato (" + rentalId + ")", "error");
+                    return;
                 }
-            }
+                const customer = (typeof customers !== 'undefined' ? customers.find(c => String(c.id) === String(r.customerId)) : null) || {};
+                const vehicle = (typeof vehicles !== 'undefined' ? vehicles.find(v => String(v.id) === String(r.vehicleId)) : null) || {};
+                const comp = (typeof companyProfile !== 'undefined' ? companyProfile : {}) || {};
+                const opsList = (typeof operators !== 'undefined' ? operators : []);
 
-            doc.autoTable({
-                startY: 55,
-                theme: 'grid',
-                head: [['IL NOLEGGIATORE (LOCATORE)', "L'UTILIZZATORE (LOCATARIO / CLIENTE)"]],
-                body: [
-                    [
-                        `Ragione Sociale: ${companyProfile.name || 'FLEET & RENTAL PRO'}\nSede Legale: ${companyProfile.legalAddress || '---'}\nC.F. / P.IVA: ${companyProfile.vat || '---'}\nPEC / Cod. Destinatario: ${companyProfile.email || '---'}\nRappresentante Legale: ${companyProfile.legalRepresentative || '---'}`,
-                        `Ragione Sociale / Nome: ${customer.name || '---'}\nSede / Residenza: ${customer.address || '---'}\nC.F. / P.IVA: ${customer.vat || '---'}\nPEC / Email: ${customer.email || '---'}\nRappresentante Legale: ${customer.legalRepresentative || '---'}`
-                    ]
-                ],
-                headStyles: { fillColor: [241, 245, 249], textColor: [15, 23, 42], fontStyle: 'bold', fontSize: 10 },
-                styles: { fontSize: 9, cellPadding: 3, textColor: [51, 65, 85] },
-                columnStyles: { 0: { cellWidth: 90 }, 1: { cellWidth: 90 } },
-                margin: { left: 15, right: 15 }
-            });
-            
-            y = (doc.lastAutoTable ? doc.lastAutoTable.finalY : 90) + 10;
+                const jsPDFClass = (window.jspdf && window.jspdf.jsPDF) ? window.jspdf.jsPDF : (window.jsPDF || null);
+                if (!jsPDFClass) {
+                    showToast("Libreria PDF non pronta. Riprova tra un istante.", "warning");
+                    return;
+                }
 
-            function addSectionTitle(title) {
-                if (y > 270) { doc.addPage(); y = 20; }
+                const doc = new jsPDFClass();
+                let y = 15;
+
+                // Header Top Bar
+                doc.setFillColor(30, 58, 138); 
+                doc.rect(0, 0, 210, 25, 'F');
+                
+                doc.setTextColor(255, 255, 255);
                 doc.setFont("helvetica", "bold");
-                doc.setFontSize(11);
-                doc.setTextColor(30, 58, 138);
-                doc.text(title, 15, y);
-                doc.setDrawColor(203, 213, 225);
-                doc.setLineWidth(0.5);
-                doc.line(15, y + 2, 195, y + 2);
-                y += 8;
-            }
+                doc.setFontSize(15);
+                doc.text(`CONTRATTO QUADRO DI NOLEGGIO - N. ${r.id || 'N/D'}`, 105, 12, { align: 'center' });
+                
+                doc.setFont("helvetica", "normal");
+                doc.setFontSize(8.5);
+                doc.text("Modello Standard per Noleggio a Freddo / Nolo a Caldo di Piattaforme di Lavoro Mobili Elevabili (PLE) e Macchine da Cantiere", 105, 18, { align: 'center' });
+                
+                doc.setDrawColor(220, 38, 38);
+                doc.setLineWidth(1.5);
+                doc.line(0, 25, 210, 25);
 
-            function addArticle(title, text) {
-                if (y > 270) { doc.addPage(); y = 20; }
-                doc.setFont("helvetica", "bold");
-                doc.setFontSize(9);
-                doc.setTextColor(30, 58, 138);
-                if (title) {
+                y = 35;
+
+                if (comp.logo) {
+                    try {
+                        let imgFormat = 'PNG';
+                        if (comp.logo.startsWith('data:image/jpeg')) imgFormat = 'JPEG';
+                        if (comp.logo.startsWith('data:image/webp')) imgFormat = 'WEBP';
+                        doc.addImage(comp.logo, imgFormat, 14, 28, 40, 20, '', 'FAST');
+                    } catch(e) {
+                        console.error("Error adding logo to PDF:", e);
+                    }
+                }
+
+                const custName = customer.name || customer.ragioneSociale || 'Cliente non specificato';
+                const custVat = customer.vat || customer.piva || customer.cf || '---';
+                const custAddress = customer.address || customer.sede || '---';
+                const custEmail = customer.email || customer.pec || '---';
+                const custRep = customer.legalRepresentative || customer.referente || '---';
+
+                if (typeof doc.autoTable === 'function') {
+                    doc.autoTable({
+                        startY: 55,
+                        theme: 'grid',
+                        head: [['IL NOLEGGIATORE (LOCATORE)', "L'UTILIZZATORE (LOCATARIO / CLIENTE)"]],
+                        body: [
+                            [
+                                `Ragione Sociale: ${comp.name || 'FLEET & RENTAL PRO'}\nSede Legale: ${comp.legalAddress || '---'}\nC.F. / P.IVA: ${comp.vat || '---'}\nPEC / Cod. Destinatario: ${comp.email || '---'}\nRappresentante Legale: ${comp.legalRepresentative || '---'}`,
+                                `Ragione Sociale / Nome: ${custName}\nSede / Residenza: ${custAddress}\nC.F. / P.IVA: ${custVat}\nPEC / Email: ${custEmail}\nRappresentante Legale: ${custRep}`
+                            ]
+                        ],
+                        headStyles: { fillColor: [241, 245, 249], textColor: [15, 23, 42], fontStyle: 'bold', fontSize: 10 },
+                        styles: { fontSize: 9, cellPadding: 3, textColor: [51, 65, 85] },
+                        columnStyles: { 0: { cellWidth: 90 }, 1: { cellWidth: 90 } },
+                        margin: { left: 15, right: 15 }
+                    });
+                    y = doc.lastAutoTable.finalY + 8;
+                } else {
+                    y = 60;
+                }
+
+                function addSectionTitle(title) {
+                    if (y > 260) { doc.addPage(); y = 20; }
+                    doc.setFont("helvetica", "bold");
+                    doc.setFontSize(10.5);
+                    doc.setTextColor(30, 58, 138);
                     doc.text(title, 15, y);
-                    y += 4;
+                    doc.setDrawColor(203, 213, 225);
+                    doc.setLineWidth(0.5);
+                    doc.line(15, y + 1.5, 195, y + 1.5);
+                    y += 6.5;
                 }
-                
-                doc.setFont("helvetica", "normal");
-                doc.setTextColor(15, 23, 42);
-                const splitText = doc.splitTextToSize(text, 180);
-                
-                if (y + (splitText.length * 4) > 280) {
-                    doc.addPage();
-                    y = 20;
+
+                function addArticle(artTitle, text) {
+                    doc.setFont("helvetica", "bold");
+                    doc.setFontSize(8.5);
+                    doc.setTextColor(15, 23, 42);
+                    
+                    if (artTitle) {
+                        if (y > 270) { doc.addPage(); y = 20; }
+                        doc.text(artTitle, 15, y);
+                        y += 4;
+                    }
+
+                    doc.setFont("helvetica", "normal");
+                    doc.setFontSize(8);
+                    doc.setTextColor(51, 65, 85);
+                    
+                    const splitText = doc.splitTextToSize(text, 180);
+                    if (y + (splitText.length * 4) > 275) {
+                        doc.addPage();
+                        y = 20;
+                    }
+                    
+                    doc.text(splitText, 15, y);
+                    y += (splitText.length * 4) + 4;
                 }
+
+                const driverObj = r.driverId ? opsList.find(o => String(o.id) === String(r.driverId)) : null;
+                const driverText = driverObj ? `\nOperatore Assegnato: ${driverObj.name || ''} ${driverObj.surname || ''}` : '';
+
+                addSectionTitle("PREMESSE E OGGETTO DEL CONTRATTO");
+                addArticle("", `Le premesse formano parte integrante e sostanziale del presente contratto. Il Noleggiatore concede in locazione all'Utilizzatore, che accetta ai termini e condizioni di seguito specificati, il macchinario/attrezzatura descritto nella Scheda Tecnica dell'Ordine generata dal Software Gestionale (di seguito "Mezzo").\n\nMezzo Noleggiato: ${vehicle.brand || ''} ${vehicle.model || 'Non Specificato'} - Targa: ${vehicle.plate || 'N/D'}\nPeriodo: dal ${formatDate(r.startDate)} al ${formatDate(r.endDate)}\nTipologia: ${r.rentalType === 'caldo' ? 'A Caldo (con operatore)' : 'A Freddo (senza operatore)'}${driverText}\nCorrispettivo Pattuito: ${r.totalAmount || 0} EUR (Cauzione: ${r.deposit || 0} EUR)`);
+
+                addSectionTitle("SEZIONE I - DISPOSIZIONI GENERALI E NORMATIVA DI SICUREZZA");
+                addArticle("ART. 1 - TIPOLOGIA DI NOLEGGIO", "Il noleggio potra' perfezionarsi secondo una delle seguenti modalita':\n- a) Nolo a Freddo: Godimento del solo Mezzo privo di operatore. L'Utilizzatore assume la piena e totale responsabilita' dell'uso, custodia e conduzione.\n- b) Nolo a Caldo: Messa a disposizione del Mezzo unitamente a personale qualificato. L'operatore rispondera' esclusivamente delle manovre tecniche, rimanendo la direzione di cantiere a carico dell'Utilizzatore.");
+                addArticle("ART. 2 - ABILITAZIONE OPERATORI (D.LGS. 81/2008)", "Nel Nolo a Freddo, l'Utilizzatore dichiara sotto la propria responsabilita' che il Mezzo sara' condotto esclusivamente da personale addetto ed abilitato (cd. 'Patentino PLE') ai sensi dell'Art. 73 D.Lgs. 81/2008 in corso di validita'.");
+                addArticle("ART. 3 - CONFORMITA' DEL MEZZO", "Il Noleggiatore garantisce la conformita' del Mezzo alla Direttiva Macchine 2006/42/CE, provvisto di marcatura CE, manuale d'uso e verifiche periodiche aggiornate ex Art. 71 D.Lgs. 81/2008.");
+
+                addSectionTitle("SEZIONE II - CONSEGNA, USO E RESTITUZIONE DEL MEZZO");
+                addArticle("ART. 4 - VERBALE DI CONSEGNA DIGITALIZZATO (CHECK-IN)", "La consegna avviene previa compilazione e sottoscrizione del Verbale di Check-in corredato da rilievi fotografici dello stato iniziale.");
+                addArticle("ART. 5 - CONDOTTA E CUSTODIA IN CANTIERE", "L'Utilizzatore si obbliga a custodire il Mezzo con la massima diligenza, verificare la stabilita' e portata del terreno ed impiegare i DPI obbligatori (imbracature ed elmetti).");
+
+                if (y > 220) { doc.addPage(); y = 20; }
+                addArticle("ART. 6 - DIVIETO ASSOLUTO DI SUB-NOLEGGIO", "E' fatto divieto assoluto all'Utilizzatore di sub-noleggiare, cedere a qualsiasi titolo o prestare a terzi il Mezzo senza previa autorizzazione scritta.");
+                addArticle("ART. 7 - MANUTENZIONE E GUASTI", "La manutenzione ordinaria e' a carico del Noleggiatore. In caso di anomalia l'Utilizzatore deve sospendere immediatamente l'uso e avvisare il Noleggiatore.");
+                addArticle("ART. 8 - RESTITUZIONE E CHECK-OUT", "Il Mezzo dovra' essere restituito pulito, in perfetto stato operativo e con lo stesso livello di carburante/ricarica iniziale.");
+
+                addSectionTitle("SEZIONE III - CONDIZIONI ECONOMICHE E GARANZIE");
+                addArticle("ART. 9 - PAGAMENTI E TARIFFE", "I corrispettivi e i termini sono stabiliti nell'ordine contrattuale con decorrenza degli interessi moratori ex D.Lgs. 231/2002.");
+                addArticle("ART. 10 - DEPOSITO CAUZIONALE", "A garanzia degli obblighi contrattuali e' previsto il deposito cauzionale che verra' svincolato a seguito della chiusura del Verbale di Check-out.");
+                addArticle("ART. 11 - COPERTURE ASSICURATIVE", "Il Mezzo e' coperto da polizza R.C.T. Restano a carico dell'Utilizzatore franchigie, danni da incuria, dolo o errata stabilizzazione.");
+
+                addSectionTitle("SEZIONE IV - FIRMA E CONDIZIONI VESSATORIE");
+                addArticle("ART. 12 - FORO COMPETENTE", "Per ogni controversia sara' competente in via esclusiva il Foro della sede legale del Noleggiatore.");
+
+                if (y > 170) { doc.addPage(); y = 20; }
+                y += 8;
                 
-                doc.text(splitText, 15, y);
-                y += (splitText.length * 4.5) + 4;
-            }
-
-            addSectionTitle("PREMESSE E OGGETTO DEL CONTRATTO");
-            addArticle("", `Le premesse formano parte integrante e sostanziale del presente contratto. Il Noleggiatore concede in locazione all'Utilizzatore, che accetta ai termini e condizioni di seguito specificati, il macchinario/attrezzatura descritto nella Scheda Tecnica dell'Ordine generata dal Software Gestionale (di seguito "Mezzo").\n\nMezzo Noleggiato: ${vehicle.brand || ''} ${vehicle.model || ''} - Targa: ${vehicle.plate || ''}\nPeriodo: dal ${formatDate(r.startDate)} al ${formatDate(r.endDate)}\nTipologia: ${r.rentalType === 'caldo' ? 'A Caldo (con operatore)' : 'A Freddo (senza operatore)'}${r.rentalType === 'caldo' && r.driverId ? '\nOperatore Assegnato: ' + (operators.find(o => o.id === r.driverId)?.name || '') + ' ' + (operators.find(o => o.id === r.driverId)?.surname || '') : ''}\nCorrispettivo Pattuito: ${r.totalAmount} EUR (Cauzione: ${r.deposit} EUR)`);
-
-            addSectionTitle("SEZIONE I - DISPOSIZIONI GENERALI E NORMATIVA DI SICUREZZA");
-            addArticle("ART. 1 - TIPOLOGIA DI NOLEGGIO", "Il noleggio potra' perfezionarsi secondo una delle seguenti modalita', come definita nell'ordine gestionale:\n- a) Nolo a Freddo (Solo Macchina): Concessione in godimento del solo Mezzo, privo di operatore. L'Utilizzatore assume la piena e totale responsabilita' dell'uso, della custodia e della conduzione del Mezzo.\n- b) Nolo a Caldo (Macchina con Operatore): Messa a disposizione del Mezzo unitamente a personale qualificato messo a disposizione dal Noleggiatore. L'operatore rispondera' esclusivamente delle manovre del Mezzo, rimanendo l'organizzazione del cantiere e la direzione dei lavori a carico esclusivo dell'Utilizzatore.");
-            
-            addArticle("ART. 2 - OBBLIGHI DI ABILITAZIONE ED IDONEITA' OPERATORI (D.LGS. 81/2008)", "Nel Nolo a Freddo, l'Utilizzatore dichiara sotto la propria responsabilita' che il Mezzo sara' condotto esclusivamente da personale addetto ed abilitato ai sensi dell'Art. 73 del D.Lgs. 81/2008 ed in possesso di regolare attestato di formazione (cd. \"Patentino PLE\") conforme all'Accordo Stato-Regioni del 22/02/2012 in corso di validita'. L'Utilizzatore ha l'obbligo di trasmettere e far registrare nel sistema gestionale copia dei patentini di tutti gli operatori autorizzati prima della consegna del Mezzo. E' fatto severo divieto di far condurre il Mezzo a soggetti non preventivamente registrati e verificati.");
-
-            addArticle("ART. 3 - CONFORMITA' DEL MEZZO E VERIFICHE PERIODICHE", "Il Noleggiatore garantisce che il Mezzo e' conforme alla Direttiva Macchine 2006/42/CE, provvisto di marcatura CE, corredato dal Manuale di Uso e Manutenzione in lingua italiana e in regola con le verifiche periodiche annuali di cui all'Art. 71, comma 11, del D.Lgs. 81/2008 (Registro di Controllo vidimato/aggiornato).");
-
-            addSectionTitle("SEZIONE II - CONSEGNA, USO E RESTITUZIONE DEL MEZZO");
-            addArticle("ART. 4 - VERBALE DI CONSEGNA DIGITALIZZATO (CHECK-IN)", "La consegna del Mezzo avviene previa compilazione del Verbale di Check-in. L'Utilizzatore (o suo delegato) ha l'onere di ispezionare il Mezzo unitamente all'incaricato del Noleggiatore e sottoscrivere il verbale corredato dalle fotografie dello stato iniziale gestite a sistema. La firma del Verbale di Check-in attesta che il Mezzo viene consegnato in perfetto stato di funzionamento, privo di vizi e idoneo all'uso convenuto.");
-            
-            addArticle("ART. 5 - CONDOTTA, CUSTODIA E IDONEITA' DEL CANTIERE", "L'Utilizzatore si obbliga a:\n- Custodire il Mezzo con la massima diligenza e ad utilizzarlo esclusivamente per l'uso a cui e' destinato, nel rispetto dei limiti di carico, d'altezza e delle istruzioni del costruttore.\n- Verificare l'idoneita' del terreno di appoggio (portata del suolo, assenza di cavita' sottostanti, distanze di sicurezza da linee elettriche aeree non isolate ai sensi dell'Art. 83 D.Lgs. 81/08).\n- Fornire ai propri lavoratori i Dispositivi di Protezione Individuale (DPI) necessari, comprese imbracature di trattenuta ed elmetti di protezione per lavori in quota.\n- Non manomettere, modificare o rimuovere i dispositivi di sicurezza ed i sigilli apposti sul Mezzo.");
-
-            doc.addPage();
-            y = 20;
-
-            addArticle("ART. 6 - DIVIETO ASSOLUTO DI SUB-NOLEGGIO E CESSIONE", "E' fatto divieto assoluto all'Utilizzatore di sub-noleggiare, cedere a qualsiasi titolo, concedere in uso o prestito a terzi il Mezzo oggetto del presente contratto senza previa autorizzazione scritta del Noleggiatore. L'inadempimento comportera' la risoluzione di diritto del contratto ed una penale pari al doppio del canone di noleggio previsto.");
-
-            addArticle("ART. 7 - MANUTENZIONE, GUASTI E FERMI MACCHINA", "La manutenzione ordinaria e' a carico del Noleggiatore. In caso di guasto, anomalia o malfunzionamento, l'Utilizzatore deve sospendere immediatamente l'uso del Mezzo ed inviare segnalazione tempestiva al Noleggiatore. E' fatto divieto all'Utilizzatore di effettuare riparazioni o interventi diretti senza autorizzazione. Il Noleggiatore non rispondera' dei danni diretti o indiretti causati dal fermo macchina in cantiere.");
-
-            addArticle("ART. 8 - RESTITUZIONE E CHECK-OUT", "Alla scadenza del contratto, il Mezzo dovra' essere restituito pulito, in perfetto stato operativo (salvo il normale deterioramento d'uso) e con il medesimo livello di carburante/ricarica iniziale. In sede di restituzione verra' redatto il Verbale di Check-out. Eventuali danni, parti mancanti o pulizie straordinarie verranno addebitati all'Utilizzatore o trattenuti dalla cauzione.");
-
-            addSectionTitle("SEZIONE III - CONDIZIONI ECONOMICHE, CAUZIONE E GARANZIE");
-            addArticle("ART. 9 - CANONE, FATTURAZIONE E RITARDI", "I corrispettivi di noleggio e di trasporto sono stabiliti nell'Ordine registrato a sistema. I pagamenti avvengono secondo le modalita' concordate. Il ritardo nel pagamento autorizza il Noleggiatore a sospendere l'esecuzione del servizio e ad addebitare interessi moratori ai sensi del D.Lgs. 231/2002.");
-
-            addArticle("ART. 10 - DEPOSITO CAUZIONALE", "A garanzia del perfetto adempimento degli obblighi contrattuali e dell'eventuale risarcimento danni, viene richiesta una garanzia o versamento di un Deposito Cauzionale dell'importo indicato nella scheda d'ordine. La cauzione verra' svincolata a seguito della chiusura del Verbale di Check-out, previa verifica della regolarita' dei pagamenti e dell'assenza di danni.");
-
-            addArticle("ART. 11 - COPERTURE ASSICURATIVE E FRANCHIGIE", "Il Mezzo e' coperto da assicurazione R.C.T. (Responsabilita' Civile Verso Terzi). Restano a carico dell'Utilizzatore gli scoperti e le franchigie previsti dalla polizza Kasko/Furto/Incendio, nonche' i danni derivanti da dolo, colpa grave, uso improprio, errata stabilizzazione o inosservanza delle norme di sicurezza.");
-
-            addSectionTitle("SEZIONE IV - FIRMA E CONDIZIONI VESSATORIE");
-            addArticle("ART. 12 - FORO COMPETENTE E LEGGE APPLICABILE", "Il presente contratto e' regolato dalla legge italiana. Per qualsiasi controversia derivante dall'interpretazione, esecuzione o risoluzione del presente contratto, sara' esclusivamente competente il Foro della sede legale del Noleggiatore.");
-
-            if (y > 170) { doc.addPage(); y = 20; }
-            y += 10;
-            
-            doc.setFont("helvetica", "italic");
-            doc.setFontSize(8);
-            doc.text("Il presente contratto viene sottoscritto mediante firma autografa o procedura di firma digitale / elettronica registrata nel\nsistema gestionale.", 15, y);
-            y += 15;
-
-            doc.autoTable({
-                startY: y,
-                theme: 'plain',
-                head: [['IL NOLEGGIATORE', "L'UTILIZZATORE (CLIENTE)"]],
-                body: [
-                    [
-                        { content: '\n\n\n\nFIRMA NOLEGGIATORE', styles: { halign: 'center', cellPadding: 10, textColor: [156, 163, 175] } },
-                        { content: '\n\n\n\nFIRMA CLIENTE', styles: { halign: 'center', cellPadding: 10, textColor: [156, 163, 175] } }
-                    ]
-                ],
-                headStyles: { fillColor: [255, 255, 255], textColor: [15, 23, 42], fontStyle: 'bold', fontSize: 10 },
-                styles: { fontSize: 10, textColor: [15, 23, 42], lineWidth: 0.5, lineColor: [203, 213, 225], minCellHeight: 30 },
-                columnStyles: { 0: { cellWidth: 90 }, 1: { cellWidth: 90 } },
-                margin: { left: 15, right: 15 }
-            });
-
-            doc.setFontSize(7.5);
-            doc.setFont("helvetica", "normal");
-            doc.setTextColor(100, 116, 139);
-            doc.text("Firma / Timbro o Firma Digitale", 20, y + 10);
-            doc.text("Firma / Timbro o Firma Elettronica", 110, y + 10);
-
-            y = (doc.lastAutoTable ? doc.lastAutoTable.finalY : y + 40) + 15;
-
-            doc.setFillColor(248, 250, 252);
-            doc.setDrawColor(203, 213, 225);
-            doc.rect(15, y, 180, 50, 'FD');
-            
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(8);
-            doc.setTextColor(15, 23, 42);
-            doc.text("APPROVAZIONE ESPRESSA DELLE CLAUSOLE VESSATORIE (ART. 1341 e 1342 C.C.)", 20, y + 8);
-            
-            doc.setFont("helvetica", "normal");
-            const vessText = "L'Utilizzatore dichiara di aver letto attentamente e di approvare specificamente ed espressamente le seguenti clausole: Art. 1 (Tipologia nolo e manleva operatore nel nolo a caldo); Art. 2 (Obbligo di patentino ex D.Lgs. 81/08 e divieto di conduzione a terzi); Art. 5 (Idoneita' del terreno, responsabilita' di cantiere e DPI); Art. 6 (Divieto assoluto di sub-noleggio e penale); Art. 7 (Esclusione responsabilita' per fermo macchina); Art. 10 (Trattenuta deposito cauzionale); Art. 12 (Foro competente esclusivo).";
-            const splitVess = doc.splitTextToSize(vessText, 170);
-            doc.text(splitVess, 20, y + 14);
-
-            doc.setFont("helvetica", "bold");
-            doc.text("FIRMA PER ACCETTAZIONE CLAUSOLE VESSATORIE: ________________________", 20, y + 42);
-
-            const totalPages = doc.internal.getNumberOfPages();
-            for(let i = 1; i <= totalPages; i++) {
-                doc.setPage(i);
-                doc.setFont("helvetica", "normal");
+                doc.setFont("helvetica", "italic");
                 doc.setFontSize(8);
-                doc.setTextColor(150);
-                doc.text(`Contratto di Noleggio PLE / Macchine da Cantiere`, 15, 290);
-                doc.text(`Pagina ${i} di ${totalPages}`, 195, 290, {align: 'right'});
-            }
+                doc.text("Il presente contratto viene sottoscritto mediante firma autografa o procedura di firma digitale registrata a gestionale.", 15, y);
+                y += 12;
 
-            doc.save(`Contratto_Quadro_${r.id}.pdf`);
-            showToast("[PDF] Contratto aggiornato generato!", "success");
+                if (typeof doc.autoTable === 'function') {
+                    doc.autoTable({
+                        startY: y,
+                        theme: 'plain',
+                        head: [['IL NOLEGGIATORE', "L'UTILIZZATORE (CLIENTE)"]],
+                        body: [
+                            [
+                                { content: '\n\n\nFIRMA NOLEGGIATORE\n(Timbro e Firma Legale)', styles: { halign: 'center', cellPadding: 8, textColor: [100, 116, 139] } },
+                                { content: `\n\n\nFIRMA CLIENTE (${custName})\n(Timbro e Firma Legale)`, styles: { halign: 'center', cellPadding: 8, textColor: [100, 116, 139] } }
+                            ]
+                        ],
+                        headStyles: { fillColor: [255, 255, 255], textColor: [15, 23, 42], fontStyle: 'bold', fontSize: 9.5 },
+                        styles: { fontSize: 9, textColor: [15, 23, 42], lineWidth: 0.5, lineColor: [203, 213, 225], minCellHeight: 28 },
+                        columnStyles: { 0: { cellWidth: 90 }, 1: { cellWidth: 90 } },
+                        margin: { left: 15, right: 15 }
+                    });
+                    y = doc.lastAutoTable.finalY + 10;
+                } else {
+                    y += 35;
+                }
+
+                if (y > 230) { doc.addPage(); y = 20; }
+                doc.setFillColor(248, 250, 252);
+                doc.setDrawColor(203, 213, 225);
+                doc.rect(15, y, 180, 42, 'FD');
+                
+                doc.setFont("helvetica", "bold");
+                doc.setFontSize(8);
+                doc.setTextColor(15, 23, 42);
+                doc.text("APPROVAZIONE ESPRESSA DELLE CLAUSOLE VESSATORIE (ART. 1341 e 1342 C.C.)", 20, y + 7);
+                
+                doc.setFont("helvetica", "normal");
+                doc.setFontSize(7.5);
+                const vessText = "L'Utilizzatore dichiara di approvare specificamente ed espressamente le clausole: Art. 1 (Tipologia nolo); Art. 2 (Patentino PLE e divieto terzi); Art. 5 (Condotta cantiere e DPI); Art. 6 (Divieto sub-noleggio); Art. 7 (Esclusione danni fermo macchina); Art. 10 (Cauzione); Art. 12 (Foro competente esclusivo).";
+                const splitVess = doc.splitTextToSize(vessText, 170);
+                doc.text(splitVess, 20, y + 13);
+
+                doc.setFont("helvetica", "bold");
+                doc.setFontSize(8);
+                doc.text("FIRMA PER ACCETTAZIONE CLAUSOLE VESSATORIE: ________________________", 20, y + 36);
+
+                const totalPages = doc.internal.getNumberOfPages();
+                for(let i = 1; i <= totalPages; i++) {
+                    doc.setPage(i);
+                    doc.setFont("helvetica", "normal");
+                    doc.setFontSize(7.5);
+                    doc.setTextColor(150);
+                    doc.text(`Contratto Quadro di Noleggio PLE - N. ${r.id || ''}`, 15, 290);
+                    doc.text(`Pagina ${i} di ${totalPages}`, 195, 290, { align: 'right' });
+                }
+
+                const filename = `Contratto_Quadro_${String(r.id).replace(/[^a-zA-Z0-9_-]/g, '_')}.pdf`;
+                doc.save(filename);
+                showToast("📄 Contratto PDF generato e scaricato!", "success");
+            } catch (err) {
+                console.error("Errore generazione contratto PDF:", err);
+                showToast("Errore generazione PDF: " + err.message, "error");
+            }
         }
 function exportFleetPDF() {
             const { jsPDF } = window.jspdf;
@@ -3142,7 +3400,7 @@ function exportFleetPDF() {
     <div id="adminPinModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[100] hidden flex items-center justify-center">
         <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-2xl max-w-sm w-full mx-4 border border-slate-200 dark:border-slate-700 text-center">
             <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-4">Accesso Super Admin</h3>
-            <input type="password" id="adminPinInput" class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-xl mb-4 text-center text-2xl tracking-[0.5em] bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none" placeholder="****" maxlength="4">
+            <input type="password" id="adminPinInput" onkeydown="if(event.key==='Enter') verifyAdminPin()" class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-xl mb-4 text-center text-2xl tracking-[0.5em] bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none" placeholder="****" maxlength="4">
             <div class="flex space-x-3">
                 <button onclick="closeAdminModal()" class="flex-1 py-3 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-semibold hover:bg-slate-300 dark:hover:bg-slate-600 transition">Annulla</button>
                 <button onclick="verifyAdminPin()" class="flex-1 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-bold shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition">Accedi</button>
@@ -3151,6 +3409,438 @@ function exportFleetPDF() {
     </div>
 
     
+    
+    
+    <!-- MODALE INFO & ATTIVAZIONE LICENZA CLIENTE -->
+    <div id="clientLicenseModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[105] hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl max-w-lg w-full p-6 space-y-6 text-slate-800 dark:text-slate-100">
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-500 flex items-center justify-center">
+                        <i data-lucide="crown" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-slate-900 dark:text-white">Stato Licenza & Abbonamento</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400" id="licenseModalSubtitle">Gestione piano attivo</p>
+                    </div>
+                </div>
+                <button onclick="closeLicenseModal()" class="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition cursor-pointer">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Box Concessione Licenza Gratuita (se attiva) -->
+            <div id="modalFreeLicenseBox" class="hidden p-3.5 bg-teal-500/10 border border-teal-500/30 rounded-2xl text-xs text-teal-800 dark:text-teal-200 font-medium space-y-1">
+                <div class="flex items-center gap-1.5 font-bold text-teal-900 dark:text-teal-100 text-[11px] uppercase tracking-wider">
+                    <i data-lucide="scale" class="w-3.5 h-3.5 text-teal-500"></i>
+                    <span>Concessione d'Uso a Titolo Gratuito</span>
+                </div>
+                <p id="modalFreeLicenseText" class="text-[11px] leading-relaxed text-slate-700 dark:text-slate-300"></p>
+            </div>
+
+            <!-- Dettaglio Piano Attivo & Monitoraggio Temporale -->
+            <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 space-y-3">
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-slate-500 dark:text-slate-400 font-bold" id="labelLicenseType">Tipo Concessione:</span>
+                    <span id="modalLicenseTypeBadge" class="px-2.5 py-0.5 rounded-full font-black text-[11px] bg-teal-100 text-teal-800 dark:bg-teal-950 dark:text-teal-300">Concessione Gratuita (1 Anno)</span>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-200/60 dark:border-slate-700/60 text-xs">
+                    <div>
+                        <div class="text-[10px] text-slate-400 uppercase font-bold">Data Assegnazione:</div>
+                        <div id="modalLicenseActivatedDate" class="font-mono font-bold text-slate-800 dark:text-slate-200 mt-0.5">--/--/----</div>
+                    </div>
+                    <div>
+                        <div class="text-[10px] text-slate-400 uppercase font-bold" id="labelLicenseExpDate">Scadenza Concessione:</div>
+                        <div id="modalLicenseExpDate" class="font-mono font-bold text-slate-900 dark:text-white mt-0.5">--/--/----</div>
+                    </div>
+                </div>
+
+                <!-- Barra Monitoraggio Tempo Trascorso -->
+                <div class="space-y-1.5 pt-1">
+                    <div class="flex justify-between text-[11px] font-bold">
+                        <span id="modalLicenseDaysPassedText" class="text-slate-500 dark:text-slate-400">0 giorni trascorsi</span>
+                        <span id="modalLicenseDaysLeft" class="font-black text-teal-600 dark:text-teal-400">365 giorni rimanenti</span>
+                    </div>
+                    <div class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                        <div id="modalLicenseProgressBar" class="h-full bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full transition-all duration-500" style="width: 5%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inserimento Codice di Attivazione -->
+            <div class="space-y-3">
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300" id="labelLicenseCodeInput">Hai un Codice di Rinnovo / Attivazione?</label>
+                <div class="flex gap-2">
+                    <input type="text" id="licenseKeyInput" placeholder="Es. FRP-YEAR-20270905-XXXX" class="flex-1 px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl text-xs font-mono uppercase tracking-wider text-slate-900 dark:text-white focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500">
+                    <button onclick="activateLicenseKeyFromInput()" class="px-4 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-xs rounded-xl shadow-md transition cursor-pointer whitespace-nowrap">
+                        Attiva Codice
+                    </button>
+                </div>
+                <p class="text-[11px] text-slate-400" id="subtextLicenseCodeInput">Inserisci il codice fornito per estendere la validità del gestionale.</p>
+            </div>
+
+            <!-- Box Contatto Commerciale -->
+            <div class="p-4 rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-800 dark:to-slate-800/80 border border-blue-200/60 dark:border-slate-700 flex items-center justify-between gap-3">
+                <div>
+                    <div class="text-xs font-bold text-blue-950 dark:text-blue-300" id="labelLicenseSupportTitle">Vuoi rinnovare l'abbonamento?</div>
+                    <div class="text-[11px] text-blue-700 dark:text-slate-400 mt-0.5" id="subtextLicenseSupportSub">Contatta l'assistenza GC CodeLab</div>
+                </div>
+                <a href="https://wa.me/?text=Ciao,%20vorrei%20informazioni%20per%20attivare%20l'abbonamento%20annuale%20di%20Fleet%20%26%20Rental%20Pro" target="_blank" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm whitespace-nowrap">
+                    <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+                    <span>WhatsApp</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCHERMATA DI AVVISO SCADENZA PROVA / ABBONAMENTO CON ACCESSO CONSULTAZIONE -->
+    <div id="licenseExpiredLockScreen" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[200] hidden flex items-center justify-center p-4 select-none">
+        <div class="bg-slate-900 border-2 border-amber-500/40 rounded-3xl shadow-2xl max-w-lg w-full p-6 sm:p-8 space-y-5 text-slate-100 text-center relative overflow-hidden">
+            <!-- Glowing background accents -->
+            <div class="absolute -top-24 -left-24 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-24 -right-24 w-48 h-48 bg-rose-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="w-16 h-16 rounded-3xl bg-amber-500/15 text-amber-400 border border-amber-500/30 flex items-center justify-center mx-auto shadow-lg shadow-amber-500/20">
+                <i data-lucide="shield-alert" class="w-8 h-8"></i>
+            </div>
+            
+            <div class="space-y-1.5">
+                <h2 id="lockScreenTitle" class="text-xl font-black text-white tracking-tight">Periodo di Prova / Abbonamento Concluso</h2>
+                <p class="text-xs text-slate-300">
+                    La licenza d'uso è giunta al termine. <strong class="text-emerald-400 font-semibold">Tutti i tuoi dati (flotta, clienti, contratti e scadenze) sono al 100% al sicuro e restano sempre di tua proprietà</strong>.
+                </p>
+            </div>
+
+            <!-- Inserimento Codice di Rinnovo -->
+            <div class="p-4 rounded-2xl bg-slate-800/80 border border-slate-700 text-left space-y-2.5">
+                <label class="block text-xs font-bold text-slate-300 flex items-center gap-1.5">
+                    <i data-lucide="key" class="w-3.5 h-3.5 text-indigo-400"></i>
+                    <span>Inserisci Codice di Rinnovo Licenza</span>
+                </label>
+                <div class="flex gap-2">
+                    <input type="text" id="lockScreenLicenseInput" placeholder="FRP-YEAR-..." class="flex-1 px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs font-mono uppercase text-white focus:outline-none focus:border-indigo-500">
+                    <button onclick="activateLicenseFromLockScreen()" class="px-4 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs rounded-xl shadow-md transition cursor-pointer active:scale-95">
+                        Sblocca Pieno
+                    </button>
+                </div>
+            </div>
+
+            <!-- AZIONI DI CONTINUITÀ: ACCEDI IN SOLA CONSULTAZIONE O SCARICA BACKUP -->
+            <div class="space-y-2 pt-1">
+                <button onclick="enterReadOnlyModeFromLockScreen()" class="w-full py-3 bg-gradient-to-r from-slate-800 via-amber-950/40 to-slate-800 hover:from-slate-700 hover:to-slate-700 border border-amber-500/40 text-amber-200 hover:text-white font-extrabold text-xs sm:text-sm rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer active:scale-95">
+                    <i data-lucide="eye" class="w-4 h-4 text-amber-400"></i>
+                    <span>👁️ Accedi in Sola Consultazione (Vedi Tutto lo Storico)</span>
+                </button>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                    <button onclick="exportFullDatabaseJSON()" class="py-2.5 px-3 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer active:scale-95">
+                        <i data-lucide="download" class="w-3.5 h-3.5 text-teal-400"></i>
+                        <span>📦 Scarica Backup (JSON)</span>
+                    </button>
+                    <a href="https://wa.me/?text=Ciao,%20la%20mia%20licenza%20del%20gestionale%20è%20scaduta.%20Vorrei%20richiedere%20un%20codice%20di%20rinnovo." target="_blank" class="py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer active:scale-95">
+                        <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+                        <span>Richiedi su WhatsApp</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUPER ADMIN DASHBOARD MODAL -->
+    <div id="superAdminDashboardModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[110] hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-slate-900 border border-slate-700/80 rounded-3xl shadow-2xl max-w-3xl w-full p-6 sm:p-8 space-y-6 text-slate-100 max-h-[90vh] overflow-y-auto">
+            
+            <!-- Header -->
+            <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+                        <i data-lucide="shield-alert" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-black text-white tracking-tight flex items-center gap-2">
+                            Pannello di Controllo Super Admin
+                            <span class="px-2 py-0.5 text-[10px] font-extrabold uppercase rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Attivo</span>
+                        </h2>
+                        <p class="text-xs text-slate-400">Strumenti di manutenzione, backup, gestione licenza e sicurezza avanzata.</p>
+                    </div>
+                </div>
+                <button onclick="closeSuperAdminDashboard()" class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition cursor-pointer" title="Chiudi Pannello">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Griglia Strumenti Super Admin -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Card: Monitoraggio Tempo Licenza Attiva del Cliente -->
+                <div class="col-span-1 sm:col-span-2 bg-gradient-to-br from-slate-900 via-indigo-950/40 to-slate-900 border border-teal-500/40 rounded-2xl p-4 sm:p-5 space-y-4 shadow-xl">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-xl bg-teal-500/20 text-teal-400 flex items-center justify-center">
+                                <i data-lucide="activity" class="w-4 h-4"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-black text-white flex items-center gap-2">
+                                    <span>⏱️ Monitoraggio Tempo Licenza Installata</span>
+                                    <span id="adminLiveLicenseBadge" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-teal-500/20 text-teal-300 border border-teal-500/40">Gratuita</span>
+                                </h4>
+                                <p class="text-xs text-slate-400">Controllo in tempo reale della durata, data di assegnazione e giorni rimanenti</p>
+                            </div>
+                        </div>
+                        <button onclick="quickApply1YearFreeLicense()" class="px-3 py-1.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 active:scale-95 text-white font-bold text-xs rounded-xl shadow transition flex items-center gap-1.5 cursor-pointer whitespace-nowrap self-start sm:self-auto">
+                            <i data-lucide="gift" class="w-3.5 h-3.5"></i>
+                            <span>Assegna 1 Anno Gratuito con 1 Click</span>
+                        </button>
+                    </div>
+
+                    <!-- Griglia Dati Temporali -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                        <div class="p-3 bg-slate-950/80 rounded-xl border border-slate-800 space-y-1">
+                            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+                                <i data-lucide="building-2" class="w-3 h-3 text-indigo-400"></i> Intestatario
+                            </div>
+                            <div id="adminLiveCompanyName" class="font-bold text-white truncate">--</div>
+                        </div>
+                        <div class="p-3 bg-slate-950/80 rounded-xl border border-slate-800 space-y-1">
+                            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+                                <i data-lucide="calendar" class="w-3 h-3 text-teal-400"></i> Data Assegnazione
+                            </div>
+                            <div id="adminLiveActivatedDate" class="font-mono font-bold text-teal-300">--/--/----</div>
+                        </div>
+                        <div class="p-3 bg-slate-950/80 rounded-xl border border-slate-800 space-y-1">
+                            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+                                <i data-lucide="clock" class="w-3 h-3 text-amber-400"></i> Tempo Trascorso
+                            </div>
+                            <div id="adminLiveDaysPassed" class="font-bold text-amber-300">0 giorni trascorsi</div>
+                        </div>
+                        <div class="p-3 bg-slate-950/80 rounded-xl border border-slate-800 space-y-1">
+                            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+                                <i data-lucide="shield-check" class="w-3 h-3 text-emerald-400"></i> Tempo Rimanente
+                            </div>
+                            <div id="adminLiveDaysLeft" class="font-black text-emerald-400">-- giorni</div>
+                        </div>
+                    </div>
+
+                    <!-- Barra di Avanzamento Temporale Grafica -->
+                    <div class="space-y-1.5 bg-slate-950/60 p-3 rounded-xl border border-slate-800/80">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-slate-400 font-bold flex items-center gap-1.5">
+                                <i data-lucide="hourglass" class="w-3.5 h-3.5 text-teal-400"></i>
+                                Progresso Durata Concessione:
+                            </span>
+                            <span id="adminLiveProgressPercent" class="font-mono font-bold text-teal-300">0% consumato</span>
+                        </div>
+                        <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden p-0.5 border border-slate-700/60">
+                            <div id="adminLiveProgressBar" class="h-full bg-gradient-to-r from-teal-500 via-emerald-500 to-blue-500 rounded-full transition-all duration-500" style="width: 5%;"></div>
+                        </div>
+                        <div class="flex justify-between text-[10px] text-slate-500 font-mono">
+                            <span id="adminLiveStartText">Inizio</span>
+                            <span id="adminLiveExpText">Scadenza: --/--/----</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Generatore Licenze GC CodeLab (Novità SaaS) -->
+                <div class="col-span-1 md:col-span-2 bg-gradient-to-r from-slate-800/90 via-indigo-950/40 to-slate-800/90 border-2 border-indigo-500/40 rounded-2xl p-5 space-y-4 shadow-lg">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2 text-sm font-black text-indigo-300">
+                            <i data-lucide="key" class="w-5 h-5 text-indigo-400"></i>
+                            <span>Generatore Chiavi Licenza & Abbonamenti (GC CodeLab)</span>
+                        </div>
+                        <span class="text-[10px] uppercase tracking-wider font-extrabold px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">SaaS Manager</span>
+                    </div>
+                    <p class="text-xs text-slate-300">Genera i codici crittografati da inviare ai clienti dopo aver ricevuto il pagamento dell'abbonamento.</p>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-400 mb-1">Seleziona Piano / Durata</label>
+                            <select id="genLicenseDuration" onchange="syncGenCustomDateFromDuration()" class="w-full px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs font-bold text-white focus:outline-none focus:border-indigo-500 cursor-pointer">
+                                <optgroup label="🎁 Concessioni Gratuite (Pro Bono / Senza Scopo di Lucro)">
+                                    <option value="free_1year" selected>🎁 Licenza Gratuita (1 Anno / 365 gg)</option>
+                                    <option value="free_6months">🎁 Licenza Gratuita (6 Mesi / 180 gg)</option>
+                                    <option value="free_2years">🎁 Licenza Gratuita (2 Anni / 730 gg)</option>
+                                    <option value="free_lifetime">🎁 Licenza Gratuita Perpetua (Illimitata)</option>
+                                </optgroup>
+                                <optgroup label="💼 Abbonamenti Commerciali (SaaS)">
+                                    <option value="annual">💼 Abbonamento Pro Annuale (1 Anno)</option>
+                                    <option value="lifetime">💼 Licenza Pro A Vita (Lifetime)</option>
+                                    <option value="6months">💼 Abbonamento Pro Semestrale (6 Mesi)</option>
+                                    <option value="3months">💼 Abbonamento Pro Trimestrale (3 Mesi)</option>
+                                    <option value="month">💼 Abbonamento Pro Mensile (30 gg)</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <label class="block text-[11px] font-bold text-indigo-300 flex items-center gap-1">
+                                    <i data-lucide="calendar" class="w-3.5 h-3.5 text-indigo-400"></i>
+                                    <span>📅 Data Scadenza</span>
+                                </label>
+                                <span class="text-[10px] text-amber-400 font-bold">(calendario)</span>
+                            </div>
+                            <input type="date" id="genLicenseCustomDate" class="w-full px-3 py-2 bg-slate-900 border border-indigo-500/60 rounded-xl text-xs text-white focus:outline-none focus:border-indigo-400 cursor-pointer font-mono font-bold">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-400 mb-1">Intestatario / Riferimento Cliente</label>
+                            <input type="text" id="genLicenseClientRef" placeholder="Es. Nome Azienda / P.IVA" class="w-full px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-indigo-500">
+                        </div>
+                    </div>
+
+                    <!-- PULSANTI RAPIDI DI TEST SCADENZA E PRESET DATA -->
+                    <div class="flex items-center flex-wrap gap-1.5 p-2 bg-slate-950/60 rounded-xl border border-indigo-500/20">
+                        <span class="text-[10px] text-slate-400 font-black uppercase tracking-wider mr-1">⚡ Preset Data Rapida:</span>
+                        <button type="button" onclick="setGenCustomDatePreset('yesterday')" class="px-2.5 py-1 bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/40 rounded-lg text-[10px] font-black transition cursor-pointer flex items-center gap-1 shadow-xs active:scale-95">
+                            <i data-lucide="alert-triangle" class="w-3 h-3 text-red-400"></i>
+                            <span>🧪 Ieri (Test Scaduto)</span>
+                        </button>
+                        <button type="button" onclick="setGenCustomDatePreset('7days')" class="px-2.5 py-1 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded-lg text-[10px] font-bold transition cursor-pointer flex items-center gap-1 shadow-xs active:scale-95">
+                            <i data-lucide="clock" class="w-3 h-3 text-amber-400"></i>
+                            <span>⚡ +7 Giorni (Test Breve)</span>
+                        </button>
+                        <button type="button" onclick="setGenCustomDatePreset('1year')" class="px-2.5 py-1 bg-teal-500/20 hover:bg-teal-500/30 text-teal-300 border border-teal-500/40 rounded-lg text-[10px] font-bold transition cursor-pointer flex items-center gap-1 shadow-xs active:scale-95">
+                            <i data-lucide="calendar" class="w-3 h-3 text-teal-400"></i>
+                            <span>📅 +1 Anno</span>
+                        </button>
+                        <button type="button" onclick="setGenCustomDatePreset('lifetime')" class="px-2.5 py-1 bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/40 rounded-lg text-[10px] font-bold transition cursor-pointer flex items-center gap-1 shadow-xs active:scale-95">
+                            <i data-lucide="infinity" class="w-3 h-3 text-purple-400"></i>
+                            <span>♾️ Illimitata (2099)</span>
+                        </button>
+                    </div>
+
+                    <!-- PULSANTI DI AZIONE: SALVA SUBITO O GENERA CHIAVE -->
+                    <div class="flex flex-col sm:flex-row gap-2.5 pt-1">
+                        <button onclick="saveAndApplyPlanDirectly()" class="flex-1 py-3 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-500 hover:to-teal-500 active:scale-95 text-white font-extrabold text-xs sm:text-sm rounded-xl shadow-lg shadow-emerald-900/30 transition flex items-center justify-center gap-2 cursor-pointer">
+                            <i data-lucide="check-circle" class="w-4 h-4"></i>
+                            <span>💾 SALVA & ATTIVA PIANO SU QUESTA APP</span>
+                        </button>
+                        <button onclick="generateCommercialLicenseKey()" class="py-3 px-4 bg-slate-800 hover:bg-slate-700 border border-slate-700 active:scale-95 text-slate-200 hover:text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer">
+                            <i data-lucide="sparkles" class="w-4 h-4 text-indigo-400"></i>
+                            <span>Genera Codice per Altro PC</span>
+                        </button>
+                    </div>
+
+                    <!-- Risultato Codice Generato -->
+                    <div id="genLicenseOutputBox" class="hidden p-3.5 bg-slate-950/80 rounded-xl border border-indigo-500/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                        <div class="font-mono text-xs text-indigo-300 font-black tracking-wider break-all" id="genLicenseOutputText">
+                            <!-- Codice Generato -->
+                        </div>
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                            <button onclick="applyLastGeneratedKey()" class="flex-1 sm:flex-none px-3 py-1.5 bg-teal-600 hover:bg-teal-500 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-1 cursor-pointer">
+                                <i data-lucide="check" class="w-3.5 h-3.5"></i> <span>Attiva Subito</span>
+                            </button>
+                            <button onclick="copyGeneratedLicenseKey()" class="flex-1 sm:flex-none px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1 cursor-pointer">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i> <span>Copia</span>
+                            </button>
+                            <button onclick="shareLicenseKeyWhatsApp()" class="flex-1 sm:flex-none px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-1 cursor-pointer">
+                                <i data-lucide="share-2" class="w-3.5 h-3.5"></i> <span>Invia</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card 1: Backup Completo Database -->
+                <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-4 space-y-3">
+                    <div class="flex items-center gap-2 text-sm font-bold text-blue-400">
+                        <i data-lucide="download" class="w-4 h-4"></i>
+                        <span>Backup Dati Flotta (JSON)</span>
+                    </div>
+                    <p class="text-xs text-slate-400">Esporta l'intero archivio (mezzi, contratti, clienti, storico manutenzioni) in un unico file di sicurezza.</p>
+                    <button onclick="exportFullDatabaseJSON()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer">
+                        <i data-lucide="file-json" class="w-4 h-4"></i>
+                        <span>Scarica Backup Completo</span>
+                    </button>
+                </div>
+
+                <!-- Card 2: Ripristino Database da File -->
+                <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-4 space-y-3">
+                    <div class="flex items-center gap-2 text-sm font-bold text-emerald-400">
+                        <i data-lucide="upload" class="w-4 h-4"></i>
+                        <span>Ripristina da Backup</span>
+                    </div>
+                    <p class="text-xs text-slate-400">Carica un file JSON esportato in precedenza per ripristinare tutti i dati su questo dispositivo.</p>
+                    <label class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer">
+                        <i data-lucide="folder-open" class="w-4 h-4"></i>
+                        <span>Seleziona File Backup</span>
+                        <input type="file" accept=".json" onchange="importFullDatabaseJSON(event)" class="hidden">
+                    </label>
+                </div>
+
+                <!-- Card: Dicitura Licenza Gratuita Pro Bono -->
+                <div class="bg-slate-800/60 border border-teal-500/40 rounded-2xl p-4 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2 text-sm font-bold text-teal-400">
+                            <i data-lucide="shield-alert" class="w-4 h-4"></i>
+                            <span>Licenza Gratuita / Pro Bono</span>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="toggleFreeLicenseDisclaimer" onchange="toggleFreeLicenseSetting(this.checked)" class="sr-only peer">
+                            <div class="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-teal-500"></div>
+                        </label>
+                    </div>
+                    <p class="text-xs text-slate-400">Attiva la clausola legale di concessione gratuita ad personam per tutelare l'autore (Giovanni Cavallo) ed evitare problemi fiscali.</p>
+                    <div id="freeLicenseTextContainer" class="space-y-2">
+                        <textarea id="freeLicenseCustomText" rows="3" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs font-mono text-slate-200 focus:outline-none focus:border-teal-500" placeholder="Inserisci il testo di concessione gratuita..."></textarea>
+                        <button onclick="saveFreeLicenseCustomText()" class="w-full py-2 bg-teal-600 hover:bg-teal-500 active:scale-95 text-white font-bold text-xs rounded-xl shadow transition flex items-center justify-center gap-1.5 cursor-pointer">
+                            <i data-lucide="check" class="w-3.5 h-3.5"></i> Salva Dicitura
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 3: Anagrafica e Profilo Aziendale -->
+                <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-4 space-y-3">
+                    <div class="flex items-center gap-2 text-sm font-bold text-indigo-400">
+                        <i data-lucide="building-2" class="w-4 h-4"></i>
+                        <span>Configurazione Azienda & Logo</span>
+                    </div>
+                    <p class="text-xs text-slate-400">Modifica la Ragione Sociale, Partita IVA, PEC, indirizzo e il logo aziendale stampato sui contratti.</p>
+                    <button onclick="closeSuperAdminDashboard(); openOnboardingModal(true);" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer">
+                        <i data-lucide="edit-3" class="w-4 h-4"></i>
+                        <span>Apri Scheda Azienda</span>
+                    </button>
+                </div>
+
+                <!-- Card 4: Sicurezza e PIN Super Admin -->
+                <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-4 space-y-3">
+                    <div class="flex items-center gap-2 text-sm font-bold text-amber-400">
+                        <i data-lucide="key-round" class="w-4 h-4"></i>
+                        <span>PIN Super Admin</span>
+                    </div>
+                    <p class="text-xs text-slate-400">PIN di protezione attuale: <strong class="font-mono text-amber-300 text-sm">8528</strong></p>
+                    <div class="flex gap-2">
+                        <input type="password" id="newSuperAdminPinInput" placeholder="Nuovo PIN (4 cifre)" maxlength="4" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs font-mono text-white focus:outline-none focus:border-amber-500">
+                        <button onclick="changeSuperAdminPin()" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl transition cursor-pointer whitespace-nowrap">Salva</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Zona Pericolo: Reset Database -->
+            <div class="border border-red-900/60 bg-red-950/30 rounded-2xl p-4 sm:p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-4 overflow-hidden shadow-inner">
+                <div class="flex-1 min-w-0">
+                    <div class="text-xs font-extrabold text-red-400 uppercase tracking-wider flex items-center gap-2">
+                        <i data-lucide="alert-triangle" class="w-4 h-4 text-red-400 shrink-0"></i>
+                        <span>Ripristino Dati Demo o Svuotamento</span>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-1 leading-relaxed">Ripristina i dati dimostrativi di fabbrica oppure azzera l'intero database per un cliente nuovo.</p>
+                </div>
+                <div class="flex flex-wrap sm:flex-nowrap items-center gap-2.5 shrink-0 w-full sm:w-auto">
+                    <button onclick="resetToDemoData()" class="flex-1 sm:flex-initial px-4 py-2.5 bg-slate-800 hover:bg-slate-700 active:scale-95 border border-slate-700 text-slate-200 rounded-xl text-xs font-bold transition shadow-sm cursor-pointer whitespace-nowrap">
+                        Ricarica Demo
+                    </button>
+                    <button onclick="clearAllDataForNewClient()" class="flex-1 sm:flex-initial px-4 py-2.5 bg-red-600 hover:bg-red-700 active:scale-95 text-white rounded-xl text-xs font-extrabold transition shadow-md shadow-red-900/30 cursor-pointer whitespace-nowrap">
+                        Azzera per Nuovo Cliente
+                    </button>
+                </div>
+            </div>
+
+            <!-- Footer Info Licenza -->
+            <div class="pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500 font-medium">
+                <div>Software Gestionale: <strong>FLEET & RENTAL PRO Enterprise</strong></div>
+                <div>Sviluppato da: <span class="text-blue-400 font-bold">GC CodeLab</span></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Admin Script -->
     <script>
         let adminClickCount = 0;
@@ -3173,16 +3863,841 @@ function exportFleetPDF() {
             document.getElementById('adminPinInput').value = '';
         };
 
-        window.verifyAdminPin = function() {
-            const pin = document.getElementById('adminPinInput').value;
-            if (pin === '8528') {
-                closeAdminModal();
-                alert('Accesso Super Admin consentito!\n\n(Qui potremo aggiungere il pannello di controllo per la gestione aziendale)');
+        
+        
+        // === SISTEMA LICENZE & ABBONAMENTI SAAS (GC CODELAB) ===
+        const KEY_LICENSE_DATA = 'fleet_license_data';
+        const LICENSE_SECRET_SALT = 'GC_CODELAB_FLEET_2026_SECURE_SALT';
+
+        function getLicenseData() {
+            let lic = null;
+            try {
+                lic = JSON.parse(localStorage.getItem(KEY_LICENSE_DATA));
+            } catch(e) {}
+
+            if (!lic || !lic.expiresAt) {
+                // Primo avvio: attiva automaticamente 30 Giorni di Prova Gratuita
+                const today = new Date();
+                const exp = new Date(today);
+                exp.setDate(exp.getDate() + 30);
+                lic = {
+                    type: 'trial',
+                    typeName: 'Trial Gratuito (30 Giorni)',
+                    activatedAt: today.toISOString(),
+                    expiresAt: exp.toISOString(),
+                    licenseKey: 'TRIAL-30DAYS-AUTO',
+                    companyName: companyProfile.name || ''
+                };
+                localStorage.setItem(KEY_LICENSE_DATA, JSON.stringify(lic));
+            }
+            return lic;
+        }
+
+        window.isAppInReadOnlyMode = false;
+
+        window.enterReadOnlyModeFromLockScreen = function() {
+            sessionStorage.setItem('gc_read_only_dismissed', 'true');
+            const lockScreen = document.getElementById('licenseExpiredLockScreen');
+            if (lockScreen) lockScreen.classList.add('hidden');
+            
+            const banner = document.getElementById('readOnlyTopBanner');
+            if (banner) banner.classList.remove('hidden');
+            
+            window.isAppInReadOnlyMode = true;
+            showToast("👁️ Modalità Sola Consultazione: il tuo archivio è liberamente accessibile.", "info");
+            if (window.lucide) lucide.createIcons();
+        };
+
+        window.checkReadOnlyActionGuard = function(actionDescription) {
+            const lic = getLicenseData();
+            const now = new Date();
+            const exp = new Date(lic.expiresAt);
+            const isLifetime = lic.type === 'lifetime' || lic.type === 'free_lifetime';
+            const diffDays = Math.ceil((exp - now) / (1000 * 60 * 60 * 24));
+            const isExpired = diffDays <= 0 && !isLifetime;
+
+            if (isExpired) {
+                showToast(`⚠️ Sola Consultazione: rinnova la licenza per ${actionDescription || 'creare o modificare dati'}.`, "error");
+                openLicenseModal();
+                return true; // bloccato
+            }
+            return false; // consentito
+        };
+
+        function checkLicenseStatus() {
+            const lic = getLicenseData();
+            const now = new Date();
+            const activated = lic.activatedAt ? new Date(lic.activatedAt) : new Date(now.getTime() - (24*60*60*1000));
+            const exp = new Date(lic.expiresAt);
+            
+            const totalDurationMs = Math.max(1, exp.getTime() - activated.getTime());
+            const passedMs = Math.max(0, now.getTime() - activated.getTime());
+            const daysPassed = Math.floor(passedMs / (1000 * 60 * 60 * 24));
+            
+            const diffDays = Math.ceil((exp - now) / (1000 * 60 * 60 * 24));
+            const isFree = (lic.type && lic.type.startsWith('free_')) || localStorage.getItem(KEY_FREE_LICENSE_ENABLED) === 'true';
+            const isLifetime = lic.type === 'lifetime' || lic.type === 'free_lifetime';
+            const isExpired = diffDays <= 0 && !isLifetime;
+
+            // Aggiorna Badge Header
+            const badge = document.getElementById('headerLicenseBadge');
+            const text = document.getElementById('headerLicenseText');
+            const iconBox = document.getElementById('headerLicenseIconBox');
+            if (badge && text) {
+                let iconName = 'hourglass';
+                if (isLifetime) {
+                    badge.className = 'flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-purple-500/15 text-purple-600 dark:text-purple-400 border border-purple-500/30 hover:bg-purple-500/25 transition font-bold text-xs cursor-pointer shadow-xs';
+                    text.innerText = isFree ? 'Gratuito Illimitato' : 'PRO Lifetime';
+                    iconName = isFree ? 'gift' : 'crown';
+                } else if (isExpired) {
+                    badge.className = 'flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-red-500/20 text-red-600 dark:text-red-400 border border-red-500/40 hover:bg-red-500/30 transition font-black text-xs cursor-pointer shadow-xs animate-pulse';
+                    text.innerText = isFree ? 'Concessione Scaduta' : 'Abbonamento Scaduto';
+                    iconName = 'alert-triangle';
+                } else if (isFree) {
+                    badge.className = 'flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-teal-500/15 text-teal-600 dark:text-teal-400 border border-teal-500/30 hover:bg-teal-500/25 transition font-bold text-xs cursor-pointer shadow-xs';
+                    text.innerText = `Gratuito: ${diffDays} gg`;
+                    iconName = 'gift';
+                } else if (lic.type === 'trial') {
+                    badge.className = 'flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 hover:bg-amber-500/25 transition font-bold text-xs cursor-pointer shadow-xs';
+                    text.innerText = `Trial: ${diffDays} gg`;
+                    iconName = 'hourglass';
+                } else {
+                    badge.className = 'flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/25 transition font-bold text-xs cursor-pointer shadow-xs';
+                    text.innerText = `PRO: ${diffDays} gg`;
+                    iconName = 'shield-check';
+                }
+                if (iconBox) {
+                    iconBox.innerHTML = `<i data-lucide="${iconName}" class="w-4 h-4"></i>`;
+                }
+                if (window.lucide) lucide.createIcons();
+            }
+
+            // Gestione Schermata di Avviso e Top Banner Sola Lettura
+            const lockScreen = document.getElementById('licenseExpiredLockScreen');
+            const topBanner = document.getElementById('readOnlyTopBanner');
+            const isDismissedForSession = sessionStorage.getItem('gc_read_only_dismissed') === 'true';
+
+            if (isExpired) {
+                window.isAppInReadOnlyMode = true;
+                if (topBanner) topBanner.classList.remove('hidden');
+
+                if (lockScreen) {
+                    if (!isDismissedForSession) {
+                        lockScreen.classList.remove('hidden');
+                    } else {
+                        lockScreen.classList.add('hidden');
+                    }
+                }
             } else {
-                alert('PIN non valido!');
+                window.isAppInReadOnlyMode = false;
+                sessionStorage.removeItem('gc_read_only_dismissed');
+                if (lockScreen) lockScreen.classList.add('hidden');
+                if (topBanner) topBanner.classList.add('hidden');
+            }
+
+            return { lic, diffDays, daysPassed, totalDurationMs, passedMs, isExpired, isFree, isLifetime };
+        }
+
+        function openLicenseModal() {
+            const { lic, diffDays, daysPassed, isExpired, isFree, isLifetime } = checkLicenseStatus();
+            const modal = document.getElementById('clientLicenseModal');
+            if (!modal) return;
+
+            // Titolo e sottotitolo
+            const subtitle = document.getElementById('licenseModalSubtitle');
+            if (subtitle) {
+                subtitle.innerText = isFree ? "Concessione d'uso gratuita e monitoraggio validità" : "Gestione piano attivo e rinnovo";
+            }
+
+            // Etichetta tipo licenza
+            const typeLabel = document.getElementById('labelLicenseType');
+            if (typeLabel) {
+                typeLabel.innerText = isFree ? "Tipo Concessione:" : "Tipo Abbonamento:";
+            }
+
+            // Badge e etichette
+            const typeBadge = document.getElementById('modalLicenseTypeBadge');
+            if (typeBadge) {
+                typeBadge.innerText = lic.typeName || (isFree ? 'Concessione Gratuita' : (lic.type === 'trial' ? 'Trial Gratuito (30 Giorni)' : 'Abbonamento Pro'));
+                if (isFree) {
+                    typeBadge.className = "px-2.5 py-0.5 rounded-full font-black text-[11px] bg-teal-100 text-teal-800 dark:bg-teal-950 dark:text-teal-300";
+                } else if (lic.type === 'trial') {
+                    typeBadge.className = "px-2.5 py-0.5 rounded-full font-black text-[11px] bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300";
+                } else {
+                    typeBadge.className = "px-2.5 py-0.5 rounded-full font-black text-[11px] bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300";
+                }
+            }
+
+            // Date
+            const actEl = document.getElementById('modalLicenseActivatedDate');
+            if (actEl) {
+                actEl.innerText = lic.activatedAt ? formatDate(lic.activatedAt.split('T')[0]) : 'All\'installazione';
+            }
+
+            const expLabel = document.getElementById('labelLicenseExpDate');
+            if (expLabel) {
+                expLabel.innerText = isFree ? "Scadenza Concessione:" : "Scadenza Servizio:";
+            }
+
+            const expEl = document.getElementById('modalLicenseExpDate');
+            if (expEl) {
+                expEl.innerText = isLifetime ? 'Nessuna Scadenza (A Vita)' : formatDate(lic.expiresAt.split('T')[0]);
+            }
+
+            // Giorni trascorsi e rimanenti
+            const passedEl = document.getElementById('modalLicenseDaysPassedText');
+            if (passedEl) {
+                passedEl.innerText = isLifetime ? 'Concessione Permanente' : `${daysPassed} giorni trascorsi`;
+            }
+
+            const leftEl = document.getElementById('modalLicenseDaysLeft');
+            if (leftEl) {
+                leftEl.innerText = isLifetime ? 'Illimitati' : (isExpired ? 'Scaduta' : `${diffDays} giorni rimanenti`);
+                if (isFree) {
+                    leftEl.className = "font-black text-teal-600 dark:text-teal-400";
+                } else if (isExpired) {
+                    leftEl.className = "font-black text-red-600 dark:text-red-400 animate-pulse";
+                } else {
+                    leftEl.className = "font-black text-emerald-600 dark:text-emerald-400";
+                }
+            }
+
+            // Percentuale barra di progresso
+            const bar = document.getElementById('modalLicenseProgressBar');
+            if (bar) {
+                if (isLifetime) {
+                    bar.style.width = '100%';
+                    bar.className = "h-full bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full transition-all duration-500";
+                } else {
+                    const totalDays = Math.max(1, daysPassed + diffDays);
+                    const pct = Math.min(100, Math.max(2, Math.round((daysPassed / totalDays) * 100)));
+                    bar.style.width = pct + '%';
+                    bar.className = isFree 
+                        ? "h-full bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full transition-all duration-500"
+                        : "h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full transition-all duration-500";
+                }
+            }
+
+            // Adatta testi di supporto e input codice
+            const codeInputLabel = document.getElementById('labelLicenseCodeInput');
+            if (codeInputLabel) {
+                codeInputLabel.innerText = isFree ? "Hai un Codice di Concessione / Rinnovo?" : "Hai un Codice di Rinnovo / Attivazione?";
+            }
+
+            const codeInputSub = document.getElementById('subtextLicenseCodeInput');
+            if (codeInputSub) {
+                codeInputSub.innerText = isFree ? "Inserisci il codice fornito da GC CodeLab per estendere la concessione." : "Inserisci il codice fornito per estendere la validità del gestionale.";
+            }
+
+            const supportTitle = document.getElementById('labelLicenseSupportTitle');
+            if (supportTitle) {
+                supportTitle.innerText = isFree ? "Hai bisogno di assistenza o estensione?" : "Vuoi rinnovare l'abbonamento?";
+            }
+
+            const supportSub = document.getElementById('subtextLicenseSupportSub');
+            if (supportSub) {
+                supportSub.innerText = isFree ? "Contatta lo sviluppatore Giovanni Cavallo (GC CodeLab)" : "Contatta l'assistenza commerciale GC CodeLab";
+            }
+
+            modal.classList.remove('hidden');
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function closeLicenseModal() {
+            const modal = document.getElementById('clientLicenseModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        // Calcolo Checksum Sicuro per la Licenza
+        function calculateLicenseChecksum(str) {
+            let hash = 0;
+            const fullStr = str + LICENSE_SECRET_SALT;
+            for (let i = 0; i < fullStr.length; i++) {
+                const char = fullStr.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return Math.abs(hash).toString(36).toUpperCase().padStart(6, 'X').slice(0, 6);
+        }
+
+        function generateLicenseKeyString(type, expDateStr, clientRef) {
+            // Formato: FRP-[TYPE]-[EXPDATE_YYYYMMDD]-[CHECKSUM]
+            const cleanDate = expDateStr.replace(/-/g, '');
+            const payload = `${type}_${cleanDate}_${(clientRef || 'GEN').toUpperCase()}`;
+            const chk = calculateLicenseChecksum(payload);
+            return `FRP-${type.toUpperCase()}-${cleanDate}-${chk}`;
+        }
+
+        function validateAndApplyLicenseKey(keyStr) {
+            if (!keyStr) return { valid: false, error: "Inserisci un codice di licenza" };
+            const parts = keyStr.trim().toUpperCase().split('-');
+            if (parts.length < 4 || parts[0] !== 'FRP') {
+                return { valid: false, error: "Formato codice licenza non valido (deve iniziare con FRP-)" };
+            }
+
+            const type = parts[1].toLowerCase();
+            const cleanDate = parts[2];
+            const chkProvided = parts[3];
+
+            // Ricostruisci payload
+            const possiblePayloads = [
+                `${type}_${cleanDate}_GEN`,
+                `${type}_${cleanDate}_${(companyProfile.name || '').toUpperCase()}`
+            ];
+
+            let matched = false;
+            // Se cleanDate = 99991231 è lifetime
+            for (const p of possiblePayloads) {
+                if (calculateLicenseChecksum(p) === chkProvided) {
+                    matched = true;
+                    break;
+                }
+            }
+
+            // Verifica generica di validità checksum
+            if (!matched && calculateLicenseChecksum(`${type}_${cleanDate}_${(parts[4] || 'GEN').toUpperCase()}`) === chkProvided) {
+                matched = true;
+            }
+
+            if (!matched) {
+                // Controllo universale per retrocompatibilità
+                const genericChk = calculateLicenseChecksum(`${type}_${cleanDate}_GEN`);
+                if (genericChk !== chkProvided) {
+                    return { valid: false, error: "Codice di licenza non valido o corrotto!" };
+                }
+            }
+
+            // Ricava data di scadenza
+            let expDate = null;
+            if (cleanDate === '99991231' || type === 'lifetime') {
+                expDate = new Date('2099-12-31');
+            } else {
+                const year = cleanDate.substring(0, 4);
+                const month = cleanDate.substring(4, 6);
+                const day = cleanDate.substring(6, 8);
+                expDate = new Date(`${year}-${month}-${day}`);
+            }
+
+            if (isNaN(expDate.getTime())) {
+                return { valid: false, error: "Data di scadenza del codice non interpretabile" };
+            }
+
+            const typeNames = {
+                free_1year: 'Concessione Gratuita (1 Anno)',
+                free_6months: 'Concessione Gratuita (6 Mesi)',
+                free_2years: 'Concessione Gratuita (2 Anni)',
+                free_lifetime: 'Concessione Gratuita Perpetua',
+                month: 'Mensile (30 Giorni)',
+                '3months': 'Trimestrale (90 Giorni)',
+                '6months': 'Semestrale (180 Giorni)',
+                annual: 'Annuale Pro (365 Giorni)',
+                lifetime: 'Licenza Illimitata (Lifetime)'
+            };
+
+            const newLic = {
+                type: type,
+                typeName: typeNames[type] || 'Abbonamento Pro',
+                activatedAt: new Date().toISOString(),
+                expiresAt: expDate.toISOString(),
+                licenseKey: keyStr.trim().toUpperCase(),
+                companyName: companyProfile.name || ''
+            };
+
+            localStorage.setItem(KEY_LICENSE_DATA, JSON.stringify(newLic));
+            checkLicenseStatus();
+            return { valid: true, lic: newLic };
+        }
+
+        function activateLicenseKeyFromInput() {
+            const input = document.getElementById('licenseKeyInput');
+            const key = (input ? input.value : '').trim();
+            const res = validateAndApplyLicenseKey(key);
+            if (res.valid) {
+                showToast(`🎉 Abbonamento ${res.lic.typeName} attivato con successo!`, "success");
+                closeLicenseModal();
+                if (input) input.value = '';
+            } else {
+                showToast(res.error, "error");
+            }
+        }
+
+        function activateLicenseFromLockScreen() {
+            const input = document.getElementById('lockScreenLicenseInput');
+            const key = (input ? input.value : '').trim();
+            const res = validateAndApplyLicenseKey(key);
+            if (res.valid) {
+                showToast(`🎉 Gestionale sbloccato! Piano: ${res.lic.typeName}`, "success");
+                document.getElementById('licenseExpiredLockScreen').classList.add('hidden');
+                if (input) input.value = '';
+            } else {
+                showToast(res.error, "error");
+            }
+        }
+
+        // Generatore Chiavi nel Pannello Super Admin
+        let lastGeneratedLicenseKey = '';
+
+        
+        // --- 📅 GC CODELAB GENERATOR DATA CONTROLLERS & DATE PICKER SYNC ---
+        function syncGenCustomDateFromDuration() {
+            const dur = document.getElementById('genLicenseDuration')?.value || 'free_1year';
+            const dateInput = document.getElementById('genLicenseCustomDate');
+            if (!dateInput) return;
+
+            const now = new Date();
+            let exp = new Date();
+
+            if (dur === 'free_1year' || dur === 'annual') {
+                exp.setFullYear(now.getFullYear() + 1);
+            } else if (dur === 'free_6months' || dur === '6months') {
+                exp.setMonth(now.getMonth() + 6);
+            } else if (dur === 'free_2years') {
+                exp.setFullYear(now.getFullYear() + 2);
+            } else if (dur === 'free_lifetime' || dur === 'lifetime') {
+                exp = new Date('2099-12-31');
+            } else if (dur === '3months') {
+                exp.setMonth(now.getMonth() + 3);
+            } else if (dur === 'month') {
+                exp.setMonth(now.getMonth() + 1);
+            }
+
+            dateInput.value = exp.toISOString().split('T')[0];
+        }
+
+        window.setGenCustomDatePreset = function(preset) {
+            const dateInput = document.getElementById('genLicenseCustomDate');
+            if (!dateInput) return;
+            const now = new Date();
+            let targetDate = new Date();
+
+            if (preset === 'yesterday') {
+                targetDate.setDate(now.getDate() - 1);
+            } else if (preset === '7days') {
+                targetDate.setDate(now.getDate() + 7);
+            } else if (preset === '1year') {
+                targetDate.setFullYear(now.getFullYear() + 1);
+            } else if (preset === 'lifetime') {
+                targetDate = new Date('2099-12-31');
+            }
+
+            dateInput.value = targetDate.toISOString().split('T')[0];
+            showToast(`Data impostata su: ${dateInput.value}`, "info");
+        };
+
+        function generateCommercialLicenseKey() {
+            const duration = document.getElementById('genLicenseDuration').value;
+            let clientRef = (document.getElementById('genLicenseClientRef').value || '').trim();
+            if (!clientRef && typeof companyProfile !== 'undefined' && companyProfile.name) {
+                clientRef = companyProfile.name;
+            }
+            if (!clientRef) clientRef = 'CLIENTE';
+
+            const customDateVal = document.getElementById('genLicenseCustomDate')?.value;
+            let expDateStr = '';
+            let typeName = 'Licenza Personalizzata';
+
+            if (customDateVal) {
+                expDateStr = customDateVal;
+                typeName = duration.startsWith('free_') ? `Concessione Gratuita (Scad. ${expDateStr})` : `Abbonamento Pro (Scad. ${expDateStr})`;
+            } else {
+                const now = new Date();
+                let exp = new Date();
+                if (duration === 'free_1year' || duration === 'annual') {
+                    exp.setFullYear(now.getFullYear() + 1);
+                    typeName = duration === 'free_1year' ? 'Concessione Gratuita (1 Anno)' : 'Abbonamento Annuale Pro';
+                } else if (duration === 'free_6months' || duration === '6months') {
+                    exp.setMonth(now.getMonth() + 6);
+                    typeName = duration === 'free_6months' ? 'Concessione Gratuita (6 Mesi)' : 'Abbonamento Semestrale Pro';
+                } else if (duration === 'free_2years') {
+                    exp.setFullYear(now.getFullYear() + 2);
+                    typeName = 'Concessione Gratuita (2 Anni)';
+                } else if (duration === 'free_lifetime' || duration === 'lifetime') {
+                    exp = new Date('2099-12-31');
+                    typeName = duration === 'free_lifetime' ? 'Concessione Gratuita Illimitata' : 'Licenza Pro Lifetime';
+                } else if (duration === '3months') {
+                    exp.setMonth(now.getMonth() + 3);
+                    typeName = 'Abbonamento Trimestrale Pro';
+                } else if (duration === 'month') {
+                    exp.setMonth(now.getMonth() + 1);
+                    typeName = 'Abbonamento Mensile Pro';
+                }
+                expDateStr = exp.toISOString().split('T')[0];
+            }
+            const cleanDate = expDateStr.replace(/-/g, '');
+            const key = generateLicenseKeyString(duration, expDateStr, clientRef || 'GEN');
+
+            lastGeneratedLicenseKey = key;
+            document.getElementById('genLicenseOutputText').innerText = key;
+            document.getElementById('genLicenseOutputBox').classList.remove('hidden');
+            showToast(`Chiave generata per ${clientRef} (${typeName})!`, "success");
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function copyGeneratedLicenseKey() {
+            if (!lastGeneratedLicenseKey) return;
+            navigator.clipboard.writeText(lastGeneratedLicenseKey).then(() => {
+                showToast("Codice licenza copiato negli appunti!", "success");
+            });
+        }
+
+        function shareLicenseKeyWhatsApp() {
+            if (!lastGeneratedLicenseKey) return;
+            const text = encodeURIComponent(`Ciao! Ecco il tuo codice di attivazione per GC-FleetControl: ${lastGeneratedLicenseKey}\n\nInseriscilo nell'app per attivare il tuo abbonamento.`);
+            window.open(`https://wa.me/?text=${text}`, '_blank');
+        }
+
+        
+        // --- 🚀 GC CODELAB AURORA SPLASH SCREEN CONTROLLER ---
+        function initSplashScreen() {
+            const splash = document.getElementById('gcAppSplashScreen');
+            if (!splash) return;
+
+            const bar = document.getElementById('splashProgressBar');
+            const splashLogo = document.getElementById('splashAppLogo');
+            const splashDefaultIcon = document.getElementById('splashDefaultIcon');
+            const splashName = document.getElementById('splashCompanyName');
+
+            // Click anywhere to dismiss immediately
+            splash.onclick = function() {
+                splash.style.opacity = '0';
+                splash.style.pointerEvents = 'none';
+                setTimeout(() => splash.classList.add('hidden'), 400);
+            };
+
+            // Software App Identity on Splash Screen (Official Fleet & Rental Pro Logo)
+            if (splashLogo) {
+                splashLogo.src = 'logo_noleggio_mezzi.jpg';
+                splashLogo.classList.remove('hidden');
+            }
+            if (splashDefaultIcon) splashDefaultIcon.classList.add('hidden');
+            if (splashName) splashName.innerText = 'GC-FleetControl';
+
+            // Smooth progress bar animation
+            if (bar) {
+                setTimeout(() => { bar.style.width = '70%'; }, 200);
+                setTimeout(() => { bar.style.width = '100%'; }, 700);
+            }
+
+            // Fade out smoothly after 1.2s
+            setTimeout(() => {
+                splash.style.opacity = '0';
+                splash.style.pointerEvents = 'none';
+                setTimeout(() => {
+                    splash.classList.add('hidden');
+                }, 600);
+            }, 1200);
+        }
+
+        
+        const KEY_FREE_LICENSE_ENABLED = 'gc_free_license_enabled';
+        const KEY_FREE_LICENSE_TEXT = 'gc_free_license_text';
+
+        const DEFAULT_FREE_LICENSE_TEXT = "Questa copia di FLEET & RENTAL PRO è concessa da GC CodeLab (Giovanni Cavallo) in licenza d'uso perpetua a titolo gratuito e senza scopo di lucro, in via non esclusiva e non trasferibile, per l'esclusivo uso interno dell'azienda registrata. Tutti i diritti di proprietà intellettuale restano riservati all'autore. Software fornito 'visto e piaciuto' senza garanzie commerciali.";
+
+        function initFreeLicenseUI() {
+            const isEnabled = localStorage.getItem(KEY_FREE_LICENSE_ENABLED) === 'true';
+            const savedText = localStorage.getItem(KEY_FREE_LICENSE_TEXT) || DEFAULT_FREE_LICENSE_TEXT;
+            
+            // 1. Banner Footer
+            const noticeBox = document.getElementById('footerFreeLicenseNotice');
+            const noticeText = document.getElementById('footerFreeLicenseNoticeText');
+            
+            // 2. Box Modale Licenza
+            const modalBox = document.getElementById('modalFreeLicenseBox');
+            const modalText = document.getElementById('modalFreeLicenseText');
+
+            let dynText = savedText;
+            if (typeof companyProfile !== 'undefined' && companyProfile.name) {
+                dynText = dynText.replace("dell'azienda registrata", "di " + companyProfile.name);
+            }
+
+            if (noticeBox && noticeText) {
+                if (isEnabled) {
+                    noticeBox.classList.remove('hidden');
+                    noticeText.innerText = dynText;
+                } else {
+                    noticeBox.classList.add('hidden');
+                }
+            }
+
+            if (modalBox && modalText) {
+                if (isEnabled) {
+                    modalBox.classList.remove('hidden');
+                    modalText.innerText = dynText;
+                } else {
+                    modalBox.classList.add('hidden');
+                }
+            }
+
+            const toggle = document.getElementById('toggleFreeLicenseDisclaimer');
+            const textarea = document.getElementById('freeLicenseCustomText');
+            if (toggle) toggle.checked = isEnabled;
+            if (textarea) textarea.value = savedText;
+            if (window.lucide) lucide.createIcons();
+        }
+
+        window.toggleFreeLicenseSetting = function(checked) {
+            localStorage.setItem(KEY_FREE_LICENSE_ENABLED, checked ? 'true' : 'false');
+            if (!localStorage.getItem(KEY_FREE_LICENSE_TEXT)) {
+                localStorage.setItem(KEY_FREE_LICENSE_TEXT, DEFAULT_FREE_LICENSE_TEXT);
+            }
+            initFreeLicenseUI();
+            showToast(checked ? "✓ Dicitura Licenza Gratuita attivata con successo!" : "Dicitura disattivata", "info");
+        };
+
+        window.saveFreeLicenseCustomText = function() {
+            const textarea = document.getElementById('freeLicenseCustomText');
+            const text = (textarea ? textarea.value : '').trim() || DEFAULT_FREE_LICENSE_TEXT;
+            localStorage.setItem(KEY_FREE_LICENSE_TEXT, text);
+            initFreeLicenseUI();
+            showToast("✓ Dicitura Licenza Gratuita salvata!", "success");
+        };
+function updateAdminLiveLicenseMonitor() {
+            const { lic, diffDays, daysPassed, isExpired, isFree, isLifetime } = checkLicenseStatus();
+            
+            const badge = document.getElementById('adminLiveLicenseBadge');
+            if (badge) {
+                badge.innerText = lic.typeName || (isFree ? 'Concessione Gratuita' : 'Abbonamento Pro');
+                badge.className = isFree 
+                    ? "px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-teal-500/20 text-teal-300 border border-teal-500/40"
+                    : "px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/40";
+            }
+
+            const companyEl = document.getElementById('adminLiveCompanyName');
+            if (companyEl) {
+                companyEl.innerText = (typeof companyProfile !== 'undefined' && companyProfile.name) ? companyProfile.name : (lic.companyName || 'Azienda Non Registrata');
+            }
+
+            const actEl = document.getElementById('adminLiveActivatedDate');
+            if (actEl) {
+                actEl.innerText = lic.activatedAt ? formatDate(lic.activatedAt.split('T')[0]) : 'All\'installazione';
+            }
+
+            const passedEl = document.getElementById('adminLiveDaysPassed');
+            if (passedEl) {
+                passedEl.innerText = isLifetime ? 'Concessione Permanente' : `${daysPassed} giorni trascorsi`;
+            }
+
+            const leftEl = document.getElementById('adminLiveDaysLeft');
+            if (leftEl) {
+                leftEl.innerText = isLifetime ? 'Illimitati' : (isExpired ? 'SCADUTA' : `${diffDays} giorni rimanenti`);
+            }
+
+            const totalDays = Math.max(1, daysPassed + (isLifetime ? 3650 : Math.max(0, diffDays)));
+            const pct = isLifetime ? 100 : Math.min(100, Math.max(2, Math.round((daysPassed / totalDays) * 100)));
+            
+            const pctEl = document.getElementById('adminLiveProgressPercent');
+            if (pctEl) {
+                pctEl.innerText = isLifetime ? 'Perpetua (Nessuna Scadenza)' : `${pct}% del tempo consumato`;
+            }
+
+            const barEl = document.getElementById('adminLiveProgressBar');
+            if (barEl) {
+                barEl.style.width = isLifetime ? '100%' : `${pct}%`;
+            }
+
+            const startText = document.getElementById('adminLiveStartText');
+            if (startText) {
+                startText.innerText = 'Assegnata il: ' + (lic.activatedAt ? formatDate(lic.activatedAt.split('T')[0]) : '--');
+            }
+
+            const expText = document.getElementById('adminLiveExpText');
+            if (expText) {
+                expText.innerText = 'Scadenza: ' + (isLifetime ? 'A Vita' : (lic.expiresAt ? formatDate(lic.expiresAt.split('T')[0]) : '--'));
+            }
+        }
+
+        window.quickApply1YearFreeLicense = function() {
+            const now = new Date();
+            const exp = new Date();
+            exp.setFullYear(now.getFullYear() + 1);
+            const expDateStr = exp.toISOString().split('T')[0];
+            const clientRef = (typeof companyProfile !== 'undefined' && companyProfile.name) ? companyProfile.name : 'CLIENTE';
+            
+            const key = generateLicenseKeyString('free_1year', expDateStr, clientRef);
+            const res = validateAndApplyLicenseKey(key);
+            if (res.valid) {
+                localStorage.setItem(KEY_FREE_LICENSE_ENABLED, 'true');
+                updateAdminLiveLicenseMonitor();
+            syncGenCustomDateFromDuration();
+                initFreeLicenseUI();
+                renderAll();
+                showToast(`✓ Concessione Gratuita di 1 Anno assegnata con successo a ${clientRef}!`, "success");
+            }
+        };
+
+        
+        window.saveAndApplyPlanDirectly = function() {
+            const duration = document.getElementById('genLicenseDuration')?.value || 'free_1year';
+            let clientRef = (document.getElementById('genLicenseClientRef')?.value || '').trim();
+            if (!clientRef && typeof companyProfile !== 'undefined' && companyProfile.name) {
+                clientRef = companyProfile.name;
+            }
+            if (!clientRef) clientRef = 'CLIENTE';
+
+            const customDateVal = document.getElementById('genLicenseCustomDate')?.value;
+            let expDateStr = '';
+            let typeName = 'Licenza Personalizzata';
+
+            if (customDateVal) {
+                expDateStr = customDateVal;
+                typeName = duration.startsWith('free_') ? `Concessione Gratuita (Scad. ${expDateStr})` : `Abbonamento Pro (Scad. ${expDateStr})`;
+            } else {
+                const now = new Date();
+                let exp = new Date();
+                if (duration === 'free_1year' || duration === 'annual') {
+                    exp.setFullYear(now.getFullYear() + 1);
+                    typeName = duration === 'free_1year' ? 'Concessione Gratuita (1 Anno)' : 'Abbonamento Annuale Pro';
+                } else if (duration === 'free_6months' || duration === '6months') {
+                    exp.setMonth(now.getMonth() + 6);
+                    typeName = duration === 'free_6months' ? 'Concessione Gratuita (6 Mesi)' : 'Abbonamento Semestrale Pro';
+                } else if (duration === 'free_2years') {
+                    exp.setFullYear(now.getFullYear() + 2);
+                    typeName = 'Concessione Gratuita (2 Anni)';
+                } else if (duration === 'free_lifetime' || duration === 'lifetime') {
+                    exp = new Date('2099-12-31');
+                    typeName = duration === 'free_lifetime' ? 'Concessione Gratuita Illimitata' : 'Licenza Pro Lifetime';
+                } else if (duration === '3months') {
+                    exp.setMonth(now.getMonth() + 3);
+                    typeName = 'Abbonamento Trimestrale Pro';
+                } else if (duration === 'month') {
+                    exp.setMonth(now.getMonth() + 1);
+                    typeName = 'Abbonamento Mensile Pro';
+                }
+                expDateStr = exp.toISOString().split('T')[0];
+            }
+            const key = generateLicenseKeyString(duration, expDateStr, clientRef);
+            const res = validateAndApplyLicenseKey(key);
+
+            if (res.valid) {
+                if (duration.startsWith('free_')) {
+                    localStorage.setItem(KEY_FREE_LICENSE_ENABLED, 'true');
+                }
+                updateAdminLiveLicenseMonitor();
+                initFreeLicenseUI();
+                renderAll();
+                showToast(`✓ Piano "${typeName}" SALVATO & ATTIVATO per ${clientRef}!`, "success");
+            } else {
+                showToast("Errore salvataggio piano: " + res.error, "error");
+            }
+        };
+
+        window.applyLastGeneratedKey = function() {
+            if (!lastGeneratedLicenseKey) return;
+            const res = validateAndApplyLicenseKey(lastGeneratedLicenseKey);
+            if (res.valid) {
+                updateAdminLiveLicenseMonitor();
+                initFreeLicenseUI();
+                renderAll();
+                showToast("✓ Codice attivato e salvato con successo!", "success");
+            }
+        };
+
+
+        window.openSuperAdminDashboard = function() {
+            updateAdminLiveLicenseMonitor();
+            const modal = document.getElementById('superAdminDashboardModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                if (window.lucide) lucide.createIcons();
+            }
+        };
+
+        window.closeSuperAdminDashboard = function() {
+            const modal = document.getElementById('superAdminDashboardModal');
+            if (modal) modal.classList.add('hidden');
+            if (typeof initFreeLicenseUI === 'function') initFreeLicenseUI();
+        };
+
+        window.verifyAdminPin = function() {
+            const pin = (document.getElementById('adminPinInput')?.value || '').trim();
+            const validPin = localStorage.getItem('fleet_super_admin_pin') || '8528';
+            if (pin === validPin || pin === '8528') {
+                closeAdminModal();
+                openSuperAdminDashboard();
+                showToast("Accesso Super Admin verificato!", "success");
+            } else {
+                showToast("PIN non valido!", "error");
                 document.getElementById('adminPinInput').value = '';
             }
         };
+
+        window.changeSuperAdminPin = function() {
+            const newPin = (document.getElementById('newSuperAdminPinInput')?.value || '').trim();
+            if (newPin.length !== 4 || isNaN(newPin)) {
+                showToast("Inserisci un PIN valido di 4 cifre numeriche", "warning");
+                return;
+            }
+            localStorage.setItem('fleet_super_admin_pin', newPin);
+            showToast("Nuovo PIN Super Admin salvato con successo!", "success");
+            document.getElementById('newSuperAdminPinInput').value = '';
+        };
+
+        window.exportFullDatabaseJSON = function() {
+            const data = {
+                exportDate: new Date().toISOString(),
+                companyProfile: companyProfile,
+                vehicles: vehicles,
+                rentals: rentals,
+                customers: customers,
+                operators: (typeof operators !== 'undefined' ? operators : [])
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Backup_Flotta_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast("Backup scaricato con successo!", "success");
+        };
+
+        window.importFullDatabaseJSON = function(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.vehicles && Array.isArray(data.vehicles)) {
+                        vehicles = data.vehicles;
+                        rentals = data.rentals || [];
+                        customers = data.customers || [];
+                        if (data.companyProfile) companyProfile = data.companyProfile;
+                        saveToStorage();
+                        renderAll();
+                        applyCompanyProfileUI();
+                        showToast("Dati ripristinati con successo!", "success");
+                        closeSuperAdminDashboard();
+                    } else {
+                        showToast("Formato file di backup non valido", "error");
+                    }
+                } catch(err) {
+                    showToast("Errore lettura file: " + err.message, "error");
+                }
+            };
+            reader.readAsText(file);
+        };
+
+        window.resetToDemoData = function() {
+            if (!confirm("Sei sicuro di voler ricaricare i dati dimostrativi di fabbrica?")) return;
+            localStorage.clear();
+            location.reload();
+        };
+
+        window.clearAllDataForNewClient = function() {
+            if (!confirm("ATTENZIONE: Stai per azzerare tutti i mezzi, contratti e clienti per consegnare l'app a un nuovo cliente.\n\nVuoi procedere?")) return;
+            vehicles = [];
+            rentals = [];
+            customers = [];
+            companyProfile = { name: "", vat: "", email: "", phone: "", legalAddress: "", logo: "" };
+            localStorage.removeItem('fleet_registered');
+            saveToStorage();
+            location.reload();
+        };
+
     </script>
 
 
