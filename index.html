@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GC-FleetControl - Gestione Flotta, Scadenziario & Noleggio Mezzi | GC CodeLab</title><!-- cache-bust: 1787866322018 -->
+    <title>GC-FleetPro - Gestione Flotta, Scadenziario & Noleggio Mezzi | GC CodeLab</title><!-- cache-bust: 1787866322018 -->
     
     <meta name="theme-color" content="#1e3a8a">
     <meta name="description" content="Gestionale professionale per il controllo scadenze flotta mezzi e contratti di noleggio veicoli">
@@ -4342,7 +4342,7 @@ function exportFleetPDF() {
 
         function shareLicenseKeyWhatsApp() {
             if (!lastGeneratedLicenseKey) return;
-            const text = encodeURIComponent(`Ciao! Ecco il tuo codice di attivazione per GC-FleetControl: ${lastGeneratedLicenseKey}\n\nInseriscilo nell'app per attivare il tuo abbonamento.`);
+            const text = encodeURIComponent(`Ciao! Ecco il tuo codice di attivazione per GC-FleetPro: ${lastGeneratedLicenseKey}\n\nInseriscilo nell'app per attivare il tuo abbonamento.`);
             window.open(`https://wa.me/?text=${text}`, '_blank');
         }
 
@@ -4370,7 +4370,7 @@ function exportFleetPDF() {
                 splashLogo.classList.remove('hidden');
             }
             if (splashDefaultIcon) splashDefaultIcon.classList.add('hidden');
-            if (splashName) splashName.innerText = 'GC-FleetControl';
+            if (splashName) splashName.innerText = 'GC-FleetPro';
 
             // Smooth progress bar animation
             if (bar) {

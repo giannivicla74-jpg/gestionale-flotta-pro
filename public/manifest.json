@@ -1,6 +1,6 @@
 {
-  "name": "Fleet Rentals Pro",
-  "short_name": "FleetRentals",
+  "name": "GC-FleetPro - Gestione Flotta",
+  "short_name": "GC-FleetPro",
   "description": "Noleggio Mezzi & Gestione Scadenze",
   "start_url": "/",
   "display": "standalone",
