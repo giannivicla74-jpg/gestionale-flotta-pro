@@ -885,6 +885,60 @@
                 </button>
             </div>
 
+            <!-- LETTORE FILE TACHIGRAFO DIGITALE (.DDD) IN PRIMO PIANO -->
+            <div id="dddInlineReader" onclick="document.getElementById('dddGlobalInput').click()" class="relative group overflow-hidden bg-gradient-to-r from-indigo-50/90 via-blue-50/70 to-purple-50/70 dark:from-indigo-950/40 dark:via-slate-800/90 dark:to-purple-950/30 border-2 border-dashed border-indigo-300/90 dark:border-indigo-600/60 hover:border-indigo-500 dark:hover:border-indigo-400 rounded-2xl p-4 sm:p-5 mb-6 transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <!-- Icona e Testi Principali -->
+                    <div class="flex items-center gap-4 w-full md:w-auto">
+                        <div class="w-12 h-12 rounded-2xl bg-indigo-600 dark:bg-indigo-500 text-white flex items-center justify-center shadow-lg shadow-indigo-500/30 group-hover:scale-105 transition-transform shrink-0">
+                            <i data-lucide="hard-drive-download" class="w-6 h-6"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <h3 class="text-sm font-black tracking-wide text-slate-800 dark:text-white uppercase flex items-center gap-1.5">
+                                    <span>Lettore File Tachigrafo Digitale</span>
+                                </h3>
+                                <span class="px-2 py-0.5 text-[10px] font-extrabold rounded-full bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-700 flex items-center gap-1">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
+                                    Area Rilascio .DDD
+                                </span>
+                            </div>
+                            <p class="text-xs text-slate-600 dark:text-slate-300 mt-1 font-medium">
+                                <span class="font-bold text-indigo-700 dark:text-indigo-300">Trascina qui direttamente i file scaricati</span> (Autista o Mezzo) oppure clicca per sfogliarli dal computer.
+                            </p>
+                            <div class="flex flex-wrap items-center gap-2 mt-1.5">
+                                <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">Formati supportati:</span>
+                                <span class="px-1.5 py-0.5 text-[9px] font-mono font-bold rounded bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600">.DDD</span>
+                                <span class="px-1.5 py-0.5 text-[9px] font-mono font-bold rounded bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600">.TGD</span>
+                                <span class="px-1.5 py-0.5 text-[9px] font-mono font-bold rounded bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600">.ESM</span>
+                                <span class="px-1.5 py-0.5 text-[9px] font-mono font-bold rounded bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600">.V1B/.C1B</span>
+                                <span class="px-1.5 py-0.5 text-[9px] font-mono font-bold rounded bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600">.ZIP</span>
+                                <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold ml-1 flex items-center gap-1">
+                                    <i data-lucide="check-circle" class="w-3 h-3"></i> Calcolo automatico: +90gg Mezzi, +28gg Autisti
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pulsante Azione Rapida -->
+                    <div class="shrink-0 w-full md:w-auto flex items-center justify-end">
+                        <button type="button" onclick="event.stopPropagation(); document.getElementById('dddGlobalInput').click();" class="w-full md:w-auto px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-xs font-extrabold rounded-xl shadow-md shadow-indigo-500/20 transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="folder-open" class="w-4 h-4"></i>
+                            <span>Sfoglia File .DDD</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Overlay feedback visivo durante il trascinamento sul lettore -->
+                <div id="dddInlineDropOverlay" class="absolute inset-0 bg-indigo-600/95 dark:bg-indigo-900/95 backdrop-blur-sm rounded-2xl hidden flex-col items-center justify-center text-white z-20 transition-all pointer-events-none border-2 border-dashed border-white">
+                    <div class="p-3 bg-white/20 rounded-2xl mb-1.5 animate-bounce">
+                        <i data-lucide="download" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <p class="text-sm font-black tracking-wide uppercase">Rilascia qui i file del Tachigrafo (.DDD)</p>
+                    <p class="text-[11px] text-indigo-100 font-medium mt-0.5">Analisi immediata e aggiornamento automatico scadenze</p>
+                </div>
+            </div>
+
             <!-- SEARCH AND CONTROLS -->
             <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col gap-4 mb-6">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -7104,38 +7158,88 @@ let isAudioEnabled = true;
 
         // --- GESTIONE DRAG & DROP E PARSING FILE .DDD ---
         
-        const dddDropzone = document.getElementById('dddGlobalDropzone');
+        // --- GESTIONE DRAG & DROP E PARSING FILE .DDD ---
+        
         const dddInput = document.getElementById('dddGlobalInput');
+        const dddInlineReader = document.getElementById('dddInlineReader');
+        const dddInlineDropOverlay = document.getElementById('dddInlineDropOverlay');
 
+        // Eventi drag & drop diretti sul Lettore in primo piano
+        if (dddInlineReader) {
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dddInlineReader.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (dddInlineDropOverlay) {
+                        dddInlineDropOverlay.classList.remove('hidden');
+                        dddInlineDropOverlay.classList.add('flex');
+                    }
+                    dddInlineReader.classList.add('ring-4', 'ring-indigo-400/50', 'border-indigo-600');
+                });
+            });
+
+            ['dragleave', 'dragend'].forEach(eventName => {
+                dddInlineReader.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (dddInlineDropOverlay) {
+                        dddInlineDropOverlay.classList.add('hidden');
+                        dddInlineDropOverlay.classList.remove('flex');
+                    }
+                    dddInlineReader.classList.remove('ring-4', 'ring-indigo-400/50', 'border-indigo-600');
+                });
+            });
+
+            dddInlineReader.addEventListener('drop', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (dddInlineDropOverlay) {
+                    dddInlineDropOverlay.classList.add('hidden');
+                    dddInlineDropOverlay.classList.remove('flex');
+                }
+                dddInlineReader.classList.remove('ring-4', 'ring-indigo-400/50', 'border-indigo-600');
+                const files = e.dataTransfer.files;
+                if (files && files.length > 0) processGlobalDDDFiles(files);
+            });
+        }
+
+        // Se l'utente trascina un file sopra la finestra del browser, evidenziamo il lettore in primo piano
         window.addEventListener('dragover', (e) => {
             e.preventDefault();
-            if (e.dataTransfer.types.includes("Files")) {
-                dddDropzone.classList.remove('hidden');
-                dddDropzone.classList.add('flex');
+            if (e.dataTransfer && e.dataTransfer.types && e.dataTransfer.types.includes("Files")) {
+                if (dddInlineReader) {
+                    dddInlineReader.classList.add('ring-2', 'ring-indigo-400', 'border-indigo-500');
+                }
             }
         });
 
-        dddDropzone.addEventListener('dragleave', (e) => {
+        window.addEventListener('dragleave', (e) => {
             e.preventDefault();
-            if (e.target === dddDropzone) {
-                dddDropzone.classList.add('hidden');
-                dddDropzone.classList.remove('flex');
+            if (e.clientX <= 0 || e.clientY <= 0) {
+                if (dddInlineReader) {
+                    dddInlineReader.classList.remove('ring-2', 'ring-indigo-400', 'border-indigo-500');
+                }
             }
         });
 
-        dddDropzone.addEventListener('drop', (e) => {
+        window.addEventListener('drop', (e) => {
             e.preventDefault();
-            dddDropzone.classList.add('hidden');
-            dddDropzone.classList.remove('flex');
-            const files = e.dataTransfer.files;
-            if (files && files.length > 0) processGlobalDDDFiles(files);
+            if (dddInlineReader) {
+                dddInlineReader.classList.remove('ring-2', 'ring-indigo-400', 'border-indigo-500');
+            }
+            if (dddInlineReader && !dddInlineReader.contains(e.target)) {
+                const files = e.dataTransfer.files;
+                if (files && files.length > 0) processGlobalDDDFiles(files);
+            }
         });
 
-        dddInput.addEventListener('change', (e) => {
-            const files = e.target.files;
-            if (files && files.length > 0) processGlobalDDDFiles(files);
-            dddInput.value = ''; // Reset
-        });
+        if (dddInput) {
+            dddInput.addEventListener('change', (e) => {
+                const files = e.target.files;
+                if (files && files.length > 0) processGlobalDDDFiles(files);
+                dddInput.value = ''; // Reset
+            });
+        }
 
         function extractDDDFileDate(file) {
             if (!file || !file.name) return null;
@@ -7287,6 +7391,7 @@ let isAudioEnabled = true;
                         // Aggiorna solo se la nuova data è successiva a quella attuale
                         if (!matchedObj.deadlines.scaricoTachigrafo || nextDeadlineStr > matchedObj.deadlines.scaricoTachigrafo) {
                             matchedObj.deadlines.scaricoTachigrafo = nextDeadlineStr;
+                            matchedObj.deadlines.lastDownloadTachigrafo = targetStr;
                             
                             // Aggiorna anche l'operatore 'vehicle_company' corrispondente, se esiste (case-insensitive)
                             const cleanModelObj = matchedObj.model ? matchedObj.model.trim().toLowerCase() : '';
