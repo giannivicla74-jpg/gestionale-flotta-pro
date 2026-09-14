@@ -513,7 +513,7 @@
                             <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold mt-1 block">Prossimi <span class="thresholdLabel text-amber-500 font-black">30</span> giorni</span>
                         </div>
                         <div class="z-10 p-3 rounded-2xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800/60 shadow-sm group-hover:scale-110 transition-transform duration-300 flex items-center justify-center">
-                            <i data-lucide="clock" class="w-6 h-6"></i>
+                            <i data-lucide="calendar-clock" class="w-6 h-6"></i>
                         </div>
                     </div>
 
@@ -528,7 +528,7 @@
                             <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold mt-1 block" id="statTotalLabel">0 risorse totali</span>
                         </div>
                         <div class="z-10 p-3 rounded-2xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60 shadow-sm group-hover:scale-110 transition-transform duration-300 flex items-center justify-center">
-                            <i data-lucide="check-circle" class="w-6 h-6"></i>
+                            <i data-lucide="badge-check" class="w-6 h-6"></i>
                         </div>
                     </div>
                 </div>
@@ -582,41 +582,97 @@
                         </span>
                     </div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-center z-10">
-                        <!-- Radial Gauge & Center Counter -->
-                        <div class="md:col-span-5 flex flex-col items-center justify-center relative py-2">
-                            <div class="gauge-container">
-                                <div class="gauge-glow gauge-glow-animated" id="fleetGaugeGlow"></div>
-                                <div class="gauge-ring">
-                                    <canvas id="fleetStatusChart"></canvas>
-                                    <div class="gauge-center-label">
-                                        <span class="gauge-number" id="fleetTotalCenter">0</span>
-                                        <span class="gauge-label">Mezzi Totali</span>
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-stretch z-10">
+                        <!-- Horizontal Status Bars Breakdown (Linee Orizzontali Separate) -->
+                        <div class="md:col-span-6 flex flex-col justify-between bg-slate-50/80 dark:bg-slate-900/60 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-inner">
+                            <!-- Top Info: Totale Mezzi & Conformità -->
+                            <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-700/60">
+                                <div>
+                                    <div class="text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-400">Totale Mezzi</div>
+                                    <div class="flex items-baseline gap-1.5">
+                                        <span class="text-3xl font-black text-slate-900 dark:text-white tracking-tight" id="fleetTotalCenter">0</span>
+                                        <span class="text-xs font-bold text-slate-500 dark:text-slate-400">registrati</span>
                                     </div>
                                 </div>
-                                <!-- Scale markers -->
-                                <div class="gauge-scale">
-                                    <div class="gauge-scale-dot bg-emerald-500"></div>
-                                    <div class="gauge-scale-line"></div>
-                                    <div class="gauge-scale-dot bg-amber-500"></div>
-                                    <div class="gauge-scale-line"></div>
-                                    <div class="gauge-scale-dot bg-red-500"></div>
+                                <div class="text-right">
+                                    <div class="flex items-center justify-end gap-1 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-400">
+                                        <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-500"></i>
+                                        Conformità
+                                    </div>
+                                    <div class="flex items-center justify-end gap-1.5">
+                                        <span id="fleetHealthPercentText" class="text-xl font-black text-emerald-600 dark:text-emerald-400">100%</span>
+                                    </div>
                                 </div>
                             </div>
-                            <!-- Conformity bar -->
-                            <div class="w-full max-w-[180px] mt-3">
-                                <div class="flex justify-between text-[10px] font-extrabold text-slate-500 dark:text-slate-400 mb-1">
-                                    <span class="flex items-center gap-1"><i data-lucide="shield-check" class="w-3 h-3 text-emerald-500"></i>Conformità</span>
-                                    <span id="fleetHealthPercentText" class="text-emerald-600 dark:text-emerald-400 font-black text-xs">100%</span>
+
+                            <!-- 3 Linee Colorate Orizzontali (Una Sopra l'Altra) -->
+                            <div class="flex flex-col gap-3.5 my-auto py-2">
+                                <!-- Linea 1: In Regola (Verde) -->
+                                <div class="cursor-pointer group" onclick="switchTab('vehicles'); filterByStatusStat('ok')" title="Clicca per visualizzare i mezzi in regola">
+                                    <div class="flex justify-between items-center text-xs font-bold mb-1">
+                                        <span class="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400 font-extrabold">
+                                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.5)]"></span>
+                                            In Regola
+                                        </span>
+                                        <span class="font-extrabold text-slate-700 dark:text-slate-300 text-xs">
+                                            <span id="fleetBarGreenCount">0</span> <span class="text-[11px] text-slate-400 font-medium">(<span id="fleetBarGreenPct">100%</span>)</span>
+                                        </span>
+                                    </div>
+                                    <div class="w-full bg-slate-200/90 dark:bg-slate-700/60 h-3 rounded-full overflow-hidden p-0.5 border border-slate-300/40 dark:border-slate-600/40">
+                                        <div id="fleetBarGreen" class="h-full rounded-full bg-gradient-to-r from-emerald-500 via-emerald-400 to-teal-400 transition-all duration-700 ease-out shadow-[0_0_8px_rgba(16,185,129,0.3)] group-hover:brightness-110" style="width: 100%"></div>
+                                    </div>
                                 </div>
-                                <div class="w-full bg-slate-200 dark:bg-slate-700/50 h-2.5 rounded-full overflow-hidden border border-slate-300/30 dark:border-slate-600/30">
+
+                                <!-- Linea 2: In Scadenza (Giallo/Ambra) -->
+                                <div class="cursor-pointer group" onclick="switchTab('vehicles'); filterByStatusStat('expiring')" title="Clicca per visualizzare i mezzi in scadenza">
+                                    <div class="flex justify-between items-center text-xs font-bold mb-1">
+                                        <span class="flex items-center gap-1.5 text-amber-700 dark:text-amber-400 font-extrabold">
+                                            <span class="w-2.5 h-2.5 rounded-full bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.5)]"></span>
+                                            In Scadenza
+                                        </span>
+                                        <span class="font-extrabold text-slate-700 dark:text-slate-300 text-xs">
+                                            <span id="fleetBarAmberCount">0</span> <span class="text-[11px] text-slate-400 font-medium">(<span id="fleetBarAmberPct">0%</span>)</span>
+                                        </span>
+                                    </div>
+                                    <div class="w-full bg-slate-200/90 dark:bg-slate-700/60 h-3 rounded-full overflow-hidden p-0.5 border border-slate-300/40 dark:border-slate-600/40">
+                                        <div id="fleetBarAmber" class="h-full rounded-full bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 transition-all duration-700 ease-out shadow-[0_0_8px_rgba(245,158,11,0.3)] group-hover:brightness-110" style="width: 0%"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Linea 3: Scaduti (Rosso) -->
+                                <div class="cursor-pointer group" onclick="switchTab('vehicles'); filterByStatusStat('expired')" title="Clicca per visualizzare i mezzi scaduti">
+                                    <div class="flex justify-between items-center text-xs font-bold mb-1">
+                                        <span class="flex items-center gap-1.5 text-red-700 dark:text-red-400 font-extrabold">
+                                            <span class="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.5)]"></span>
+                                            Scaduti
+                                        </span>
+                                        <span class="font-extrabold text-slate-700 dark:text-slate-300 text-xs">
+                                            <span id="fleetBarRedCount">0</span> <span class="text-[11px] text-slate-400 font-medium">(<span id="fleetBarRedPct">0%</span>)</span>
+                                        </span>
+                                    </div>
+                                    <div class="w-full bg-slate-200/90 dark:bg-slate-700/60 h-3 rounded-full overflow-hidden p-0.5 border border-slate-300/40 dark:border-slate-600/40">
+                                        <div id="fleetBarRed" class="h-full rounded-full bg-gradient-to-r from-red-500 via-rose-500 to-rose-600 transition-all duration-700 ease-out shadow-[0_0_8px_rgba(239,68,68,0.3)] group-hover:brightness-110" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Conformity Progress Track at bottom -->
+                            <div class="pt-2.5 border-t border-slate-200/60 dark:border-slate-700/60">
+                                <div class="flex justify-between items-center text-[10px] font-black uppercase tracking-wider mb-1.5 text-slate-500 dark:text-slate-400">
+                                    <span class="flex items-center gap-1.5">
+                                        <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-500"></i>
+                                        Indice di Conformità Globale
+                                    </span>
+                                    <span id="fleetHealthBottomPercentText" class="font-extrabold text-emerald-600 dark:text-emerald-400">100% In Regola</span>
+                                </div>
+                                <div class="w-full bg-slate-200/80 dark:bg-slate-700/50 h-2.5 rounded-full overflow-hidden p-0.5 border border-slate-300/30 dark:border-slate-600/30">
                                     <div id="fleetHealthPercentBar" class="bg-gradient-to-r from-emerald-500 via-emerald-400 to-teal-400 h-full rounded-full transition-all duration-700 ease-out shadow-[0_0_8px_rgba(16,185,129,0.4)]" style="width: 100%"></div>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- Right Side: Interactive Status Badges -->
-                        <div class="md:col-span-7 grid grid-cols-1 gap-2.5">
+                        <div class="md:col-span-6 grid grid-cols-1 gap-2.5">
                             <div class="flex justify-between items-center bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 border-l-4 border-l-emerald-500 px-3.5 py-2.5 rounded-2xl shadow-sm transition-all duration-200 hover:scale-[1.02] cursor-pointer hover:border-emerald-400 dark:hover:border-emerald-500 hover:shadow-md group" onclick="switchTab('vehicles'); filterByStatusStat('ok')">
                                 <div class="flex items-center gap-3">
                                     <div class="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60 group-hover:scale-110 transition-transform"><i data-lucide="check-circle" class="w-4 h-4"></i></div>
@@ -670,41 +726,97 @@
                         </span>
                     </div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-center z-10">
-                        <!-- Radial Gauge & Center Counter -->
-                        <div class="md:col-span-5 flex flex-col items-center justify-center relative py-2">
-                            <div class="gauge-container">
-                                <div class="gauge-glow gauge-glow-animated" id="operatorGaugeGlow"></div>
-                                <div class="gauge-ring">
-                                    <canvas id="operatorStatusChart"></canvas>
-                                    <div class="gauge-center-label">
-                                        <span class="gauge-number" id="operatorTotalCenter">0</span>
-                                        <span class="gauge-label">Carte Totali</span>
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-stretch z-10">
+                        <!-- Horizontal Status Bars Breakdown (Linee Orizzontali Separate) -->
+                        <div class="md:col-span-6 flex flex-col justify-between bg-slate-50/80 dark:bg-slate-900/60 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-inner">
+                            <!-- Top Info: Totale Carte & Conformità -->
+                            <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-700/60">
+                                <div>
+                                    <div class="text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-400">Totale Carte</div>
+                                    <div class="flex items-baseline gap-1.5">
+                                        <span class="text-3xl font-black text-slate-900 dark:text-white tracking-tight" id="operatorTotalCenter">0</span>
+                                        <span class="text-xs font-bold text-slate-500 dark:text-slate-400">attive</span>
                                     </div>
                                 </div>
-                                <!-- Scale markers -->
-                                <div class="gauge-scale">
-                                    <div class="gauge-scale-dot bg-emerald-500"></div>
-                                    <div class="gauge-scale-line"></div>
-                                    <div class="gauge-scale-dot bg-amber-500"></div>
-                                    <div class="gauge-scale-line"></div>
-                                    <div class="gauge-scale-dot bg-red-500"></div>
+                                <div class="text-right">
+                                    <div class="flex items-center justify-end gap-1 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-400">
+                                        <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-500"></i>
+                                        Conformità
+                                    </div>
+                                    <div class="flex items-center justify-end gap-1.5">
+                                        <span id="operatorHealthPercentText" class="text-xl font-black text-emerald-600 dark:text-emerald-400">100%</span>
+                                    </div>
                                 </div>
                             </div>
-                            <!-- Conformity bar -->
-                            <div class="w-full max-w-[180px] mt-3">
-                                <div class="flex justify-between text-[10px] font-extrabold text-slate-500 dark:text-slate-400 mb-1">
-                                    <span class="flex items-center gap-1"><i data-lucide="shield-check" class="w-3 h-3 text-emerald-500"></i>Conformità</span>
-                                    <span id="operatorHealthPercentText" class="text-emerald-600 dark:text-emerald-400 font-black text-xs">100%</span>
+
+                            <!-- 3 Linee Colorate Orizzontali (Una Sopra l'Altra) -->
+                            <div class="flex flex-col gap-3.5 my-auto py-2">
+                                <!-- Linea 1: In Regola (Verde) -->
+                                <div class="cursor-pointer group" onclick="switchTab('operators'); filterByStatusStat('ok')" title="Clicca per visualizzare le carte in regola">
+                                    <div class="flex justify-between items-center text-xs font-bold mb-1">
+                                        <span class="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400 font-extrabold">
+                                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.5)]"></span>
+                                            In Regola
+                                        </span>
+                                        <span class="font-extrabold text-slate-700 dark:text-slate-300 text-xs">
+                                            <span id="operatorBarGreenCount">0</span> <span class="text-[11px] text-slate-400 font-medium">(<span id="operatorBarGreenPct">100%</span>)</span>
+                                        </span>
+                                    </div>
+                                    <div class="w-full bg-slate-200/90 dark:bg-slate-700/60 h-3 rounded-full overflow-hidden p-0.5 border border-slate-300/40 dark:border-slate-600/40">
+                                        <div id="operatorBarGreen" class="h-full rounded-full bg-gradient-to-r from-emerald-500 via-emerald-400 to-teal-400 transition-all duration-700 ease-out shadow-[0_0_8px_rgba(16,185,129,0.3)] group-hover:brightness-110" style="width: 100%"></div>
+                                    </div>
                                 </div>
-                                <div class="w-full bg-slate-200 dark:bg-slate-700/50 h-2.5 rounded-full overflow-hidden border border-slate-300/30 dark:border-slate-600/30">
+
+                                <!-- Linea 2: In Scadenza (Giallo/Ambra) -->
+                                <div class="cursor-pointer group" onclick="switchTab('operators'); filterByStatusStat('expiring')" title="Clicca per visualizzare le carte in scadenza">
+                                    <div class="flex justify-between items-center text-xs font-bold mb-1">
+                                        <span class="flex items-center gap-1.5 text-amber-700 dark:text-amber-400 font-extrabold">
+                                            <span class="w-2.5 h-2.5 rounded-full bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.5)]"></span>
+                                            In Scadenza
+                                        </span>
+                                        <span class="font-extrabold text-slate-700 dark:text-slate-300 text-xs">
+                                            <span id="operatorBarAmberCount">0</span> <span class="text-[11px] text-slate-400 font-medium">(<span id="operatorBarAmberPct">0%</span>)</span>
+                                        </span>
+                                    </div>
+                                    <div class="w-full bg-slate-200/90 dark:bg-slate-700/60 h-3 rounded-full overflow-hidden p-0.5 border border-slate-300/40 dark:border-slate-600/40">
+                                        <div id="operatorBarAmber" class="h-full rounded-full bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 transition-all duration-700 ease-out shadow-[0_0_8px_rgba(245,158,11,0.3)] group-hover:brightness-110" style="width: 0%"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Linea 3: Scaduti (Rosso) -->
+                                <div class="cursor-pointer group" onclick="switchTab('operators'); filterByStatusStat('expired')" title="Clicca per visualizzare le carte scadute">
+                                    <div class="flex justify-between items-center text-xs font-bold mb-1">
+                                        <span class="flex items-center gap-1.5 text-red-700 dark:text-red-400 font-extrabold">
+                                            <span class="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.5)]"></span>
+                                            Scaduti
+                                        </span>
+                                        <span class="font-extrabold text-slate-700 dark:text-slate-300 text-xs">
+                                            <span id="operatorBarRedCount">0</span> <span class="text-[11px] text-slate-400 font-medium">(<span id="operatorBarRedPct">0%</span>)</span>
+                                        </span>
+                                    </div>
+                                    <div class="w-full bg-slate-200/90 dark:bg-slate-700/60 h-3 rounded-full overflow-hidden p-0.5 border border-slate-300/40 dark:border-slate-600/40">
+                                        <div id="operatorBarRed" class="h-full rounded-full bg-gradient-to-r from-red-500 via-rose-500 to-rose-600 transition-all duration-700 ease-out shadow-[0_0_8px_rgba(239,68,68,0.3)] group-hover:brightness-110" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Conformity Progress Track at bottom -->
+                            <div class="pt-2.5 border-t border-slate-200/60 dark:border-slate-700/60">
+                                <div class="flex justify-between items-center text-[10px] font-black uppercase tracking-wider mb-1.5 text-slate-500 dark:text-slate-400">
+                                    <span class="flex items-center gap-1.5">
+                                        <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-500"></i>
+                                        Indice di Conformità Globale
+                                    </span>
+                                    <span id="operatorHealthBottomPercentText" class="font-extrabold text-emerald-600 dark:text-emerald-400">100% In Regola</span>
+                                </div>
+                                <div class="w-full bg-slate-200/80 dark:bg-slate-700/50 h-2.5 rounded-full overflow-hidden p-0.5 border border-slate-300/30 dark:border-slate-600/30">
                                     <div id="operatorHealthPercentBar" class="bg-gradient-to-r from-emerald-500 via-emerald-400 to-teal-400 h-full rounded-full transition-all duration-700 ease-out shadow-[0_0_8px_rgba(16,185,129,0.4)]" style="width: 100%"></div>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- Right Side: Interactive Status Badges -->
-                        <div class="md:col-span-7 grid grid-cols-1 gap-2.5">
+                        <div class="md:col-span-6 grid grid-cols-1 gap-2.5">
                             <div class="flex justify-between items-center bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 border-l-4 border-l-emerald-500 px-3.5 py-2.5 rounded-2xl shadow-sm transition-all duration-200 hover:scale-[1.02] cursor-pointer hover:border-emerald-400 dark:hover:border-emerald-500 hover:shadow-md group" onclick="switchTab('operators'); filterByStatusStat('ok')">
                                 <div class="flex items-center gap-3">
                                     <div class="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60 group-hover:scale-110 transition-transform"><i data-lucide="check-circle" class="w-4 h-4"></i></div>
@@ -5231,7 +5343,7 @@ let isAudioEnabled = true;
 
             if (expired > 0) {
                 cardScaduti.className = "bg-red-50/50 dark:bg-red-950/30 p-5 rounded-2xl border-2 border-red-500 shadow-sm flex items-center justify-between cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 glow-red";
-                iconScaduti.className = "p-3.5 rounded-xl bg-red-500 text-white pulse-alert";
+                iconScaduti.className = "z-10 p-3 rounded-2xl bg-red-500 text-white shadow-md shadow-red-500/30 pulse-alert flex items-center justify-center";
                 expiredLabel.classList.remove('hidden');
                 
                 if (!isBannerDismissed) {
@@ -5241,7 +5353,7 @@ let isAudioEnabled = true;
                 document.getElementById('notificationBadge').innerText = expired;
             } else {
                 cardScaduti.className = "bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-all duration-200";
-                iconScaduti.className = "p-3.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-400";
+                iconScaduti.className = "z-10 p-3 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-slate-400 border border-slate-200 dark:border-slate-700 flex items-center justify-center";
                 expiredLabel.classList.add('hidden');
                 document.getElementById('alarmBanner').classList.add('hidden');
                 document.getElementById('notificationBadge').classList.add('hidden');
@@ -5294,6 +5406,8 @@ let isAudioEnabled = true;
 
             const elFHealthText = document.getElementById('fleetHealthPercentText');
             if (elFHealthText) elFHealthText.innerText = `${fGreenPct}%`;
+            const elFHealthBottomText = document.getElementById('fleetHealthBottomPercentText');
+            if (elFHealthBottomText) elFHealthBottomText.innerText = `${fGreenPct}% In Regola`;
             const elFHealthBar = document.getElementById('fleetHealthPercentBar');
             if (elFHealthBar) elFHealthBar.style.width = `${fGreenPct}%`;
 
@@ -5318,6 +5432,28 @@ let isAudioEnabled = true;
                     elFBadge.className = "text-xs font-black px-3 py-1 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5 shadow-sm";
                 }
             }
+
+            // Aggiornamento barre orizzontali flotta
+            const elFBarGreen = document.getElementById('fleetBarGreen');
+            if (elFBarGreen) elFBarGreen.style.width = `${fGreenPct}%`;
+            const elFBarAmber = document.getElementById('fleetBarAmber');
+            if (elFBarAmber) elFBarAmber.style.width = `${fAmberPct}%`;
+            const elFBarRed = document.getElementById('fleetBarRed');
+            if (elFBarRed) elFBarRed.style.width = `${fRedPct}%`;
+
+            const elFBarGreenCount = document.getElementById('fleetBarGreenCount');
+            if (elFBarGreenCount) elFBarGreenCount.innerText = fOk;
+            const elFBarAmberCount = document.getElementById('fleetBarAmberCount');
+            if (elFBarAmberCount) elFBarAmberCount.innerText = fAmber;
+            const elFBarRedCount = document.getElementById('fleetBarRedCount');
+            if (elFBarRedCount) elFBarRedCount.innerText = fRed;
+
+            const elFBarGreenPct = document.getElementById('fleetBarGreenPct');
+            if (elFBarGreenPct) elFBarGreenPct.innerText = `${fGreenPct}%`;
+            const elFBarAmberPct = document.getElementById('fleetBarAmberPct');
+            if (elFBarAmberPct) elFBarAmberPct.innerText = `${fAmberPct}%`;
+            const elFBarRedPct = document.getElementById('fleetBarRedPct');
+            if (elFBarRedPct) elFBarRedPct.innerText = `${fRedPct}%`;
 
             // Calculate Operator Stats
             let opRed = 0, opAmber = 0, opOk = 0;
@@ -5344,6 +5480,8 @@ let isAudioEnabled = true;
 
             const elOpHealthText = document.getElementById('operatorHealthPercentText');
             if (elOpHealthText) elOpHealthText.innerText = `${opGreenPct}%`;
+            const elOpHealthBottomText = document.getElementById('operatorHealthBottomPercentText');
+            if (elOpHealthBottomText) elOpHealthBottomText.innerText = `${opGreenPct}% In Regola`;
             const elOpHealthBar = document.getElementById('operatorHealthPercentBar');
             if (elOpHealthBar) elOpHealthBar.style.width = `${opGreenPct}%`;
 
@@ -5369,177 +5507,30 @@ let isAudioEnabled = true;
                 }
             }
 
-            // Render Chart.js gauges if Chart.js is loaded
-            if (window.Chart) {
-                const isDarkMode = document.documentElement.classList.contains('dark');
-                const bgRingColor = isDarkMode ? 'rgba(51, 65, 85, 0.3)' : 'rgba(226, 232, 240, 0.5)';
-                
-                // Helper: create gradient for chart segments
-                function createGaugeGradient(ctx, colorStart, colorEnd) {
-                    const g = ctx.createLinearGradient(0, 0, ctx.canvas.width, 0);
-                    g.addColorStop(0, colorStart);
-                    g.addColorStop(1, colorEnd);
-                    return g;
-                }
-                
-                const gaugeOptions = {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    circumference: 180,
-                    rotation: -90,
-                    cutout: '68%',
-                    layout: { padding: { bottom: 0 } },
-                    onClick: null, // set per chart
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            backgroundColor: isDarkMode ? '#1e293b' : '#ffffff',
-                            titleColor: isDarkMode ? '#f1f5f9' : '#1e293b',
-                            bodyColor: isDarkMode ? '#cbd5e1' : '#475569',
-                            borderColor: isDarkMode ? '#334155' : '#e2e8f0',
-                            borderWidth: 1,
-                            padding: 10,
-                            cornerRadius: 12,
-                            displayColors: true,
-                            boxPadding: 4,
-                            callbacks: {
-                                label: function(context) {
-                                    if (context.datasetIndex === 1) return null; // hide bg ring tooltip
-                                    return ' ' + context.label + ': ' + context.raw;
-                                }
-                            }
-                        }
-                    }
-                };
+            // Aggiornamento barre orizzontali operatori
+            const elOpBarGreen = document.getElementById('operatorBarGreen');
+            if (elOpBarGreen) elOpBarGreen.style.width = `${opGreenPct}%`;
+            const elOpBarAmber = document.getElementById('operatorBarAmber');
+            if (elOpBarAmber) elOpBarAmber.style.width = `${opAmberPct}%`;
+            const elOpBarRed = document.getElementById('operatorBarRed');
+            if (elOpBarRed) elOpBarRed.style.width = `${opRedPct}%`;
 
-                // --- Fleet Chart ---
-                const canvasF = document.getElementById('fleetStatusChart');
-                if (canvasF) {
-                    const ctxF = canvasF.getContext('2d');
-                    if (fleetChartInstance) fleetChartInstance.destroy();
-                    
-                    const hasData = fTotal > 0;
-                    const fData = hasData ? [fOk, fAmber, fRed] : [1];
-                    
-                    // Gradient colors
-                    const greenGrad = createGaugeGradient(ctxF, '#10b981', '#34d399');
-                    const amberGrad = createGaugeGradient(ctxF, '#f59e0b', '#fbbf24');
-                    const redGrad = createGaugeGradient(ctxF, '#ef4444', '#f87171');
-                    const emptyColor = isDarkMode ? '#334155' : '#e2e8f0';
-                    
-                    const fColors = hasData ? [greenGrad, amberGrad, redGrad] : [emptyColor];
-                    
-                    fleetChartInstance = new Chart(ctxF, {
-                        type: 'doughnut',
-                        data: {
-                            labels: hasData ? ['In Regola', 'In Scadenza', 'Scaduti'] : ['Nessun Dato'],
-                            datasets: [
-                                {
-                                    data: fData,
-                                    backgroundColor: fColors,
-                                    borderWidth: 0,
-                                    borderRadius: 6,
-                                    hoverOffset: 6,
-                                    spacing: hasData ? 2 : 0,
-                                    weight: 2
-                                },
-                                {
-                                    data: [1],
-                                    backgroundColor: [bgRingColor],
-                                    borderWidth: 0,
-                                    weight: 0.5,
-                                    hoverOffset: 0
-                                }
-                            ]
-                        },
-                        options: {
-                            ...gaugeOptions,
-                            onClick: (e, elements, chart) => {
-                                if (elements.length > 0 && elements[0].datasetIndex === 0) {
-                                    const states = ['ok', 'expiring', 'expired'];
-                                    switchTab('vehicles');
-                                    filterByStatusStat(states[elements[0].index]);
-                                }
-                            }
-                        }
-                    });
-                    
-                    // Update glow color based on status
-                    const fleetGlow = document.getElementById('fleetGaugeGlow');
-                    if (fleetGlow) {
-                        if (fRed > 0) {
-                            fleetGlow.style.background = 'radial-gradient(ellipse at 50% 100%, rgba(239, 68, 68, 0.2) 0%, transparent 70%)';
-                        } else if (fAmber > 0) {
-                            fleetGlow.style.background = 'radial-gradient(ellipse at 50% 100%, rgba(245, 158, 11, 0.15) 0%, transparent 70%)';
-                        } else {
-                            fleetGlow.style.background = 'radial-gradient(ellipse at 50% 100%, rgba(16, 185, 129, 0.15) 0%, transparent 70%)';
-                        }
-                    }
-                }
+            const elOpBarGreenCount = document.getElementById('operatorBarGreenCount');
+            if (elOpBarGreenCount) elOpBarGreenCount.innerText = opOk;
+            const elOpBarAmberCount = document.getElementById('operatorBarAmberCount');
+            if (elOpBarAmberCount) elOpBarAmberCount.innerText = opAmber;
+            const elOpBarRedCount = document.getElementById('operatorBarRedCount');
+            if (elOpBarRedCount) elOpBarRedCount.innerText = opRed;
 
-                // --- Operator Chart ---
-                const canvasOp = document.getElementById('operatorStatusChart');
-                if (canvasOp) {
-                    const ctxOp = canvasOp.getContext('2d');
-                    if (operatorChartInstance) operatorChartInstance.destroy();
+            const elOpBarGreenPct = document.getElementById('operatorBarGreenPct');
+            if (elOpBarGreenPct) elOpBarGreenPct.innerText = `${opGreenPct}%`;
+            const elOpBarAmberPct = document.getElementById('operatorBarAmberPct');
+            if (elOpBarAmberPct) elOpBarAmberPct.innerText = `${opAmberPct}%`;
+            const elOpBarRedPct = document.getElementById('operatorBarRedPct');
+            if (elOpBarRedPct) elOpBarRedPct.innerText = `${opRedPct}%`;
 
-                    const hasData = opTotal > 0;
-                    const opData = hasData ? [opOk, opAmber, opRed] : [1];
-                    
-                    const greenGrad2 = createGaugeGradient(ctxOp, '#10b981', '#34d399');
-                    const amberGrad2 = createGaugeGradient(ctxOp, '#f59e0b', '#fbbf24');
-                    const redGrad2 = createGaugeGradient(ctxOp, '#ef4444', '#f87171');
-                    const emptyColor2 = isDarkMode ? '#334155' : '#e2e8f0';
-                    
-                    const opColors = hasData ? [greenGrad2, amberGrad2, redGrad2] : [emptyColor2];
-
-                    operatorChartInstance = new Chart(ctxOp, {
-                        type: 'doughnut',
-                        data: {
-                            labels: hasData ? ['In Regola', 'In Scadenza', 'Scaduti'] : ['Nessun Dato'],
-                            datasets: [
-                                {
-                                    data: opData,
-                                    backgroundColor: opColors,
-                                    borderWidth: 0,
-                                    borderRadius: 6,
-                                    hoverOffset: 6,
-                                    spacing: hasData ? 2 : 0,
-                                    weight: 2
-                                },
-                                {
-                                    data: [1],
-                                    backgroundColor: [bgRingColor],
-                                    borderWidth: 0,
-                                    weight: 0.5,
-                                    hoverOffset: 0
-                                }
-                            ]
-                        },
-                        options: {
-                            ...gaugeOptions,
-                            onClick: (e, elements, chart) => {
-                                if (elements.length > 0 && elements[0].datasetIndex === 0) {
-                                    const states = ['ok', 'expiring', 'expired'];
-                                    switchTab('operators');
-                                    filterByStatusStat(states[elements[0].index]);
-                                }
-                            }
-                        }
-                    });
-                    
-                    // Update glow color based on status
-                    const opGlow = document.getElementById('operatorGaugeGlow');
-                    if (opGlow) {
-                        if (opRed > 0) {
-                            opGlow.style.background = 'radial-gradient(ellipse at 50% 100%, rgba(239, 68, 68, 0.2) 0%, transparent 70%)';
-                        } else if (opAmber > 0) {
-                            opGlow.style.background = 'radial-gradient(ellipse at 50% 100%, rgba(245, 158, 11, 0.15) 0%, transparent 70%)';
-                        } else {
-                            opGlow.style.background = 'radial-gradient(ellipse at 50% 100%, rgba(16, 185, 129, 0.15) 0%, transparent 70%)';
-                        }
-                    }
-                }
+            if (window.lucide) {
+                lucide.createIcons();
             }
         }
 
