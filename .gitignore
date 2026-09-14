@@ -3,6 +3,7 @@ node_modules/
 
 # File temporanei di lavoro
 scratch/
+.firebase/
 *.backup*
 *.backup_*
 
