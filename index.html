@@ -4805,25 +4805,13 @@ let isAudioEnabled = true;
 
                 let statusMatch = true;
                 if (statusFilter !== 'all') {
-                    let hasRed = false;
-                    let hasAmber = false;
-                    let hasAnyDeadline = false;
-
-                    for (let key in v.deadlines) {
-                        if (key !== 'altroNota' && v.deadlines[key]) {
-                            hasAnyDeadline = true;
-                            const state = checkDeadlineState(v.deadlines[key]);
-                            if (state === 'red') hasRed = true;
-                            if (state === 'amber') hasAmber = true;
-                        }
-                    }
-
+                    const vStatus = getVehicleOverallStatus(v);
                     if (statusFilter === 'expired') {
-                        statusMatch = hasRed; 
+                        statusMatch = (vStatus === 'red'); 
                     } else if (statusFilter === 'expiring') {
-                        statusMatch = hasAmber; 
+                        statusMatch = (vStatus === 'amber'); 
                     } else if (statusFilter === 'ok') {
-                        statusMatch = (!hasRed && !hasAmber && hasAnyDeadline); 
+                        statusMatch = (vStatus === 'emerald'); 
                     }
                 }
                 
@@ -4959,38 +4947,13 @@ let isAudioEnabled = true;
 
                 let statusMatch = true;
                 if (statusFilter !== 'all') {
-                    let hasRed = false;
-                    let hasAmber = false;
-                    let hasAnyDeadline = false;
-                    
-                    if (op.type === 'driver') {
-                        if (op.expiration) {
-                            hasAnyDeadline = true;
-                            const s = checkDeadlineState(op.expiration);
-                            if (s === 'red') hasRed = true;
-                            if (s === 'amber') hasAmber = true;
-                        }
-                        if (op.lastDownload) {
-                            hasAnyDeadline = true;
-                            const s = checkDownloadDeadlineState(op.lastDownload);
-                            if (s === 'red') hasRed = true;
-                            if (s === 'amber') hasAmber = true;
-                        }
-                    } else {
-                        if (op.expiration) {
-                            hasAnyDeadline = true;
-                            const s = checkDeadlineState(op.expiration);
-                            if (s === 'red') hasRed = true;
-                            if (s === 'amber') hasAmber = true;
-                        }
-                    }
-
+                    const opStatus = getOperatorOverallStatus(op);
                     if (statusFilter === 'expired') {
-                        statusMatch = hasRed; 
+                        statusMatch = (opStatus === 'red'); 
                     } else if (statusFilter === 'expiring') {
-                        statusMatch = hasAmber; 
+                        statusMatch = (opStatus === 'amber'); 
                     } else if (statusFilter === 'ok') {
-                        statusMatch = (!hasRed && !hasAmber && hasAnyDeadline); 
+                        statusMatch = (opStatus === 'emerald'); 
                     }
                 }
                 
@@ -5372,48 +5335,17 @@ let isAudioEnabled = true;
             let ok = 0;
 
             vehicles.forEach(v => {
-                let hasRed = false, hasAmber = false, hasAny = false;
-                for (let key in v.deadlines) {
-                    if (key !== 'altroNota' && v.deadlines[key]) {
-                        hasAny = true;
-                        const state = checkDeadlineState(v.deadlines[key]);
-                        if (state === 'red') hasRed = true;
-                        if (state === 'amber') hasAmber = true;
-                    }
-                }
-                if (hasRed) expired++;
-                if (hasAmber) expiring++;
-                if (!hasRed && !hasAmber && hasAny) ok++;
+                const s = getVehicleOverallStatus(v);
+                if (s === 'red') expired++;
+                else if (s === 'amber') expiring++;
+                else if (s === 'emerald') ok++;
             });
 
             operators.forEach(op => {
-                let hasRed = false, hasAmber = false, hasAny = false;
-                if (op.type === 'driver') {
-                    if (op.expiration) {
-                        hasAny = true;
-                        const s = checkDeadlineState(op.expiration);
-                        if (s === 'red') hasRed = true;
-                        if (s === 'amber') hasAmber = true;
-                    }
-                    if (op.lastDownload) {
-                        hasAny = true;
-                        const s = checkDownloadDeadlineState(op.lastDownload);
-                        if (s === 'red') hasRed = true;
-                        if (s === 'amber') hasAmber = true;
-                    }
-                } else {
-                    if (op.expiration || op.lastDownload) {
-                        hasAny = true;
-                        const sExp = checkDeadlineState(op.expiration);
-                        const sDl = checkCompanyDownloadDeadlineState(op.lastDownload);
-                        if (sExp === 'red' || sDl === 'red') hasRed = true;
-                        if (sExp === 'amber' || sDl === 'amber') hasAmber = true;
-                    }
-                }
-                
-                if (hasRed) expired++;
-                if (hasAmber) expiring++;
-                if (!hasRed && !hasAmber && hasAny) ok++;
+                const s = getOperatorOverallStatus(op);
+                if (s === 'red') expired++;
+                else if (s === 'amber') expiring++;
+                else if (s === 'emerald') ok++;
             });
 
             const totalResources = totalVehicles + totalOperators;
