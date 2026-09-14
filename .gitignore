@@ -3,6 +3,8 @@ node_modules/
 
 # File temporanei di lavoro
 scratch/
+*.backup*
+*.backup_*
 
 # File di log
 *.log

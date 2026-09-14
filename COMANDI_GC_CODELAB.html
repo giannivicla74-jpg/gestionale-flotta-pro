@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GC CodeLab - Prontuario Comandi Rapidi (20 Moduli)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen p-4 sm:p-8 flex flex-col items-center">
+
+    <!-- Glowing Background Aurora -->
+    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-80 bg-gradient-to-r from-blue-600/20 via-indigo-600/20 to-purple-600/20 blur-3xl pointer-events-none"></div>
+
+    <div class="relative z-10 max-w-5xl w-full space-y-7">
+        
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-slate-800 pb-6">
+            <div class="flex items-center gap-3.5">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/30">
+                    <i data-lucide="terminal" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-black text-white tracking-tight">GC CodeLab - Prontuario Comandi Rapidi</h1>
+                    <p class="text-xs text-indigo-400 font-bold uppercase tracking-wider">Tutti i 20 Moduli Standard Ufficiali &bull; Giovanni Cavallo</p>
+                </div>
+            </div>
+            <div class="px-3.5 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-xs text-slate-300 font-semibold flex items-center gap-2 shadow-inner">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                20 Standard Attivi &amp; Sincronizzati
+            </div>
+        </div>
+
+        <!-- Notification Toast -->
+        <div id="copyToast" class="fixed top-6 right-6 bg-emerald-500 text-slate-950 font-black px-4 py-2.5 rounded-2xl shadow-2xl transition-all duration-300 transform translate-y-[-100px] opacity-0 z-50 flex items-center gap-2 text-sm">
+            <i data-lucide="check-circle" class="w-4 h-4"></i>
+            <span>Comando copiato! Incollalo in chat all'AI.</span>
+        </div>
+
+        <!-- 💾 COME SALVARE UNA NUOVA FUNZIONE NEL FOGLIO (PROCEDURA) -->
+        <div class="p-6 rounded-3xl bg-gradient-to-br from-indigo-950/40 via-slate-900/90 to-purple-950/40 border border-indigo-500/40 backdrop-blur-xl shadow-2xl space-y-4">
+            <div class="flex items-center gap-3 border-b border-slate-800/80 pb-3">
+                <div class="w-10 h-10 rounded-2xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center shadow-inner">
+                    <i data-lucide="bookmark-plus" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h2 class="text-base sm:text-lg font-black text-white tracking-tight">💾 COME SALVARE UNA NUOVA FUNZIONE NEL FOGLIO (PROCEDURA)</h2>
+                    <p class="text-xs text-slate-400">Scrivi all'AI una di queste frasi per memorizzare nuovi componenti man mano che li creiamo</p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="p-3.5 bg-slate-950/90 border border-indigo-500/30 rounded-2xl flex flex-col justify-between space-y-2">
+                    <span class="text-xs text-indigo-400 font-bold">👉 Opzione 1</span>
+                    <code class="text-xs font-mono text-indigo-200 font-bold bg-slate-900 p-2 rounded-lg block">"Salva questa funzione nel foglio comandi"</code>
+                    <button onclick="copyCommand(this, 'Salva questa funzione nel foglio comandi')" class="w-full py-1.5 rounded-xl bg-indigo-600/30 hover:bg-indigo-600 text-indigo-200 hover:text-white text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
+                        <i data-lucide="copy" class="w-3 h-3"></i> Copia Frase
+                    </button>
+                </div>
+
+                <div class="p-3.5 bg-slate-950/90 border border-teal-500/30 rounded-2xl flex flex-col justify-between space-y-2">
+                    <span class="text-xs text-teal-400 font-bold">👉 Opzione 2</span>
+                    <code class="text-xs font-mono text-teal-200 font-bold bg-slate-900 p-2 rounded-lg block">"Aggiungi questo modulo agli standard GC CodeLab"</code>
+                    <button onclick="copyCommand(this, 'Aggiungi questo modulo agli standard GC CodeLab')" class="w-full py-1.5 rounded-xl bg-teal-600/30 hover:bg-teal-600 text-teal-200 hover:text-white text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
+                        <i data-lucide="copy" class="w-3 h-3"></i> Copia Frase
+                    </button>
+                </div>
+
+                <div class="p-3.5 bg-slate-950/90 border border-purple-500/30 rounded-2xl flex flex-col justify-between space-y-2">
+                    <span class="text-xs text-purple-400 font-bold">👉 Opzione 3</span>
+                    <code class="text-xs font-mono text-purple-200 font-bold bg-slate-900 p-2 rounded-lg block">"Memorizza questo componente per le prossime app"</code>
+                    <button onclick="copyCommand(this, 'Memorizza questo componente per le prossime app')" class="w-full py-1.5 rounded-xl bg-purple-600/30 hover:bg-purple-600 text-purple-200 hover:text-white text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
+                        <i data-lucide="copy" class="w-3 h-3"></i> Copia Frase
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ⚡ TABELLA COMPLETA DEI 20 COMANDI RAPIDI (CARDS COPIA & INCOLLA) -->
+        <div class="space-y-4">
+            <div class="flex items-center justify-between">
+                <h2 class="text-xl font-black text-white tracking-tight flex items-center gap-2">
+                    <i data-lucide="zap" class="w-5 h-5 text-amber-400"></i>
+                    Tutti i 20 Comandi Rapidi GC CodeLab
+                </h2>
+                <span class="text-xs font-bold text-slate-400">20 / 20 Disponibili</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                <!-- 1. APP COMPLETA DA ZERO -->
+                <div class="p-5 rounded-3xl bg-slate-900/90 border-2 border-indigo-500/40 shadow-xl flex flex-col justify-between space-y-3.5">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-indigo-500/20 text-indigo-300 border border-indigo-500/40">1. GC-FULL-APP</span>
+                            <span class="text-xs font-black text-indigo-400">All-in-One</span>
+                        </div>
+                        <h3 class="text-base font-black text-white">🚀 App Completa da Zero (Standard GC CodeLab)</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Genera l'intero applicativo con: Splash Screen Widescreen HD, Suite Licenze & Telemetria Live, Super Admin 8528 a 4 Tab, 5 Moduli KPI Contatori, Card Animate 3D, Onboarding Azienda, Footer Copyright Ufficiale e Dark Mode.
+                        </p>
+                    </div>
+                    <button onclick="copyCommand(this, 'Crea nuova app [NomeApp] con standard completo GC CodeLab')" class="w-full py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-black rounded-xl transition flex items-center justify-center gap-2 cursor-pointer shadow-lg active:scale-95">
+                        <i data-lucide="copy" class="w-4 h-4"></i> Copia Comando App Completa
+                    </button>
+                </div>
+
+                <!-- 2. SUITE COMPLETA LICENZE & TELEMETRIA & ADMIN -->
+                <div class="p-5 rounded-3xl bg-slate-900/90 border-2 border-emerald-500/40 shadow-xl flex flex-col justify-between space-y-3.5">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">2. GC-LICENSE + TELEMETRY + ADMIN</span>
+                            <span class="text-xs font-black text-emerald-400">Suite SaaS</span>
+                        </div>
+                        <h3 class="text-base font-black text-white">🔑 Suite Licenze SaaS, Telemetria Live &amp; Super Admin a 4 Tab</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Include: <strong>Super Admin a 4 Tab</strong> (Telemetria, Generatore, Questa Istanza, Backup), <strong>Telemetria Live Firestore</strong> (con scadenza, chiave attiva con tasto Copia e WhatsApp), <strong>Generatore Crittografato con Calendario</strong>, <strong>Modalità Etica Sola Lettura</strong> (nessun sequestro dati), <strong>Licenza Pro Bono</strong> e <strong>PIN 8528</strong> con trigger 5 click su <code class="text-indigo-400">&lt;/&gt;</code>.
+                        </p>
+                    </div>
+                    <button onclick="copyCommand(this, 'Applica la Suite Licenze SaaS, Telemetria Cloud & Super Admin a 4 Tab GC CodeLab')" class="w-full py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-black rounded-xl transition flex items-center justify-center gap-2 cursor-pointer shadow-lg active:scale-95">
+                        <i data-lucide="copy" class="w-4 h-4"></i> Copia Comando Suite Licenze & Admin
+                    </button>
+                </div>
+
+                <!-- 3. SPLASH SCREEN WIDESCREEN HD -->
+                <div class="p-5 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl flex flex-col justify-between space-y-3.5">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">3. GC-SPLASH</span>
+                            <span class="text-xs font-black text-slate-400">Visual</span>
+                        </div>
+                        <h3 class="text-base font-black text-white">✨ Splash Screen Aurora Widescreen HD</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Intro a tutto schermo (16:9) con logo software in alta definizione, alone al neon Aurora Glow fluorescente, barra di caricamento fluida e firma copyright.
+                        </p>
+                    </div>
+                    <button onclick="copyCommand(this, 'Applica lo Splash Screen Aurora Widescreen GC CodeLab')" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-2 cursor-pointer active:scale-95">
+                        <i data-lucide="copy" class="w-4 h-4"></i> Copia Comando Splash Screen
+                    </button>
+                </div>
+
+                <!-- 4. 5 MODULI STATS & KPI CONTATORI -->
+                <div class="p-5 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl flex flex-col justify-between space-y-3.5">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-amber-500/20 text-amber-300 border border-amber-500/40">4. GC-KPI-CARDS</span>
+                            <span class="text-xs font-black text-slate-400">Dashboard</span>
+                        </div>
+                        <h3 class="text-base font-black text-white">📊 5 Moduli Visivi Stats &amp; KPI Contatori</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            5 Card statistiche moderne con badge fluo gradienti, micro-indicatori luminosi, aloni d'ambiente e filtri interattivi istantanei con indicatore filtro attivo.
+                        </p>
+                    </div>
+                    <button onclick="copyCommand(this, 'Applica i 5 Moduli Visivi KPI Contatori GC CodeLab')" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-2 cursor-pointer active:scale-95">
+                        <i data-lucide="copy" class="w-4 h-4"></i> Copia Comando KPI Cards
+                    </button>
+                </div>
+
+                <!-- 5. CARD ANIMATE 3D & HOVER -->
+                <div class="p-5 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl flex flex-col justify-between space-y-3.5">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-purple-500/20 text-purple-300 border border-purple-500/40">5. GC-CARDS</span>
+                            <span class="text-xs font-black text-slate-400">Animation</span>
+                        </div>
+                        <h3 class="text-base font-black text-white">🃏 Card Animate 3D &amp; Effetti Hover</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Elevazione fluttuante al passaggio del mouse (-translate-y-2), ombre profonde ad alta definizione, bordo neon illuminato e micro-zoom sui pulsanti azione.
+                        </p>
+                    </div>
+                    <button onclick="copyCommand(this, 'Applica le Card Animate 3D & Hover Effects GC CodeLab')" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-2 cursor-pointer active:scale-95">
+                        <i data-lucide="copy" class="w-4 h-4"></i> Copia Comando Card 3D
+                    </button>
+                </div>
+
+                <!-- 6. FOOTER COPYRIGHT UFFICIALE -->
+                <div class="p-5 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl flex flex-col justify-between space-y-3.5">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-blue-500/20 text-blue-300 border border-blue-500/40">6. GC-FOOTER</span>
+                            <span class="text-xs font-black text-slate-400">Brand</span>
+                        </div>
+                        <h3 class="text-base font-black text-white">🏷️ Footer Copyright Ufficiale &amp; Trigger Segreto</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Dicitura ufficiale: <code class="text-xs text-slate-300">&copy; 2026 GC CodeLab • Sviluppato da Giovanni Cavallo • Tutti i diritti riservati.</code> con badge versione e trigger segreto 5 click su <code class="text-indigo-400">&lt;/&gt;</code> (PIN 8528).
+                        </p>
+                    </div>
+                    <button onclick="copyCommand(this, 'Applica il Footer Copyright GC CodeLab')" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-2 cursor-pointer active:scale-95">
+                        <i data-lucide="copy" class="w-4 h-4"></i> Copia Comando Footer Copyright
+                    </button>
+                </div>
+
+                <!-- 7. ONBOARDING AZIENDA & LOGO -->
+                <div class="p-5 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl flex flex-col justify-between space-y-3.5">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-teal-500/20 text-teal-300 border border-teal-500/40">7. GC-ONBOARDING</span>
+                            <span class="text-xs font-black text-slate-400">Setup</span>
+                        </div>
+                        <h3 class="text-base font-black text-white">🏢 Onboarding Azienda &amp; Logo Personalizzato</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Modal al primo avvio per Ragione Sociale, Partita IVA, Codice Fiscale, SDI, email, telefono, indirizzo, caricamento logo in base64 e blocco automatico anti-manomissione su licenze attive.
+                        </p>
+                    </div>
+                    <button onclick="copyCommand(this, 'Applica il modulo Onboarding Azienda GC CodeLab')" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-2 cursor-pointer active:scale-95">
+                        <i data-lucide="copy" class="w-4 h-4"></i> Copia Comando Onboarding Azienda
+                    </button>
+                </div>
+
+                <!-- 8. DESIGN SYSTEM AURORA & DARK THEME -->
+                <div class="p-5 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl flex flex-col justify-between space-y-3.5">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-rose-500/20 text-rose-300 border border-rose-500/40">8. GC-AESTHETICS</span>
+                            <span class="text-xs font-black text-slate-400">Design</span>
+                        </div>
+                        <h3 class="text-base font-black text-white">🎨 Design System Aurora &amp; Glassmorphism</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Palette scura profonda (#0f172a), bordi semitrasparenti in vetro, pulsanti con micro-interazioni (active:scale-95), animazioni CSS fluide e icone Lucide.
+                        </p>
+                    </div>
+                    <button onclick="copyCommand(this, 'Applica il Design System Aurora & Glassmorphism GC CodeLab')" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-2 cursor-pointer active:scale-95">
+                        <i data-lucide="copy" class="w-4 h-4"></i> Copia Comando Design System
+                    </button>
+                </div>
+
+                <!-- 9. COLLEGAMENTO DOMINIO ARUBA & FIREBASE -->
+                <div class="p-5 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl flex flex-col justify-between space-y-3.5">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-sky-500/20 text-sky-300 border border-sky-500/40">9. GC-DEPLOY-DOMAIN</span>
+                            <span class="text-xs font-black text-sky-400">Deploy</span>
+                        </div>
+                        <h3 class="text-base font-black text-white">🌐 Collegamento Dominio Aruba &amp; Firebase</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Guida e automazione in 4 passaggi per pubblicare su Firebase Hosting e configurare il record CNAME su Aruba per il sottodominio <code class="text-sky-300 font-mono">[nome].gccodelab.it</code>.
+                        </p>
+                    </div>
+                    <button onclick="copyCommand(this, 'Guida la pubblicazione e il collegamento del dominio Aruba per [NomeApp]')" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-2 cursor-pointer active:scale-95">
+                        <i data-lucide="copy" class="w-4 h-4"></i> Copia Comando Deploy Dominio
+                    </button>
+                </div>
+
+                <!-- 10. EXPORT PDF & CONTRATTI -->
+                <div class="p-5 rounded-3xl bg-slate-900/90 border border-slate-800 shadow-xl flex flex-col justify-between space-y-3.5">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-amber-600/20 text-amber-300 border border-amber-600/40">10. GC-PDF-CONTRACTS</span>
+                            <span class="text-xs font-black text-slate-400">Documents</span>
+                        </div>
+                        <h3 class="text-base font-black text-white">📄 Export PDF Contratti &amp; Firma Digitale</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Layout grafico ad alta definizione per stampa contratti A4 con logo azienda, clausole legali, riepilogo costi e firma digitale su canvas touch.
+                        </p>
+                    </div>
+                    <button onclick="copyCommand(this, 'Applica il generatore PDF Contratti GC CodeLab')" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-2 cursor-pointer active:scale-95">
+                        <i data-lucide="copy" class="w-4 h-4"></i> Copia Comando PDF Contratti
+                    </button>
+                </div>
+
+                <!-- 11. PULSANTE CARD ELEGANTE GLASSMORPHISM -->
+                <div class="p-5 rounded-3xl bg-slate-900/90 border-2 border-emerald-500/40 shadow-xl flex flex-col justify-between space-y-3.5 md:col-span-2">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">11. GC-ACTION-BUTTON</span>
+                            <span class="text-xs font-black text-emerald-400">UI Component Premium</span>
+                        </div>
+                        <h3 class="text-base font-black text-white">🎴 Pulsante Card Elegante Glassmorphism (Action Button)</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Pulsante d'azione moderno ad alta fedeltà con gradiente scuro coordinato (<code class="text-emerald-300 font-mono">#0C1E2A</code>), bordo sottile smeraldo luminoso (<code class="text-emerald-300 font-mono">border-emerald-500/35</code>), icona compatta (44x44px), micro-badge di categoria (<code class="text-emerald-300 font-mono">Autisti</code>), descrizione chiara e freccia chevron interattiva con micro-zoom. Perfetto per portali di accesso, aree riservate e pulsanti d'azione principali.
+                        </p>
+                    </div>
+                    <button onclick="copyCommand(this, 'Applica il Pulsante Card Elegante Glassmorphism GC CodeLab')" class="w-full py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-black rounded-xl transition flex items-center justify-center gap-2 cursor-pointer shadow-lg active:scale-95">
+                        <i data-lucide="copy" class="w-4 h-4"></i> Copia Comando Pulsante Card Glassmorphism
+                    </button>
+                </div>
+
+                <!-- 12. SBLOCCO SEGRETO ONBOARDING (5 CLIC SILENZIOSI) -->
+                <div class="p-5 rounded-3xl bg-slate-900/90 border-2 border-indigo-500/40 shadow-xl flex flex-col justify-between space-y-3.5 md:col-span-2">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-indigo-500/20 text-indigo-300 border border-indigo-500/40">12. GC-SECRET-ADMIN</span>
+                            <span class="text-xs font-black text-indigo-400">Backdoor Sviluppatore Invisibile</span>
+                        </div>
+                        <h3 class="text-base font-black text-white">🔐 Sblocco Segreto Super Admin in Onboarding (5 Clic Silenziosi)</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Sistema di attivazione e sblocco segreto (Easter Egg 100% invisibile ai clienti): al primo avvio dell'app su un nuovo PC o nuovo cliente, cliccando <strong>5 volte rapidamente sul logo/scudo blu dell'onboarding</strong> si attiva silenziosamente il prompt per il PIN Super Admin (<strong>8528</strong>).
+                        </p>
+                    </div>
+                    <button onclick="copyCommand(this, 'Applica il trigger segreto Super Admin con 5 clic silenziosi in onboarding')" class="w-full py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-black rounded-xl transition flex items-center justify-center gap-2 cursor-pointer shadow-lg active:scale-95">
+                        <i data-lucide="copy" class="w-4 h-4"></i> Copia Comando Sblocco Segreto Onboarding
+                    </button>
+                </div>
+
+                <!-- 13. NOTIFICHE PUSH CLOUD & BACKGROUND FCM -->
+                <div class="p-5 rounded-3xl bg-slate-900/90 border-2 border-amber-500/40 shadow-xl flex flex-col justify-between space-y-3.5 md:col-span-2">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-amber-500/20 text-amber-300 border border-amber-500/40">13. GC-PUSH-NOTIFICATIONS</span>
+                            <span class="text-xs font-black text-amber-400">Cloud Push Multi-Dispositivo</span>
+                        </div>
+                        <h3 class="text-base font-black text-white">🔔 Notifiche Push Cloud Multi-Dispositivo &amp; Background FCM</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Sistema completo a doppia modalità locale e remota Web Push via FCM.
+                        </p>
+                    </div>
+                    <button onclick="copyCommand(this, 'Applica il modulo Notifiche Push Cloud Multi-Dispositivo GC CodeLab')" class="w-full py-2.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white text-xs font-black rounded-xl transition flex items-center justify-center gap-2 cursor-pointer shadow-lg active:scale-95">
+                        <i data-lucide="copy" class="w-4 h-4"></i> Copia Comando Notifiche Push Cloud
+                    </button>
+                </div>
+
+                <!-- 14. LICENZA D'USO GRATUITA DINAMICA & UNIVERSALE -->
+                <div class="p-5 rounded-3xl bg-slate-900/90 border-2 border-teal-500/40 shadow-xl flex flex-col justify-between space-y-3.5">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-teal-500/20 text-teal-300 border border-teal-500/40">14. GC-FREE-LICENSE</span>
+                            <span class="text-xs font-black text-teal-400">Legal Dynamic Engine</span>
+                        </div>
+                        <h3 class="text-base font-black text-white">📜 Licenza d'Uso Gratuita Dinamica &amp; Universale</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Generatore legale intelligente a 3 livelli.
+                        </p>
+                    </div>
+                    <button onclick="copyCommand(this, 'Applica il modulo Licenza d\'Uso Gratuita Dinamica e Universale GC CodeLab')" class="w-full py-2.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white text-xs font-black rounded-xl transition flex items-center justify-center gap-2 cursor-pointer shadow-lg active:scale-95">
+                        <i data-lucide="copy" class="w-4 h-4"></i> Copia Comando Licenza Dinamica
+                    </button>
+                </div>
+
+                <!-- 15. OTTIMIZZAZIONE PRESTAZIONI MOBILE -->
+                <div class="p-5 rounded-3xl bg-slate-900/90 border-2 border-rose-500/40 shadow-xl flex flex-col justify-between space-y-3.5">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-rose-500/20 text-rose-300 border border-rose-500/40">15. GC-PERF-MOBILE</span>
+                            <span class="text-xs font-black text-rose-400">GPU Anti-Checkerboarding</span>
+                        </div>
+                        <h3 class="text-base font-black text-white">⚡ Prestazioni Mobile &amp; Anti-Sfarfallio GPU</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Risolve il ritardo di rasterizzazione su smartphone.
+                        </p>
+                    </div>
+                    <button onclick="copyCommand(this, 'Applica l\'Ottimizzazione Prestazioni Mobile & Anti-Sfarfallio GPU GC CodeLab')" class="w-full py-2.5 bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white text-xs font-black rounded-xl transition flex items-center justify-center gap-2 cursor-pointer shadow-lg active:scale-95">
+                        <i data-lucide="copy" class="w-4 h-4"></i> Copia Comando Perf Mobile
+                    </button>
+                </div>
+
+                <!-- 16. SISTEMA CONTATTI COMMERCIALI -->
+                <div class="p-5 rounded-3xl bg-slate-900/90 border-2 border-emerald-500/40 shadow-xl flex flex-col justify-between space-y-3.5">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">16. GC-SMART-CONTACT</span>
+                            <span class="text-xs font-black text-emerald-400">Smart Support &amp; Email Web</span>
+                        </div>
+                        <h3 class="text-base font-black text-white">📬 Contatti Commerciali &amp; Invio Email Infallibile</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Interfaccia di contatto commerciale e rinnovo a zero errori.
+                        </p>
+                    </div>
+                    <button onclick="copyCommand(this, 'Applica il Sistema Contatti Commerciali & Email Infallibile GC CodeLab')" class="w-full py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-black rounded-xl transition flex items-center justify-center gap-2 cursor-pointer shadow-lg active:scale-95">
+                        <i data-lucide="copy" class="w-4 h-4"></i> Copia Comando Smart Contact
+                    </button>
+                </div>
+
+                <!-- 17. CENTRO BACKUP & RIPRISTINO -->
+                <div class="p-5 rounded-3xl bg-slate-900/90 border-2 border-teal-500/40 shadow-xl flex flex-col justify-between space-y-3.5">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-teal-500/20 text-teal-300 border border-teal-500/40">17. GC-BACKUP-RESTORE</span>
+                            <span class="text-xs font-black text-teal-400">1-Click Offline &amp; Foto</span>
+                        </div>
+                        <h3 class="text-base font-black text-white">💾 Centro Backup &amp; Ripristino Totale</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Disaster recovery e continuità aziendale a zero dipendenza da server.
+                        </p>
+                    </div>
+                    <button onclick="copyCommand(this, 'Applica il Centro Backup &amp; Ripristino Totale 1-Click GC CodeLab')" class="w-full py-2.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white text-xs font-black rounded-xl transition flex items-center justify-center gap-2 cursor-pointer shadow-lg active:scale-95">
+                        <i data-lucide="copy" class="w-4 h-4"></i> Copia Comando Backup &amp; Ripristino
+                    </button>
+                </div>
+
+                <!-- 18. SYNC SMARTPHONE -->
+                <div class="p-5 rounded-3xl bg-slate-900/90 border-2 border-emerald-500/40 shadow-xl flex flex-col justify-between space-y-3.5">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">18. GC-MULTI-DEVICE-SYNC</span>
+                            <span class="text-xs font-black text-emerald-400">Multi-Dispositivo</span>
+                        </div>
+                        <h3 class="text-base font-black text-white">📱 Sincronizzazione Smartphone &amp; Codice Azienda Cloud</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Accoppiamento immediato tra PC ufficio e cellulari piazzale.
+                        </p>
+                    </div>
+                    <button onclick="copyCommand(this, 'Applica la Sincronizzazione Multi-Dispositivo &amp; Codice Azienda Cloud GC CodeLab')" class="w-full py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-black rounded-xl transition flex items-center justify-center gap-2 cursor-pointer shadow-lg active:scale-95">
+                        <i data-lucide="copy" class="w-4 h-4"></i> Copia Comando Multi-Device Sync
+                    </button>
+                </div>
+
+                <!-- 19. SINCRONIZZAZIONE CONTINUA IN TEMPO REALE -->
+                <div class="p-5 rounded-3xl bg-slate-900/90 border-2 border-blue-500/50 shadow-xl flex flex-col justify-between space-y-3.5">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-blue-500/20 text-blue-300 border border-blue-500/40">19. GC-REALTIME-SYNC</span>
+                            <span class="text-xs font-black text-blue-400">Live Continuous Mirror</span>
+                        </div>
+                        <h3 class="text-base font-black text-white">⚡ Sincronizzazione Continua in Tempo Reale</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Sincronizzazione automatica bidirezionale a zero clic manuali.
+                        </p>
+                    </div>
+                    <button onclick="copyCommand(this, 'Applica la Sincronizzazione Continua in Tempo Reale Multi-Dispositivo GC CodeLab')" class="w-full py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-black rounded-xl transition flex items-center justify-center gap-2 cursor-pointer shadow-lg active:scale-95">
+                        <i data-lucide="copy" class="w-4 h-4"></i> Copia Comando Realtime Sync
+                    </button>
+                </div>
+
+                <!-- 20. STILE CARD ENTERPRISE PRO -->
+                <div class="p-5 rounded-3xl bg-slate-900/90 border-2 border-purple-500/50 shadow-xl flex flex-col justify-between space-y-3.5 md:col-span-2">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-purple-500/20 text-purple-300 border border-purple-500/40">20. GC-ENTERPRISE-CARDS</span>
+                            <span class="text-xs font-black text-purple-400">Animation / Design</span>
+                        </div>
+                        <h3 class="text-base font-black text-white">🎴 Stile Card Enterprise Pro (Fascia Superiore &amp; Hover 3D)</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Troverai il nuovo interruttore per attivare o disattivare a piacimento la linea colorata superiore e l'effetto 3D al passaggio del mouse sulle schede.
+                        </p>
+                    </div>
+                    <button onclick="copyCommand(this, 'Applica lo Stile Card Enterprise Pro (Fascia Superiore & Hover 3D) GC CodeLab')" class="w-full py-2.5 bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-black rounded-xl transition flex items-center justify-center gap-2 cursor-pointer shadow-lg active:scale-95">
+                        <i data-lucide="copy" class="w-4 h-4"></i> Copia Comando Stile Card Enterprise Pro
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center text-xs text-slate-500 py-4 border-t border-slate-900">
+            &copy; 2026 <span class="text-indigo-400 font-bold">GC CodeLab</span> &bull; Sviluppato da <span class="text-white font-bold">Giovanni Cavallo</span> &bull; Tutti i diritti riservati.
+        </div>
+
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        function copyCommand(btn, text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const toast = document.getElementById('copyToast');
+                toast.classList.remove('translate-y-[-100px]', 'opacity-0');
+                toast.classList.add('translate-y-0', 'opacity-100');
+                
+                setTimeout(() => {
+                    toast.classList.remove('translate-y-0', 'opacity-100');
+                    toast.classList.add('translate-y-[-100px]', 'opacity-0');
+                }, 2500);
+            });
+        }
+    </script>
+</body>
+</html>
