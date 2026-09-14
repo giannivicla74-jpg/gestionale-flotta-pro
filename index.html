@@ -23,10 +23,15 @@
                         brand: {
                             50: '#f0f7ff',
                             100: '#e0effe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
                             500: '#3b82f6',
                             600: '#2563eb',
                             700: '#1d4ed8',
+                            800: '#1e40af',
                             900: '#1e3a8a',
+                            950: '#0f172a',
                         }
                     }
                 }
@@ -40,6 +45,141 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <style>
+        /* ========================================================
+           DESIGN SYSTEM: AURORA & GLASSMORPHISM GC CODELAB
+           ======================================================== */
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.78);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+        }
+        .dark .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35);
+        }
+
+        .glass-header {
+            background: rgba(255, 255, 255, 0.88) !important;
+            backdrop-filter: blur(20px) !important;
+            -webkit-backdrop-filter: blur(20px) !important;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8) !important;
+        }
+        .dark .glass-header {
+            background: rgba(15, 23, 42, 0.85) !important;
+            backdrop-filter: blur(20px) !important;
+            -webkit-backdrop-filter: blur(20px) !important;
+            border-bottom: 1px solid rgba(30, 41, 59, 0.8) !important;
+        }
+
+        /* ========================================================
+           ENTERPRISE VEHICLE & DEADLINE CARD DESIGN SYSTEM
+           ======================================================== */
+        .vehicle-card-pro {
+            background-color: #ffffff;
+            border-radius: 1rem;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.03);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .dark .vehicle-card-pro {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+        .vehicle-card-pro:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.12);
+        }
+        .dark .vehicle-card-pro:hover {
+            box-shadow: 0 16px 32px -6px rgba(0, 0, 0, 0.5);
+            border-color: #475569;
+        }
+
+        .deadline-box-card {
+            border-left: 4px solid #cbd5e1;
+            background-color: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            border-right: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            padding: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.2s ease;
+        }
+        .dark .deadline-box-card {
+            border-left: 4px solid #475569;
+            background-color: #0f172a;
+            border-top: 1px solid #334155;
+            border-right: 1px solid #334155;
+            border-bottom: 1px solid #334155;
+        }
+
+        .deadline-box-card-red {
+            border-left-color: #ef4444 !important;
+            background-color: #fef2f2 !important;
+            border-top-color: #fecaca !important;
+            border-right-color: #fecaca !important;
+            border-bottom-color: #fecaca !important;
+        }
+        .dark .deadline-box-card-red {
+            border-left-color: #ef4444 !important;
+            background-color: #0f172a !important;
+            border-top-color: #7f1d1d !important;
+            border-right-color: #7f1d1d !important;
+            border-bottom-color: #7f1d1d !important;
+        }
+
+        .deadline-box-card-amber {
+            border-left-color: #f59e0b !important;
+            background-color: #fffbeb !important;
+            border-top-color: #fde68a !important;
+            border-right-color: #fde68a !important;
+            border-bottom-color: #fde68a !important;
+        }
+        .dark .deadline-box-card-amber {
+            border-left-color: #f59e0b !important;
+            background-color: #0f172a !important;
+            border-top-color: #78350f !important;
+            border-right-color: #78350f !important;
+            border-bottom-color: #78350f !important;
+        }
+
+        .deadline-box-card-emerald {
+            border-left-color: #10b981 !important;
+            background-color: #ecfdf5 !important;
+            border-top-color: #a7f3d0 !important;
+            border-right-color: #a7f3d0 !important;
+            border-bottom-color: #a7f3d0 !important;
+        }
+        .dark .deadline-box-card-emerald {
+            border-left-color: #10b981 !important;
+            background-color: #0f172a !important;
+            border-top-color: #064e3b !important;
+            border-right-color: #064e3b !important;
+            border-bottom-color: #064e3b !important;
+        }
+
+        .glass-card-hover {
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .glass-card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px -15px rgba(37, 99, 235, 0.12);
+        }
+        .dark .glass-card-hover:hover {
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.45);
+        }
+
         @keyframes pulse-ring {
             0% { transform: scale(0.95); opacity: 1; }
             50% { transform: scale(1.08); opacity: 0.5; }
@@ -47,6 +187,107 @@
         }
         .pulse-alert {
             animation: pulse-ring 2s infinite ease-in-out;
+        }
+
+        /* GAUGE PROFESSIONAL DESIGN */
+        .gauge-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .gauge-ring {
+            position: relative;
+            width: 180px;
+            height: 100px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .gauge-ring canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100% !important;
+            height: 180px !important;
+        }
+        .gauge-center-label {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+        .gauge-number {
+            font-size: 2.25rem;
+            font-weight: 900;
+            line-height: 1;
+            letter-spacing: -0.025em;
+            background: linear-gradient(135deg, #1e293b 0%, #475569 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0px 1px rgba(0,0,0,0.1));
+        }
+        .dark .gauge-number {
+            background: linear-gradient(135deg, #f8fafc 0%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+        }
+        .gauge-label {
+            font-size: 0.6rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: #64748b;
+            margin-top: 2px;
+        }
+        .gauge-scale {
+            display: flex;
+            justify-content: space-between;
+            width: 170px;
+            margin-top: 4px;
+        }
+        .gauge-scale-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            opacity: 0.5;
+        }
+        .gauge-scale-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, #10b981 0%, #f59e0b 50%, #ef4444 100%);
+            opacity: 0.25;
+            margin: 3px 4px 0 4px;
+            border-radius: 1px;
+        }
+        .gauge-glow {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 60px;
+            background: radial-gradient(ellipse at 50% 100%, rgba(16, 185, 129, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            border-radius: 100px 100px 0 0;
+        }
+        .dark .gauge-glow {
+            background: radial-gradient(ellipse at 50% 100%, rgba(16, 185, 129, 0.1) 0%, transparent 70%);
+        }
+        @keyframes gauge-pulse {
+            0%, 100% { opacity: 0.15; }
+            50% { opacity: 0.3; }
+        }
+        .gauge-glow-animated {
+            animation: gauge-pulse 3s ease-in-out infinite;
         }
         .glow-red {
             box-shadow: 0 0 15px rgba(239, 68, 68, 0.15);
@@ -113,86 +354,103 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 </head>
 
-<body class="bg-slate-50 dark:bg-slate-900 min-h-screen text-slate-800 dark:text-slate-100 font-sans pb-4 transition-colors duration-200 flex flex-col justify-between">
+<body class="bg-slate-50 dark:bg-slate-900 min-h-screen text-slate-800 dark:text-slate-100 font-sans pb-4 transition-colors duration-200 flex flex-col justify-between relative">
 
-    <div>
+
+    <div class="relative z-10">
         <!-- HEADER -->
-        <header class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-40 shadow-sm transition-colors duration-200">
-            <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 min-h-[4rem] py-2 flex items-center justify-between gap-2">
+        <header class="glass-header sticky top-0 z-40 shadow-sm transition-colors duration-200">
+            <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 min-h-[4rem] py-2 flex items-center justify-between gap-3">
                 
-                <div class="flex items-center space-x-2 sm:space-x-3">
+                <!-- Brand Logo & Title -->
+                <div class="flex items-center space-x-2.5 sm:space-x-3 shrink-0">
                     <div class="bg-brand-600 p-2 sm:p-2.5 rounded-xl text-white shadow-md shadow-brand-500/20 shrink-0">
                         <i data-lucide="shield-alert" class="w-5 h-5 sm:w-6 sm:h-6"></i>
                     </div>
                     <div class="min-w-0">
-                        <h1 class="text-sm sm:text-xl font-extrabold text-slate-900 dark:text-white tracking-tight flex flex-wrap items-center gap-1 sm:gap-2 leading-tight">
-                            VI.CLA FUTURE S.R.L. <span class="bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-300 text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full border border-brand-200 dark:border-brand-800 whitespace-nowrap">FLEET PRO</span>
+                        <h1 class="text-sm sm:text-lg font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-1.5 sm:gap-2 leading-tight">
+                            VI.CLA FUTURE S.R.L. <span class="bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-300 text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full border border-brand-200 dark:border-brand-800 whitespace-nowrap">FLEET PRO</span>
                         </h1>
-                        <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium truncate hidden sm:block">Controllo Avanzato Parco Mezzi d'Opera & Scadenze Card Autisti</p>
+                        <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium truncate hidden sm:block">Controllo Avanzato Parco Mezzi d'Opera & Scadenze</p>
                     </div>
                 </div>
                 
-                <div class="flex items-center space-x-2">
-                    <!-- DDD Upload Button -->
-                    <button onclick="document.getElementById('dddGlobalInput').click()" class="flex items-center space-x-1.5 p-2.5 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-200 hover:bg-indigo-100 transition dark:bg-indigo-900/30 dark:text-indigo-400 dark:border-indigo-800/50 dark:hover:bg-indigo-900/50" title="Carica File Tachigrafo (.DDD)">
-                        <i data-lucide="upload-cloud" class="w-4 h-4"></i>
-                        <span class="text-xs font-bold hidden sm:inline">DDD</span>
-                    </button>
-                    <!-- Export Buttons -->
-                    <button onclick="exportToPDF()" class="hidden md:flex items-center space-x-1.5 p-2.5 rounded-xl bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition dark:bg-red-900/30 dark:text-red-400 dark:border-red-800/50 dark:hover:bg-red-900/50" title="Esporta Report PDF">
-                        <i data-lucide="file-text" class="w-4 h-4"></i>
-                        <span class="text-xs font-bold">PDF</span>
-                    </button>
-                    <button onclick="exportToExcel()" class="hidden md:flex items-center space-x-1.5 p-2.5 rounded-xl bg-green-50 text-green-600 border border-green-200 hover:bg-green-100 transition dark:bg-green-900/30 dark:text-green-400 dark:border-green-800/50 dark:hover:bg-green-900/50" title="Esporta Report Excel">
-                        <i data-lucide="sheet" class="w-4 h-4"></i>
-                        <span class="text-xs font-bold">Excel</span>
-                    </button>
-
-                    <!-- Bottone Analisi Finanziaria -->
-                    <button onclick="openFinanceModal()" class="flex items-center space-x-1.5 p-2.5 rounded-xl bg-amber-50 text-amber-600 border border-amber-200 hover:bg-amber-100 transition dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800/50 dark:hover:bg-amber-900/50" title="Analisi Finanziaria">
-                        <i data-lucide="pie-chart" class="w-4 h-4"></i>
-                        <span class="text-xs font-bold hidden md:inline">Finanza</span>
-                    </button>
-
-                    <!-- Bottone Licenza d'Uso -->
-                    <button onclick="openLicenseModal()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-600 transition" title="Dettagli Sviluppatore e Licenza">
-                        <i data-lucide="award" class="w-4 h-4 text-brand-600 dark:text-brand-400"></i>
-                    </button>
-
-                    <!-- BOTTONE LOCK/UNLOCK RAPIDO -->
-                    <button onclick="togglePinProtectionVisual()" id="lockStatusBtn" class="flex items-center space-x-1.5 p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-700 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition shadow-sm" title="Attiva/Disattiva Protezione PIN">
-                        <i data-lucide="lock-open" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" id="lockIcon"></i>
-                        <span class="text-xs font-bold hidden sm:inline" id="lockStatusLabel">Libero</span>
-                    </button>
-
-                    <button onclick="toggleTheme()" id="themeToggleBtn" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-600 transition" title="Cambia Modalità Visiva">
-                        <i data-lucide="moon" class="w-4 h-4" id="themeIcon"></i>
-                    </button>
-
-                    <button onclick="toggleAudioSystem()" id="audioStatusBtn" class="hidden sm:flex items-center space-x-1.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 px-3 py-2 rounded-xl text-xs font-semibold border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition">
-                        <i data-lucide="volume-2" class="w-4 h-4"></i>
-                        <span>Audio Attivo</span>
-                    </button>
-                    <button onclick="togglePushNotifications()" id="pushStatusBtn" class="hidden sm:flex items-center space-x-1.5 bg-slate-50 dark:bg-slate-900/40 text-slate-600 dark:text-slate-400 px-3 py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-                        <i data-lucide="bell-off" id="pushStatusIcon" class="w-4 h-4"></i>
-                        <span id="pushStatusText">Push Off</span>
-                    </button>
-                    <button onclick="testPushNotification()" id="testPushBtn" title="Invia una notifica di prova" class="hidden sm:flex items-center space-x-1 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 px-2.5 py-2 rounded-xl text-xs font-semibold border border-amber-200 dark:border-amber-800 hover:bg-amber-100 dark:hover:bg-amber-900/40 transition">
-                        <i data-lucide="zap" class="w-3.5 h-3.5"></i>
-                        <span>Test</span>
-                    </button>
+                <!-- Unified Right Controls Bar -->
+                <div class="flex items-center space-x-1.5 sm:space-x-2">
                     
-                    <div class="relative">
-                        <!-- Notifiche Smart Button -->
-                        <button onclick="toggleNotificationPanel()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-600 transition relative">
-                            <i data-lucide="bell" class="w-4 h-4"></i>
-                            <span id="notificationBadge" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-extrabold w-4 h-4 rounded-full flex items-center justify-center pulse-alert shadow-[0_0_0_2px_#fff] dark:shadow-[0_0_0_2px_#1e293b]">0</span>
+                    <!-- Menu Dropdown: Strumenti & Report -->
+                    <div class="relative group">
+                        <button class="h-9 flex items-center space-x-1.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-600 transition text-xs font-bold shadow-sm">
+                            <i data-lucide="download" class="w-4 h-4 text-brand-600 dark:text-brand-400"></i>
+                            <span class="hidden md:inline">Esporta & Report</span>
+                            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400"></i>
+                        </button>
+                        <div class="absolute right-0 mt-1.5 w-52 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 py-1.5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 divide-y divide-slate-100 dark:divide-slate-700">
+                            <div class="py-1">
+                                <button onclick="exportToPDF()" class="w-full px-3.5 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-red-50 dark:hover:bg-red-950/40 hover:text-red-600 dark:hover:text-red-400 flex items-center gap-2.5 transition">
+                                    <i data-lucide="file-text" class="w-4 h-4 text-red-500"></i> Esporta Report PDF
+                                </button>
+                                <button onclick="exportToExcel()" class="w-full px-3.5 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-green-50 dark:hover:bg-green-950/40 hover:text-green-600 dark:hover:text-green-400 flex items-center gap-2.5 transition">
+                                    <i data-lucide="sheet" class="w-4 h-4 text-green-500"></i> Esporta Report Excel
+                                </button>
+                            </div>
+                            <div class="py-1">
+                                <button onclick="openFinanceModal()" class="w-full px-3.5 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-amber-50 dark:hover:bg-amber-950/40 hover:text-amber-600 dark:hover:text-amber-400 flex items-center gap-2.5 transition">
+                                    <i data-lucide="pie-chart" class="w-4 h-4 text-amber-500"></i> Analisi Finanziaria
+                                </button>
+                                <button onclick="document.getElementById('dddGlobalInput').click()" class="w-full px-3.5 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center gap-2.5 transition">
+                                    <i data-lucide="upload-cloud" class="w-4 h-4 text-indigo-500"></i> Carica File Tachigrafo (.DDD)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottone Protezione PIN -->
+                    <button onclick="togglePinProtectionVisual()" id="lockStatusBtn" class="h-9 flex items-center space-x-1.5 px-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-700 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition text-xs font-bold shadow-sm" title="Attiva/Disattiva Protezione PIN">
+                        <i data-lucide="lock-open" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" id="lockIcon"></i>
+                        <span class="hidden lg:inline" id="lockStatusLabel">Libero</span>
+                    </button>
+
+                    <!-- Sezione Notifiche / Audio / Test -->
+                    <div class="flex items-center space-x-1 border-l border-slate-200 dark:border-slate-700 pl-1.5 sm:pl-2">
+                        <button onclick="toggleAudioSystem()" id="audioStatusBtn" class="h-9 hidden sm:flex items-center space-x-1.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 px-2.5 rounded-xl text-xs font-bold border border-emerald-200 dark:border-emerald-800 transition" title="Attiva/Disattiva Audio Vocale">
+                            <i data-lucide="volume-2" class="w-4 h-4"></i>
+                            <span class="hidden xl:inline">Audio Attivo</span>
+                        </button>
+
+                        <button onclick="togglePushNotifications()" id="pushStatusBtn" class="h-9 hidden sm:flex items-center space-x-1.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 px-2.5 rounded-xl text-xs font-bold border border-slate-200 dark:border-slate-600 transition" title="Stato Notifiche Push">
+                            <i data-lucide="bell-off" id="pushStatusIcon" class="w-4 h-4"></i>
+                            <span id="pushStatusText" class="hidden xl:inline">Push Off</span>
+                        </button>
+
+                        <button onclick="testPushNotification()" id="testPushBtn" title="Invia Notifica Push di Prova" class="h-9 hidden sm:flex items-center space-x-1 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 px-2.5 rounded-xl text-xs font-bold border border-amber-200 dark:border-amber-800 transition">
+                            <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+                            <span class="hidden xl:inline">Test</span>
                         </button>
                     </div>
 
-                    <button onclick="openSettingsModal()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-600 transition" title="Impostazioni Soglia Scadenze e PIN">
-                        <i data-lucide="sliders" class="w-4 h-4"></i>
-                    </button>
+                    <!-- Icone di Sistema (Notifiche Bell, Tema, Licenza, Impostazioni) -->
+                    <div class="flex items-center space-x-1 border-l border-slate-200 dark:border-slate-700 pl-1.5 sm:pl-2">
+                        <div class="relative">
+                            <button onclick="toggleNotificationPanel()" class="h-9 w-9 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-600 transition relative" title="Notifiche Scadenze">
+                                <i data-lucide="bell" class="w-4 h-4"></i>
+                                <span id="notificationBadge" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-extrabold w-4 h-4 rounded-full flex items-center justify-center pulse-alert shadow-[0_0_0_2px_#fff] dark:shadow-[0_0_0_2px_#1e293b]">0</span>
+                            </button>
+                        </div>
+
+                        <button onclick="toggleTheme()" id="themeToggleBtn" class="h-9 w-9 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-600 transition" title="Cambia Tema Chiaro/Scuro">
+                            <i data-lucide="moon" class="w-4 h-4" id="themeIcon"></i>
+                        </button>
+
+                        <button onclick="openLicenseModal()" class="h-9 w-9 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-600 transition" title="Dettagli Licenza e Sviluppatore">
+                            <i data-lucide="award" class="w-4 h-4 text-brand-600 dark:text-brand-400"></i>
+                        </button>
+
+                        <button onclick="openSettingsModal()" class="h-9 w-9 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-600 transition" title="Impostazioni">
+                            <i data-lucide="sliders" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+
                 </div>
             </div>
         </header>
@@ -227,60 +485,77 @@
             <!-- STATS CARDS -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
                 <div class="lg:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div id="cardScaduti" onclick="filterByStatusStat('expired')" class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between transition-all duration-300 cursor-pointer hover:scale-[1.02] active:scale-[0.98]" title="Clicca per filtrare solo le scadenze critiche">
-                        <div>
-                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Risorse con Scadenze Critiche</p>
-                            <h3 id="statExpired" class="text-3xl font-extrabold text-slate-900 dark:text-white mt-1">0</h3>
-                            <span class="text-[10px] text-red-500 font-bold flex items-center gap-1 mt-1 hidden" id="expiredWarningLabel">
-                                <i data-lucide="alert-circle" class="w-3 h-3"></i> Intervenire subito!
+                    <!-- CARD SCADUTI -->
+                    <div id="cardScaduti" onclick="filterByStatusStat('expired')" class="relative overflow-hidden bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 border-t-4 border-t-red-500 shadow-md flex items-center justify-between transition-all duration-300 cursor-pointer hover:-translate-y-1 hover:shadow-xl hover:border-red-500 dark:hover:border-red-400 group active:scale-[0.98]" title="Clicca per filtrare solo le scadenze critiche">
+                        <div class="z-10">
+                            <p class="text-[11px] font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+                                Risorse Scadute
+                            </p>
+                            <h3 id="statExpired" class="text-3xl sm:text-4xl font-black text-red-600 dark:text-red-400 mt-1 tracking-tight">0</h3>
+                            <span class="text-[10px] text-red-600 dark:text-red-400 font-extrabold flex items-center gap-1 mt-1 hidden" id="expiredWarningLabel">
+                                <i data-lucide="alert-circle" class="w-3.5 h-3.5 text-red-500 animate-pulse"></i> Intervenire subito!
                             </span>
                         </div>
-                        <div id="iconScaduti" class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-700 text-slate-500 transition-all duration-300">
+                        <div id="iconScaduti" class="z-10 p-3 rounded-2xl bg-red-100 dark:bg-red-950/60 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800/60 shadow-sm group-hover:scale-110 transition-transform duration-300 flex items-center justify-center">
                             <i data-lucide="alert-triangle" class="w-6 h-6"></i>
                         </div>
                     </div>
 
-                    <div onclick="filterByStatusStat('expiring')" class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between cursor-pointer hover:scale-[1.02] active:scale-[0.98]" title="Clicca per filtrare solo le scadenze imminenti">
-                        <div>
-                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide">In Scadenza imminente</p>
-                            <h3 id="statExpiring" class="text-3xl font-extrabold text-amber-500 dark:text-amber-400 mt-1">0</h3>
-                            <span class="text-[10px] text-slate-400 font-medium mt-1 block">Prossimi <span class="thresholdLabel text-amber-500 font-bold">30</span> giorni</span>
+                    <!-- CARD IN SCADENZA -->
+                    <div onclick="filterByStatusStat('expiring')" class="relative overflow-hidden bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 border-t-4 border-t-amber-500 shadow-md flex items-center justify-between transition-all duration-300 cursor-pointer hover:-translate-y-1 hover:shadow-xl hover:border-amber-500 dark:hover:border-amber-400 group active:scale-[0.98]" title="Clicca per filtrare solo le scadenze imminenti">
+                        <div class="z-10">
+                            <p class="text-[11px] font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                                In Scadenza
+                            </p>
+                            <h3 id="statExpiring" class="text-3xl sm:text-4xl font-black text-amber-500 dark:text-amber-400 mt-1 tracking-tight">0</h3>
+                            <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold mt-1 block">Prossimi <span class="thresholdLabel text-amber-500 font-black">30</span> giorni</span>
                         </div>
-                        <div class="bg-amber-50 dark:bg-amber-950/40 p-3.5 rounded-xl text-amber-500">
+                        <div class="z-10 p-3 rounded-2xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800/60 shadow-sm group-hover:scale-110 transition-transform duration-300 flex items-center justify-center">
                             <i data-lucide="clock" class="w-6 h-6"></i>
                         </div>
                     </div>
 
-                    <div onclick="filterByStatusStat('ok')" class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between cursor-pointer hover:scale-[1.02] active:scale-[0.98]" title="Clicca per filtrare solo i record in regola">
-                        <div>
-                            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Risorse 100% OK</p>
-                            <h3 id="statOk" class="text-3xl font-extrabold text-emerald-500 dark:text-emerald-400 mt-1">0</h3>
-                            <span class="text-[10px] text-slate-400 font-medium mt-1 block" id="statTotalLabel">0 risorse totali</span>
+                    <!-- CARD IN REGOLA -->
+                    <div onclick="filterByStatusStat('ok')" class="relative overflow-hidden bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 border-t-4 border-t-emerald-500 shadow-md flex items-center justify-between transition-all duration-300 cursor-pointer hover:-translate-y-1 hover:shadow-xl hover:border-emerald-500 dark:hover:border-emerald-400 group active:scale-[0.98]" title="Clicca per filtrare solo i record in regola">
+                        <div class="z-10">
+                            <p class="text-[11px] font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                Risorse 100% OK
+                            </p>
+                            <h3 id="statOk" class="text-3xl sm:text-4xl font-black text-emerald-600 dark:text-emerald-400 mt-1 tracking-tight">0</h3>
+                            <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold mt-1 block" id="statTotalLabel">0 risorse totali</span>
                         </div>
-                        <div class="bg-emerald-50 dark:bg-emerald-950/40 p-3.5 rounded-xl text-emerald-500">
+                        <div class="z-10 p-3 rounded-2xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60 shadow-sm group-hover:scale-110 transition-transform duration-300 flex items-center justify-center">
                             <i data-lucide="check-circle" class="w-6 h-6"></i>
                         </div>
                     </div>
                 </div>
 
                 <!-- HEALTH INDEX -->
-                <div class="lg:col-span-4 bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between">
-                    <div class="flex justify-between items-center">
+                <div class="lg:col-span-4 relative overflow-hidden bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 border-t-4 border-t-brand-500 shadow-md flex flex-col justify-between hover:shadow-xl transition-all duration-300">
+                    <div class="flex justify-between items-center z-10">
                         <div>
-                            <h4 class="font-bold text-sm text-slate-900 dark:text-white">Indice Conformità Flotta</h4>
-                            <p class="text-[11px] text-slate-400">Calcolato su VI.CLA FUTURE S.R.L.</p>
+                            <h4 class="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-2 tracking-wide">
+                                <span class="p-1.5 rounded-lg bg-brand-100 dark:bg-brand-950/60 text-brand-600 dark:text-brand-400 border border-brand-200 dark:border-brand-800/60 flex items-center justify-center">
+                                    <i data-lucide="activity" class="w-4 h-4"></i>
+                                </span>
+                                Indice Conformità Flotta
+                            </h4>
+                            <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1">Calcolato su VI.CLA FUTURE S.R.L.</p>
                         </div>
-                        <span id="healthScorePercentage" class="text-2xl font-extrabold text-brand-600 dark:text-brand-400">100%</span>
+                        <span id="healthScorePercentage" class="text-2xl font-black text-brand-600 dark:text-brand-300 bg-brand-50 dark:bg-brand-950/60 px-3.5 py-1 rounded-xl border border-brand-200 dark:border-brand-800/60 shadow-sm">100%</span>
                     </div>
                     
-                    <div class="w-full bg-slate-100 dark:bg-slate-700 h-3.5 rounded-full overflow-hidden my-3">
-                        <div id="healthScoreBar" class="bg-gradient-to-r from-emerald-500 to-brand-500 h-full transition-all duration-500" style="width: 100%"></div>
+                    <div class="w-full bg-slate-200 dark:bg-slate-700 h-3 rounded-full overflow-hidden my-3.5 p-0.5 border border-slate-300/40 dark:border-slate-600/40">
+                        <div id="healthScoreBar" class="bg-gradient-to-r from-emerald-500 via-brand-500 to-indigo-500 h-full rounded-full transition-all duration-500 shadow-sm" style="width: 100%"></div>
                     </div>
 
-                    <div class="flex justify-between text-[11px] text-slate-400 font-semibold items-center">
-                        <span id="healthEvaluationText">Tutto in perfetta regola 🚀</span>
-                        <div class="flex gap-2">
-                            <button onclick="openDiagnosticsModal()" class="hover:text-brand-500 flex items-center gap-1 text-xs text-brand-600 dark:text-brand-400 font-bold bg-brand-50 dark:bg-brand-950/40 px-2.5 py-1 rounded-lg border border-brand-200/40">
+                    <div class="flex justify-between text-[11px] text-slate-500 dark:text-slate-400 font-semibold items-center z-10">
+                        <span id="healthEvaluationText" class="truncate font-bold text-slate-700 dark:text-slate-300">Tutto in perfetta regola 🚀</span>
+                        <div class="flex gap-2 shrink-0">
+                            <button onclick="openDiagnosticsModal()" class="hover:bg-brand-600 hover:text-white flex items-center gap-1.5 text-xs text-brand-600 dark:text-brand-300 font-extrabold bg-brand-50 dark:bg-brand-950/70 px-3 py-1.5 rounded-xl border border-brand-200 dark:border-brand-800/70 transition duration-300 shadow-sm active:scale-95">
                                 <i data-lucide="activity" class="w-3.5 h-3.5"></i> Diagnosi
                             </button>
                         </div>
@@ -290,96 +565,196 @@
 
 
             <!-- ADVANCED DASHBOARD (CHARTS) -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <!-- Fleet Chart -->
-                <div class="bg-gradient-to-br from-white to-slate-50 dark:from-slate-800 dark:to-slate-800/80 p-5 rounded-3xl border border-slate-200/60 dark:border-slate-700/60 shadow-lg flex flex-col relative overflow-hidden">
-                    <div class="absolute -right-10 -top-10 w-64 h-64 bg-brand-500/30 dark:bg-brand-500/20 rounded-full blur-3xl mix-blend-multiply dark:mix-blend-lighten pointer-events-none"></div>
-                    <h4 class="font-semibold text-base text-slate-700 dark:text-slate-200 mb-6 flex items-center gap-2 tracking-wide z-10"><i data-lucide="truck" class="w-5 h-5 text-brand-500"></i> Stato Flotta Mezzi</h4>
+            <div id="chartsContainerGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                <!-- Fleet Chart Card -->
+                <div class="bg-white dark:bg-slate-800 p-5 sm:p-6 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-md flex flex-col relative overflow-hidden transition-all duration-300 hover:shadow-xl">
                     
-                    <div class="flex flex-col md:flex-row items-center justify-between gap-8 z-10">
-                        <div class="relative w-44 h-24 flex-shrink-0 flex items-end justify-center">
-                            <canvas id="fleetStatusChart" style="position:absolute; top:0; left:0; width:100%; height:200%;"></canvas>
-                            <div class="absolute bottom-0 left-0 right-0 flex flex-col items-center justify-end pointer-events-none" style="padding-bottom: 5px;">
-                                <span class="text-3xl font-extrabold text-slate-800 dark:text-white leading-none" id="fleetTotalCenter">0</span>
-                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Totali</span>
+                    <div class="flex items-center justify-between mb-4 z-10">
+                        <h4 class="font-extrabold text-sm sm:text-base text-slate-800 dark:text-slate-100 flex items-center gap-2.5 tracking-wide">
+                            <span class="p-2 rounded-xl bg-brand-100 dark:bg-brand-950/60 text-brand-600 dark:text-brand-400 border border-brand-200 dark:border-brand-800/60 flex items-center justify-center">
+                                <i data-lucide="truck" class="w-5 h-5"></i>
+                            </span>
+                            Stato Flotta Mezzi
+                        </h4>
+                        <span id="fleetReadinessBadge" class="text-xs font-black px-3 py-1 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60 flex items-center gap-1.5 shadow-sm">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span id="fleetReadinessText">100% Operativa</span>
+                        </span>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-center z-10">
+                        <!-- Radial Gauge & Center Counter -->
+                        <div class="md:col-span-5 flex flex-col items-center justify-center relative py-2">
+                            <div class="gauge-container">
+                                <div class="gauge-glow gauge-glow-animated" id="fleetGaugeGlow"></div>
+                                <div class="gauge-ring">
+                                    <canvas id="fleetStatusChart"></canvas>
+                                    <div class="gauge-center-label">
+                                        <span class="gauge-number" id="fleetTotalCenter">0</span>
+                                        <span class="gauge-label">Mezzi Totali</span>
+                                    </div>
+                                </div>
+                                <!-- Scale markers -->
+                                <div class="gauge-scale">
+                                    <div class="gauge-scale-dot bg-emerald-500"></div>
+                                    <div class="gauge-scale-line"></div>
+                                    <div class="gauge-scale-dot bg-amber-500"></div>
+                                    <div class="gauge-scale-line"></div>
+                                    <div class="gauge-scale-dot bg-red-500"></div>
+                                </div>
+                            </div>
+                            <!-- Conformity bar -->
+                            <div class="w-full max-w-[180px] mt-3">
+                                <div class="flex justify-between text-[10px] font-extrabold text-slate-500 dark:text-slate-400 mb-1">
+                                    <span class="flex items-center gap-1"><i data-lucide="shield-check" class="w-3 h-3 text-emerald-500"></i>Conformità</span>
+                                    <span id="fleetHealthPercentText" class="text-emerald-600 dark:text-emerald-400 font-black text-xs">100%</span>
+                                </div>
+                                <div class="w-full bg-slate-200 dark:bg-slate-700/50 h-2.5 rounded-full overflow-hidden border border-slate-300/30 dark:border-slate-600/30">
+                                    <div id="fleetHealthPercentBar" class="bg-gradient-to-r from-emerald-500 via-emerald-400 to-teal-400 h-full rounded-full transition-all duration-700 ease-out shadow-[0_0_8px_rgba(16,185,129,0.4)]" style="width: 100%"></div>
+                                </div>
                             </div>
                         </div>
                         
-                        <div class="flex-1 w-full grid grid-cols-1 gap-2.5">
-                            <div class="flex justify-between items-center bg-white dark:bg-slate-900/60 border border-emerald-100 dark:border-emerald-900/30 p-2.5 rounded-xl shadow-sm transition hover:scale-[1.02] cursor-pointer hover:border-emerald-400 dark:hover:border-emerald-500" onclick="switchTab('vehicles'); filterByStatusStat('ok')">
+                        <!-- Right Side: Interactive Status Badges -->
+                        <div class="md:col-span-7 grid grid-cols-1 gap-2.5">
+                            <div class="flex justify-between items-center bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 border-l-4 border-l-emerald-500 px-3.5 py-2.5 rounded-2xl shadow-sm transition-all duration-200 hover:scale-[1.02] cursor-pointer hover:border-emerald-400 dark:hover:border-emerald-500 hover:shadow-md group" onclick="switchTab('vehicles'); filterByStatusStat('ok')">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center text-emerald-500"><i data-lucide="check-circle" class="w-4 h-4"></i></div>
-                                    <span class="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wide">In Regola</span>
+                                    <div class="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60 group-hover:scale-110 transition-transform"><i data-lucide="check-circle" class="w-4 h-4"></i></div>
+                                    <div>
+                                        <span class="text-xs font-extrabold text-slate-700 dark:text-slate-200 uppercase tracking-wide block">In Regola</span>
+                                        <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold" id="fleetGreenPercentLabel">100% del totale</span>
+                                    </div>
                                 </div>
-                                <span class="text-lg font-bold text-emerald-500" id="fleetGreenCount">0</span>
+                                <span class="text-lg font-black text-emerald-600 dark:text-emerald-400" id="fleetGreenCount">0</span>
                             </div>
-                            <div class="flex justify-between items-center bg-white dark:bg-slate-900/60 border border-amber-100 dark:border-amber-900/30 p-2.5 rounded-xl shadow-sm transition hover:scale-[1.02] cursor-pointer hover:border-amber-400 dark:hover:border-amber-500" onclick="switchTab('vehicles'); filterByStatusStat('expiring')">
+
+                            <div class="flex justify-between items-center bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 border-l-4 border-l-amber-500 px-3.5 py-2.5 rounded-2xl shadow-sm transition-all duration-200 hover:scale-[1.02] cursor-pointer hover:border-amber-400 dark:hover:border-amber-500 hover:shadow-md group" onclick="switchTab('vehicles'); filterByStatusStat('expiring')">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center text-amber-500 pulse-amber-slow"><i data-lucide="clock" class="w-4 h-4"></i></div>
-                                    <span class="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wide">In Scadenza</span>
+                                    <div class="w-8 h-8 rounded-xl bg-amber-100 dark:bg-amber-950/60 flex items-center justify-center text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800/60 pulse-amber-slow group-hover:scale-110 transition-transform"><i data-lucide="clock" class="w-4 h-4"></i></div>
+                                    <div>
+                                        <span class="text-xs font-extrabold text-slate-700 dark:text-slate-200 uppercase tracking-wide block">In Scadenza</span>
+                                        <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold" id="fleetAmberPercentLabel">Entro 30 giorni</span>
+                                    </div>
                                 </div>
-                                <span class="text-lg font-bold text-amber-500" id="fleetAmberCount">0</span>
+                                <span class="text-lg font-black text-amber-500 dark:text-amber-400" id="fleetAmberCount">0</span>
                             </div>
-                            <div class="flex justify-between items-center bg-white dark:bg-slate-900/60 border border-red-100 dark:border-red-900/30 p-2.5 rounded-xl shadow-sm transition hover:scale-[1.02] cursor-pointer hover:border-red-400 dark:hover:border-red-500" onclick="switchTab('vehicles'); filterByStatusStat('expired')">
+
+                            <div class="flex justify-between items-center bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 border-l-4 border-l-red-500 px-3.5 py-2.5 rounded-2xl shadow-sm transition-all duration-200 hover:scale-[1.02] cursor-pointer hover:border-red-400 dark:hover:border-red-500 hover:shadow-md group" onclick="switchTab('vehicles'); filterByStatusStat('expired')">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-500/10 flex items-center justify-center text-red-500 pulse-alert"><i data-lucide="alert-triangle" class="w-4 h-4"></i></div>
-                                    <span class="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wide">Scaduti</span>
+                                    <div class="w-8 h-8 rounded-xl bg-red-100 dark:bg-red-950/60 flex items-center justify-center text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800/60 pulse-alert group-hover:scale-110 transition-transform"><i data-lucide="alert-triangle" class="w-4 h-4"></i></div>
+                                    <div>
+                                        <span class="text-xs font-extrabold text-slate-700 dark:text-slate-200 uppercase tracking-wide block">Scaduti</span>
+                                        <span class="text-[10px] text-red-600 dark:text-red-400 font-bold" id="fleetRedPercentLabel">Intervenire subito</span>
+                                    </div>
                                 </div>
-                                <span class="text-lg font-bold text-red-500" id="fleetRedCount">0</span>
+                                <span class="text-lg font-black text-red-600 dark:text-red-400" id="fleetRedCount">0</span>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Operators Chart -->
-                <div class="bg-gradient-to-br from-white to-slate-50 dark:from-slate-800 dark:to-slate-800/80 p-5 rounded-3xl border border-slate-200/60 dark:border-slate-700/60 shadow-lg flex flex-col relative overflow-hidden">
-                    <div class="absolute -left-10 -bottom-10 w-64 h-64 bg-emerald-500/30 dark:bg-emerald-500/20 rounded-full blur-3xl mix-blend-multiply dark:mix-blend-lighten pointer-events-none"></div>
-                    <h4 class="font-semibold text-base text-slate-700 dark:text-slate-200 mb-6 flex items-center gap-2 tracking-wide z-10"><i data-lucide="users" class="w-5 h-5 text-emerald-500"></i><i data-lucide="credit-card" class="w-5 h-5 text-emerald-500"></i> Card Tachigrafiche & Card Conducente</h4>
+                <!-- Operators Chart Card -->
+                <div id="operatorChartCard" class="bg-white dark:bg-slate-800 p-5 sm:p-6 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-md flex flex-col relative overflow-hidden transition-all duration-300 hover:shadow-xl">
                     
-                    <div class="flex flex-col md:flex-row items-center justify-between gap-8 z-10">
-                        <div class="relative w-44 h-24 flex-shrink-0 flex items-end justify-center">
-                            <canvas id="operatorStatusChart" style="position:absolute; top:0; left:0; width:100%; height:200%;"></canvas>
-                            <div class="absolute bottom-0 left-0 right-0 flex flex-col items-center justify-end pointer-events-none" style="padding-bottom: 5px;">
-                                <span class="text-3xl font-extrabold text-slate-800 dark:text-white leading-none" id="operatorTotalCenter">0</span>
-                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Totali</span>
+                    <div class="flex items-center justify-between mb-4 z-10">
+                        <h4 class="font-extrabold text-sm sm:text-base text-slate-800 dark:text-slate-100 flex items-center gap-2.5 tracking-wide">
+                            <span class="p-2 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60 flex items-center justify-center gap-1">
+                                <i data-lucide="users" class="w-4 h-4"></i>
+                                <i data-lucide="credit-card" class="w-4 h-4"></i>
+                            </span>
+                            Card Tachigrafiche & Conducente
+                        </h4>
+                        <span id="operatorReadinessBadge" class="text-xs font-black px-3 py-1 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60 flex items-center gap-1.5 shadow-sm">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span id="operatorReadinessText">100% In Regola</span>
+                        </span>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-center z-10">
+                        <!-- Radial Gauge & Center Counter -->
+                        <div class="md:col-span-5 flex flex-col items-center justify-center relative py-2">
+                            <div class="gauge-container">
+                                <div class="gauge-glow gauge-glow-animated" id="operatorGaugeGlow"></div>
+                                <div class="gauge-ring">
+                                    <canvas id="operatorStatusChart"></canvas>
+                                    <div class="gauge-center-label">
+                                        <span class="gauge-number" id="operatorTotalCenter">0</span>
+                                        <span class="gauge-label">Carte Totali</span>
+                                    </div>
+                                </div>
+                                <!-- Scale markers -->
+                                <div class="gauge-scale">
+                                    <div class="gauge-scale-dot bg-emerald-500"></div>
+                                    <div class="gauge-scale-line"></div>
+                                    <div class="gauge-scale-dot bg-amber-500"></div>
+                                    <div class="gauge-scale-line"></div>
+                                    <div class="gauge-scale-dot bg-red-500"></div>
+                                </div>
+                            </div>
+                            <!-- Conformity bar -->
+                            <div class="w-full max-w-[180px] mt-3">
+                                <div class="flex justify-between text-[10px] font-extrabold text-slate-500 dark:text-slate-400 mb-1">
+                                    <span class="flex items-center gap-1"><i data-lucide="shield-check" class="w-3 h-3 text-emerald-500"></i>Conformità</span>
+                                    <span id="operatorHealthPercentText" class="text-emerald-600 dark:text-emerald-400 font-black text-xs">100%</span>
+                                </div>
+                                <div class="w-full bg-slate-200 dark:bg-slate-700/50 h-2.5 rounded-full overflow-hidden border border-slate-300/30 dark:border-slate-600/30">
+                                    <div id="operatorHealthPercentBar" class="bg-gradient-to-r from-emerald-500 via-emerald-400 to-teal-400 h-full rounded-full transition-all duration-700 ease-out shadow-[0_0_8px_rgba(16,185,129,0.4)]" style="width: 100%"></div>
+                                </div>
                             </div>
                         </div>
                         
-                        <div class="flex-1 w-full grid grid-cols-1 gap-2.5">
-                            <div class="flex justify-between items-center bg-white dark:bg-slate-900/60 border border-emerald-100 dark:border-emerald-900/30 p-2.5 rounded-xl shadow-sm transition hover:scale-[1.02] cursor-pointer hover:border-emerald-400 dark:hover:border-emerald-500" onclick="switchTab('operators'); filterByStatusStat('ok')">
+                        <!-- Right Side: Interactive Status Badges -->
+                        <div class="md:col-span-7 grid grid-cols-1 gap-2.5">
+                            <div class="flex justify-between items-center bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 border-l-4 border-l-emerald-500 px-3.5 py-2.5 rounded-2xl shadow-sm transition-all duration-200 hover:scale-[1.02] cursor-pointer hover:border-emerald-400 dark:hover:border-emerald-500 hover:shadow-md group" onclick="switchTab('operators'); filterByStatusStat('ok')">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center text-emerald-500"><i data-lucide="check-circle" class="w-4 h-4"></i></div>
-                                    <span class="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wide">In Regola</span>
+                                    <div class="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60 group-hover:scale-110 transition-transform"><i data-lucide="check-circle" class="w-4 h-4"></i></div>
+                                    <div>
+                                        <span class="text-xs font-extrabold text-slate-700 dark:text-slate-200 uppercase tracking-wide block">In Regola</span>
+                                        <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold" id="operatorGreenPercentLabel">100% del totale</span>
+                                    </div>
                                 </div>
-                                <span class="text-lg font-bold text-emerald-500" id="operatorGreenCount">0</span>
+                                <span class="text-lg font-black text-emerald-600 dark:text-emerald-400" id="operatorGreenCount">0</span>
                             </div>
-                            <div class="flex justify-between items-center bg-white dark:bg-slate-900/60 border border-amber-100 dark:border-amber-900/30 p-2.5 rounded-xl shadow-sm transition hover:scale-[1.02] cursor-pointer hover:border-amber-400 dark:hover:border-amber-500" onclick="switchTab('operators'); filterByStatusStat('expiring')">
+
+                            <div class="flex justify-between items-center bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 border-l-4 border-l-amber-500 px-3.5 py-2.5 rounded-2xl shadow-sm transition-all duration-200 hover:scale-[1.02] cursor-pointer hover:border-amber-400 dark:hover:border-amber-500 hover:shadow-md group" onclick="switchTab('operators'); filterByStatusStat('expiring')">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center text-amber-500 pulse-amber-slow"><i data-lucide="clock" class="w-4 h-4"></i></div>
-                                    <span class="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wide">In Scadenza</span>
+                                    <div class="w-8 h-8 rounded-xl bg-amber-100 dark:bg-amber-950/60 flex items-center justify-center text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800/60 pulse-amber-slow group-hover:scale-110 transition-transform"><i data-lucide="clock" class="w-4 h-4"></i></div>
+                                    <div>
+                                        <span class="text-xs font-extrabold text-slate-700 dark:text-slate-200 uppercase tracking-wide block">In Scadenza</span>
+                                        <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold" id="operatorAmberPercentLabel">Entro 30 giorni</span>
+                                    </div>
                                 </div>
-                                <span class="text-lg font-bold text-amber-500" id="operatorAmberCount">0</span>
+                                <span class="text-lg font-black text-amber-500 dark:text-amber-400" id="operatorAmberCount">0</span>
                             </div>
-                            <div class="flex justify-between items-center bg-white dark:bg-slate-900/60 border border-red-100 dark:border-red-900/30 p-2.5 rounded-xl shadow-sm transition hover:scale-[1.02] cursor-pointer hover:border-red-400 dark:hover:border-red-500" onclick="switchTab('operators'); filterByStatusStat('expired')">
+
+                            <div class="flex justify-between items-center bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 border-l-4 border-l-red-500 px-3.5 py-2.5 rounded-2xl shadow-sm transition-all duration-200 hover:scale-[1.02] cursor-pointer hover:border-red-400 dark:hover:border-red-500 hover:shadow-md group" onclick="switchTab('operators'); filterByStatusStat('expired')">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-500/10 flex items-center justify-center text-red-500 pulse-alert"><i data-lucide="alert-triangle" class="w-4 h-4"></i></div>
-                                    <span class="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wide">Scaduti</span>
+                                    <div class="w-8 h-8 rounded-xl bg-red-100 dark:bg-red-950/60 flex items-center justify-center text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800/60 pulse-alert group-hover:scale-110 transition-transform"><i data-lucide="alert-triangle" class="w-4 h-4"></i></div>
+                                    <div>
+                                        <span class="text-xs font-extrabold text-slate-700 dark:text-slate-200 uppercase tracking-wide block">Scaduti</span>
+                                        <span class="text-[10px] text-red-600 dark:text-red-400 font-bold" id="operatorRedPercentLabel">Intervenire subito</span>
+                                    </div>
                                 </div>
-                                <span class="text-lg font-bold text-red-500" id="operatorRedCount">0</span>
+                                <span class="text-lg font-black text-red-600 dark:text-red-400" id="operatorRedCount">0</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
             <!-- CHRONOLOGICAL TIMELINE -->
-            <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm mb-6">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-3">
-                    <h4 class="text-xs font-extrabold uppercase tracking-widest text-slate-400 flex items-center gap-1.5">
-                        <i data-lucide="calendar-days" class="w-4 h-4 text-brand-500"></i> Prossime Scadenze Cronologiche Singole (Top 5)
+            <div class="relative overflow-hidden bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 shadow-lg mb-6">
+                <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand-500 via-indigo-500 to-purple-500"></div>
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-4">
+                    <h4 class="text-xs font-black uppercase tracking-widest text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                        <span class="p-1.5 rounded-lg bg-brand-500/10 text-brand-500 border border-brand-500/20">
+                            <i data-lucide="calendar-days" class="w-4 h-4"></i>
+                        </span>
+                        Prossime Scadenze Cronologiche Singole (Top 5)
                     </h4>
-                    <span class="text-[10px] text-slate-400 italic">Nota: mostra le scadenze individuali, non il numero di mezzi fisici.</span>
+                    <span class="text-[10px] text-slate-400 font-semibold italic">Nota: mostra le scadenze individuali, non il numero di mezzi fisici.</span>
                 </div>
-                <div id="chronologicalTimeline" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3"></div>
+                <div id="chronologicalTimeline" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3.5"></div>
             </div>
 
             <!-- TAB SWITCHER -->
@@ -434,6 +809,11 @@
                         <button onclick="toggleLogistics()" id="logisticsToggleBtn" class="text-sm px-3 py-2 rounded-xl transition flex items-center space-x-1.5" title="Mostra o nascondi i dati della logistica">
                             <i id="logisticsIcon" data-lucide="eye" class="w-4 h-4"></i>
                             <span id="logisticsText">Logistica Visibile</span>
+                        </button>
+
+                        <button id="proCardToggleBtn" onclick="toggleProCardDesign()" class="text-sm px-3 py-2 rounded-xl transition flex items-center space-x-1.5 bg-brand-50 dark:bg-brand-950/60 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-brand-800 font-bold shadow-sm" title="Attiva/Disattiva Stile Card Enterprise Pro">
+                            <i id="proCardIcon" data-lucide="sparkles" class="w-4 h-4 text-brand-500"></i>
+                            <span id="proCardText">Stile Pro: ON</span>
                         </button>
 
                         <button onclick="exportJSON()" class="bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-sm px-3 py-2 rounded-xl transition flex items-center space-x-1.5" title="Esporta Backup Dati in formato .json">
@@ -808,18 +1188,22 @@
     </div>
 
     <!-- MODAL: WARNING THRESHOLDS -->
+    <!-- MODAL: SETTINGS -->
     <div id="settingsModal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 hidden backdrop-blur-sm">
-        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 max-w-sm w-full transition-all">
-            <div class="px-6 py-4 border-b border-slate-150 dark:border-slate-700 flex items-center justify-between bg-slate-50 dark:bg-slate-900 rounded-t-2xl">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 max-w-md w-full max-h-[90vh] flex flex-col transition-all overflow-hidden">
+            <!-- Header (Fixed Top) -->
+            <div class="px-6 py-4 border-b border-slate-150 dark:border-slate-700 flex items-center justify-between bg-slate-50 dark:bg-slate-900 rounded-t-2xl shrink-0">
                 <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center space-x-2">
                     <i data-lucide="settings" class="w-4 h-4 text-brand-600"></i>
-                    <span>Soglie Allarme Applicazione</span>
+                    <span>Impostazioni Applicazione</span>
                 </h3>
-                <button onclick="closeSettingsModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 p-1">
+                <button onclick="closeSettingsModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
-            <div class="p-6 space-y-4">
+
+            <!-- Body (Scrollable Content) -->
+            <div class="p-6 space-y-4 overflow-y-auto flex-1">
                 <div>
                     <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5">Giorni Pre-allarme (Stato Giallo):</label>
                     <select id="settingWarningDays" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white rounded-xl text-sm">
@@ -862,6 +1246,8 @@
                         <span class="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1">Voce Selezionata:</span>
                         <select id="settingVoiceSelect" onchange="onVoiceDropdownChange()" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-white rounded-xl text-xs font-medium focus:ring-2 focus:ring-brand-500 transition-colors">
                         </select>
+                    </div>
+
                     <!-- REGOLAZIONI VOCE -->
                     <div class="grid grid-cols-2 gap-3 mt-3">
                         <div>
@@ -878,7 +1264,6 @@
                             </div>
                             <input type="range" id="settingVoicePitch" min="0.5" max="1.5" step="0.05" value="1.0" oninput="document.getElementById('valPitch').innerText = parseFloat(this.value).toFixed(2)" onchange="testVoiceSynthesis()" class="w-full h-1.5 bg-slate-200 dark:bg-slate-600 rounded-lg appearance-none cursor-pointer accent-brand-500">
                         </div>
-                    </div>
                     </div>
 
                     <!-- SELEZIONE SUONO DI INIZIO (BIP / CHIME / BELL) -->
@@ -909,14 +1294,36 @@
                             <i id="toggleSettingsPinIcon" data-lucide="eye" class="w-4 h-4"></i>
                         </button>
                     </div>
-                    <p class="text-[11px] text-slate-400 mt-1">Se inserito, sarà richiesto per accedere a impostazioni, visualizzare i PIN delle carte, mostrare la logistica o salvare modifiche.</p>
                 </div>
 
-                <div class="border-t border-slate-200 dark:border-slate-700 pt-4 flex justify-end">
-                    <button onclick="saveSettings()" class="bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition w-full shadow-md">
-                        Salva Impostazioni
-                    </button>
+                <!-- SEZIONE VISIBILITÀ MODULI -->
+                <div class="border-t border-slate-150 dark:border-slate-700 pt-4">
+                    <label class="flex items-center justify-between cursor-pointer">
+                        <span class="text-xs font-bold text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
+                            <i data-lucide="credit-card" class="w-3.5 h-3.5 text-brand-500"></i> Mostra Modulo Card Tachigrafiche & Conducente
+                        </span>
+                        <input type="checkbox" id="settingShowOperators" checked class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500 cursor-pointer">
+                    </label>
+                    <p class="text-[11px] text-slate-400 mt-1">Se disattivato, la scheda e i controlli dedicati alle card conducenti verranno nascosti nell'interfaccia senza cancellare i dati.</p>
                 </div>
+
+                <!-- SEZIONE STILE GRAFICO CARD ENTERPRISE -->
+                <div class="border-t border-slate-150 dark:border-slate-700 pt-4">
+                    <label class="flex items-center justify-between cursor-pointer">
+                        <span class="text-xs font-bold text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
+                            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-brand-500"></i> Stile Card Enterprise Pro (Fascia Superiore & Hover 3D)
+                        </span>
+                        <input type="checkbox" id="settingProCardDesign" checked class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500 cursor-pointer">
+                    </label>
+                    <p class="text-[11px] text-slate-400 mt-1">Attiva/disattiva il bordo di evidenziazione superiore ed il sollevamento 3D al passaggio del mouse sulle schede.</p>
+                </div>
+            </div>
+
+            <!-- Footer (Fixed Bottom Button) -->
+            <div class="p-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 rounded-b-2xl shrink-0">
+                <button onclick="saveSettings()" class="bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition w-full shadow-md flex items-center justify-center gap-2">
+                    <i data-lucide="save" class="w-4 h-4"></i> Salva Impostazioni
+                </button>
             </div>
         </div>
     </div>
@@ -2599,10 +3006,10 @@
             const btn = document.getElementById('pushStatusBtn');
             if(!btn) return;
             if (pushNotificationsEnabled) {
-                btn.className = "hidden sm:flex items-center space-x-1.5 bg-brand-50 dark:bg-brand-950/40 text-brand-700 dark:text-brand-400 px-3 py-2 rounded-xl text-xs font-semibold border border-brand-200 dark:border-brand-800 hover:bg-brand-100 dark:hover:bg-brand-900/40 transition";
+                btn.className = "h-9 hidden sm:flex items-center space-x-1.5 bg-brand-50 dark:bg-brand-950/40 text-brand-700 dark:text-brand-400 px-3 rounded-xl text-xs font-bold border border-brand-200 dark:border-brand-800 hover:bg-brand-100 dark:hover:bg-brand-900/40 transition";
                 btn.innerHTML = `<i data-lucide="bell-ring" class="w-4 h-4"></i><span>Push Attive</span>`;
             } else {
-                btn.className = "hidden sm:flex items-center space-x-1.5 bg-slate-50 dark:bg-slate-900/40 text-slate-600 dark:text-slate-400 px-3 py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition";
+                btn.className = "h-9 hidden sm:flex items-center space-x-1.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 px-3 rounded-xl text-xs font-bold border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition";
                 btn.innerHTML = `<i data-lucide="bell-off" class="w-4 h-4"></i><span>Push Off</span>`;
             }
             if(window.lucide) lucide.createIcons();
@@ -2725,6 +3132,8 @@ let isAudioEnabled = true;
         let synthVoice = null; 
         let isDarkMode = false; 
         let showLogistics = true; 
+        let showOperatorsModule = true;
+        let showProCardDesign = true;
         let warningThresholdDays = 30; 
         let confirmCallback = null;
         let selectedVehicleForRenew = null; 
@@ -2806,14 +3215,14 @@ let isAudioEnabled = true;
                 // 🔴 PIN ATTIVO — bottone rosso
                 icon.setAttribute('data-lucide', 'lock');
                 icon.className = "w-4 h-4 text-red-600 dark:text-red-400";
-                btn.className = "flex items-center space-x-1.5 p-2.5 rounded-xl bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-400 border border-red-300 dark:border-red-700 hover:bg-red-100 dark:hover:bg-red-900/40 transition shadow-sm";
+                btn.className = "h-9 flex items-center space-x-1.5 px-3 rounded-xl bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-400 border border-red-300 dark:border-red-700 hover:bg-red-100 dark:hover:bg-red-900/40 transition shadow-sm text-xs font-bold";
                 btn.title = "PIN Attivo: Clicca per sbloccare";
                 if (label) label.innerText = "Bloccato";
             } else {
                 // 🟢 PIN DISATTIVO — bottone verde
                 icon.setAttribute('data-lucide', 'lock-open');
                 icon.className = "w-4 h-4 text-emerald-600 dark:text-emerald-400";
-                btn.className = "flex items-center space-x-1.5 p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-700 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition shadow-sm";
+                btn.className = "h-9 flex items-center space-x-1.5 px-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-700 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition shadow-sm text-xs font-bold";
                 btn.title = "PIN Disattivato: Clicca per bloccare";
                 if (label) label.innerText = "Libero";
             }
@@ -2960,6 +3369,72 @@ let isAudioEnabled = true;
                 document.getElementById('settingVoicePitch').value = savedPitch;
                 document.getElementById('valPitch').innerText = parseFloat(savedPitch).toFixed(2);
             }
+
+            const savedShowOps = localStorage.getItem('fleet_show_operators_vicla');
+            showOperatorsModule = savedShowOps === null ? true : (savedShowOps === 'true');
+            const elShowOps = document.getElementById('settingShowOperators');
+            if (elShowOps) {
+                elShowOps.checked = showOperatorsModule;
+            }
+
+            const savedProDesign = localStorage.getItem('fleet_pro_card_design_vicla');
+            showProCardDesign = savedProDesign === null ? true : (savedProDesign === 'true');
+            const elProDesign = document.getElementById('settingProCardDesign');
+            if (elProDesign) {
+                elProDesign.checked = showProCardDesign;
+            }
+            updateProCardDesignUI();
+            applyOperatorsModuleVisibility();
+        }
+
+        function applyOperatorsModuleVisibility() {
+            const tabOperatorsBtn = document.getElementById('tabOperatorsBtn');
+            const operatorChartCard = document.getElementById('operatorChartCard');
+            const chartsContainerGrid = document.getElementById('chartsContainerGrid');
+
+            if (tabOperatorsBtn) {
+                if (showOperatorsModule) {
+                    tabOperatorsBtn.classList.remove('hidden');
+                } else {
+                    tabOperatorsBtn.classList.add('hidden');
+                    if (activeTab === 'operators') {
+                        switchTab('vehicles');
+                    }
+                }
+            }
+
+            if (operatorChartCard) {
+                if (showOperatorsModule) {
+                    operatorChartCard.classList.remove('hidden');
+                } else {
+                    operatorChartCard.classList.add('hidden');
+                }
+            }
+
+            if (chartsContainerGrid) {
+                if (showOperatorsModule) {
+                    chartsContainerGrid.classList.remove('lg:grid-cols-1');
+                    chartsContainerGrid.classList.add('lg:grid-cols-2');
+                } else {
+                    chartsContainerGrid.classList.remove('lg:grid-cols-2');
+                    chartsContainerGrid.classList.add('lg:grid-cols-1');
+                }
+            }
+
+            const printTarget = document.getElementById('printTarget');
+            if (printTarget) {
+                const opOpt = printTarget.querySelector('option[value="operators"]');
+                const allOpt = printTarget.querySelector('option[value="all"]');
+                if (opOpt) opOpt.style.display = showOperatorsModule ? '' : 'none';
+                if (allOpt) allOpt.innerText = showOperatorsModule ? 'Tutto (Veicoli e Operatori)' : 'Tutto (Flotta Automezzi)';
+                if (!showOperatorsModule && printTarget.value === 'operators') {
+                    printTarget.value = 'vehicles';
+                }
+            }
+
+            if (typeof renderTimeline === 'function') {
+                renderTimeline();
+            }
         }
 
         function updateThresholdLabels() {
@@ -3022,6 +3497,20 @@ let isAudioEnabled = true;
             const pEl = document.getElementById('settingVoicePitch');
             if (rEl) localStorage.setItem('fleet_voice_rate_vicla', rEl.value);
             if (pEl) localStorage.setItem('fleet_voice_pitch_vicla', pEl.value);
+
+            const elShowOps = document.getElementById('settingShowOperators');
+            if (elShowOps) {
+                showOperatorsModule = elShowOps.checked;
+                localStorage.setItem('fleet_show_operators_vicla', showOperatorsModule ? 'true' : 'false');
+            }
+            applyOperatorsModuleVisibility();
+
+            const elProDesign = document.getElementById('settingProCardDesign');
+            if (elProDesign) {
+                showProCardDesign = elProDesign.checked;
+                localStorage.setItem('fleet_pro_card_design_vicla', showProCardDesign ? 'true' : 'false');
+            }
+            updateProCardDesignUI();
 
             updateThresholdLabels();
             closeSettingsModal();
@@ -3141,6 +3630,36 @@ let isAudioEnabled = true;
                 btn.className = "bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-sm px-3 py-2 rounded-xl transition flex items-center space-x-1.5 font-semibold border dark:border-slate-600";
             }
             lucide.createIcons();
+        }
+
+        function toggleProCardDesign() {
+            showProCardDesign = !showProCardDesign;
+            localStorage.setItem('fleet_pro_card_design_vicla', showProCardDesign ? 'true' : 'false');
+            const elProDesign = document.getElementById('settingProCardDesign');
+            if (elProDesign) {
+                elProDesign.checked = showProCardDesign;
+            }
+            updateProCardDesignUI();
+            applyFilters();
+            showToast(showProCardDesign ? "Stile Card Enterprise Pro attivato" : "Stile Card Standard attivato", "info");
+        }
+
+        function updateProCardDesignUI() {
+            const btn = document.getElementById('proCardToggleBtn');
+            const icon = document.getElementById('proCardIcon');
+            const text = document.getElementById('proCardText');
+            if (!btn || !text) return;
+
+            if (showProCardDesign) {
+                text.innerText = "Stile Pro: ON";
+                if (icon) icon.className = "w-4 h-4 text-brand-500";
+                btn.className = "text-sm px-3 py-2 rounded-xl transition flex items-center space-x-1.5 bg-brand-50 dark:bg-brand-950/60 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-brand-800 font-bold shadow-sm";
+            } else {
+                text.innerText = "Stile Pro: OFF";
+                if (icon) icon.className = "w-4 h-4 text-slate-400";
+                btn.className = "text-sm px-3 py-2 rounded-xl transition flex items-center space-x-1.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600 font-semibold";
+            }
+            if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
         }
 
         function loadTheme() {
@@ -3529,12 +4048,12 @@ let isAudioEnabled = true;
             if (btn) {
                 if (isAudioEnabled) {
                     btn.innerHTML = `<i data-lucide="volume-2" class="w-4 h-4"></i><span>Audio Attivo</span>`;
-                    btn.className = "hidden sm:flex items-center space-x-1.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 px-3 py-2 rounded-xl text-xs font-semibold border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition";
+                    btn.className = "h-9 hidden sm:flex items-center space-x-1.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 px-3 rounded-xl text-xs font-bold border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition";
                     showToast("Audio assistente attivato", "info");
                 } else {
                     if ('speechSynthesis' in window) window.speechSynthesis.cancel();
                     btn.innerHTML = `<i data-lucide="volume-x" class="w-4 h-4"></i><span>Audio Disattivato</span>`;
-                    btn.className = "hidden sm:flex items-center space-x-1.5 bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 px-3 py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-600 transition";
+                    btn.className = "h-9 hidden sm:flex items-center space-x-1.5 bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 px-3 rounded-xl text-xs font-bold border border-slate-200 dark:border-slate-600 transition";
                     showToast("Audio assistente disattivato", "info");
                 }
                 lucide.createIcons();
@@ -4117,11 +4636,14 @@ let isAudioEnabled = true;
 
             container.innerHTML = filtered.map((v, index) => {
                 const overallStatus = getVehicleOverallStatus(v);
-                let borderClass = "border-slate-200 dark:border-slate-700 hover:border-brand-400 dark:hover:border-brand-500";
+                let borderClass = "";
+                let statusAccentBar = "bg-gradient-to-r from-brand-500 via-indigo-500 to-brand-600";
                 if (overallStatus === 'red') {
-                    borderClass = "border-red-400 dark:border-red-800/80 bg-red-50/10 dark:bg-red-950/10 hover:border-red-500 shadow-sm shadow-red-500/5 glow-red";
+                    borderClass = "border-red-400 dark:border-red-800/90 glow-red";
+                    statusAccentBar = "bg-gradient-to-r from-red-500 via-red-600 to-red-500";
                 } else if (overallStatus === 'amber') {
-                    borderClass = "border-amber-300 dark:border-amber-700/80 bg-amber-50/10 dark:bg-amber-950/10 hover:border-amber-400 glow-amber";
+                    borderClass = "border-amber-300 dark:border-amber-700/90 glow-amber";
+                    statusAccentBar = "bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600";
                 }
 
                 const payloadHTML = showLogistics ? `
@@ -4134,12 +4656,17 @@ let isAudioEnabled = true;
                 let colSpanDeadlines = showLogistics ? 'lg:col-span-8' : 'lg:col-span-12';
                 let gridColsDeadlines = showLogistics ? 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-3' : 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4';
 
+                const cardContainerClass = showProCardDesign ? "vehicle-card-pro" : "bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm transition-all duration-300 relative";
+                const topAccentBarHTML = showProCardDesign ? `<div class="h-1.5 w-full absolute top-0 left-0 ${statusAccentBar}"></div>` : '';
+                const marginTopContent = showProCardDesign ? 'mt-1' : '';
+
                 return `
-                    <div class="bg-white dark:bg-slate-800 rounded-2xl border-2 ${borderClass} p-5 shadow-sm transition duration-150 relative">
-                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-slate-100 dark:border-slate-700 pb-3">
+                    <div id="vehicle-card-${v.id}" class="${cardContainerClass} ${borderClass} p-5 relative">
+                        ${topAccentBarHTML}
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-slate-100 dark:border-slate-700/80 pb-3 ${marginTopContent}">
                             <div class="flex items-center space-x-3">
                                 <div class="text-sm font-black text-slate-300 dark:text-slate-600">#${index + 1}</div>
-                                <div class="bg-brand-100 dark:bg-brand-950/60 text-brand-700 dark:text-brand-300 font-extrabold px-3 py-1.5 rounded-lg text-lg tracking-wider border border-brand-200/40 dark:border-brand-800/60 shadow-sm uppercase">
+                                <div class="bg-brand-100 dark:bg-slate-900 text-brand-700 dark:text-brand-300 font-extrabold px-3 py-1.5 rounded-lg text-lg tracking-wider border border-brand-200/40 dark:border-brand-800/80 shadow-sm uppercase">
                                     ${v.plate}
                                 </div>
                                 <div>
@@ -4165,7 +4692,7 @@ let isAudioEnabled = true;
                         </div>
 
                         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-4">
-                            <div class="${colSpanLogistics} space-y-3 bg-slate-50/50 dark:bg-slate-900/50 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
+                            <div class="${colSpanLogistics} space-y-3 bg-slate-50 dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-700">
                                 <h5 class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-1">
                                     <i data-lucide="credit-card" class="w-3.5 h-3.5 text-slate-500"></i> Servizi Autostradali & Carte
                                 </h5>
@@ -4303,7 +4830,7 @@ let isAudioEnabled = true;
                 else if (isVehicleCompany) { iconName = 'truck'; }
                 
                 let html = `
-                    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border ${borderColor} hover:shadow-md transition p-5 relative flex flex-col h-full animate-fade-in">
+                    <div id="operator-card-${op.id}" class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border ${borderColor} hover:shadow-md transition-all duration-300 p-5 relative flex flex-col h-full animate-fade-in">
                         <div class="flex items-start gap-4 mb-4">
                             <div class="p-3 ${iconBg} ${iconColor} rounded-xl shadow-sm shrink-0">
                                 <i data-lucide="${iconName}" class="w-6 h-6"></i>
@@ -4379,13 +4906,16 @@ let isAudioEnabled = true;
 
         function renderDeadlineBox(title, dateString) {
             const state = checkDeadlineState(dateString);
-            let bgClass = "bg-slate-100 dark:bg-slate-850 border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-500";
-            let badgeClass = "bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300";
-            let statusText = "Non impostato";
+            let leftBorderClass = "border-l-slate-300 dark:border-l-slate-700";
+            let bgClass = "bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700/80 text-slate-500 dark:text-slate-400";
+            let badgeClass = "bg-slate-200/80 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-300/50 dark:border-slate-700/60 font-semibold";
+            let statusText = "NON IMPOSTATO";
             let iconMarkup = '<i data-lucide="minus" class="w-3 h-3"></i>';
             let daysRemainingText = "";
+            let dateTextClass = "text-slate-400 dark:text-slate-500 font-normal";
 
             if (dateString) {
+                dateTextClass = "text-slate-800 dark:text-white font-extrabold";
                 const today = new Date();
                 today.setHours(0,0,0,0);
                 const deadlineDate = new Date(dateString);
@@ -4394,39 +4924,42 @@ let isAudioEnabled = true;
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
                 if (state === 'red') {
-                    bgClass = "bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900/60 text-red-900 dark:text-red-300";
-                    badgeClass = "bg-red-600 text-white font-bold animate-pulse";
+                    leftBorderClass = "border-l-red-500";
+                    bgClass = "bg-red-50/50 dark:bg-slate-900 border-slate-200 dark:border-slate-700/80 text-red-900 dark:text-red-300";
+                    badgeClass = "bg-red-500/15 text-red-600 dark:text-red-400 border border-red-500/30 font-extrabold shadow-sm";
                     const overdue = Math.abs(diffDays);
                     statusText = "SCADUTO";
                     iconMarkup = '<i data-lucide="alert-triangle" class="w-3 h-3"></i>';
-                    daysRemainingText = `<span class="text-[11px] text-red-600 dark:text-red-400 font-bold block mt-1">Scaduto da ${overdue} ${overdue === 1 ? 'giorno' : 'giorni'} ⚠️</span>`;
+                    daysRemainingText = `<span class="text-[11px] text-red-600 dark:text-red-400 font-extrabold block mt-1">Scaduto da ${overdue} ${overdue === 1 ? 'giorno' : 'giorni'} ⚠️</span>`;
                 } else if (state === 'amber') {
-                    bgClass = "bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-900/60 text-amber-900 dark:text-amber-300";
-                    badgeClass = "bg-amber-500 text-white font-bold";
+                    leftBorderClass = "border-l-amber-500";
+                    bgClass = "bg-amber-50/50 dark:bg-slate-900 border-slate-200 dark:border-slate-700/80 text-amber-900 dark:text-amber-300";
+                    badgeClass = "bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 font-extrabold shadow-sm";
                     statusText = "IN SCADENZA";
                     iconMarkup = '<i data-lucide="clock" class="w-3 h-3"></i>';
-                    daysRemainingText = `<span class="text-[11px] text-amber-600 dark:text-amber-400 font-bold block mt-1">Mancano ${diffDays} ${diffDays === 1 ? 'giorno' : 'giorni'} ⏳</span>`;
+                    daysRemainingText = `<span class="text-[11px] text-amber-600 dark:text-amber-400 font-extrabold block mt-1">Mancano ${diffDays} ${diffDays === 1 ? 'giorno' : 'giorni'} ⏳</span>`;
                 } else if (state === 'emerald') {
-                    bgClass = "bg-emerald-50/50 dark:bg-emerald-950/10 border-emerald-200 dark:border-emerald-900/60 text-emerald-950 dark:text-emerald-300";
-                    badgeClass = "bg-emerald-600 text-white font-bold";
+                    leftBorderClass = "border-l-emerald-500";
+                    bgClass = "bg-emerald-50/50 dark:bg-slate-900 border-slate-200 dark:border-slate-700/80 text-emerald-950 dark:text-emerald-300";
+                    badgeClass = "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 font-extrabold shadow-sm";
                     statusText = "OK";
                     iconMarkup = '<i data-lucide="check" class="w-3 h-3"></i>';
-                    daysRemainingText = `<span class="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold block mt-1">Mancano ${diffDays} giorni ✅</span>`;
+                    daysRemainingText = `<span class="text-[11px] text-emerald-600 dark:text-emerald-400 font-bold block mt-1">Mancano ${diffDays} giorni ✅</span>`;
                 }
             }
 
             const formattedDate = dateString ? formatDateString(dateString) : '--/--/----';
 
             return `
-                <div class="border rounded-xl p-3 flex flex-col justify-between ${bgClass} transition-all">
+                <div class="border border-l-4 ${leftBorderClass} rounded-xl p-3 flex flex-col justify-between ${bgClass} transition-all duration-200 hover:shadow-sm">
                     <div class="flex justify-between items-start gap-1">
-                        <span class="text-[10px] font-bold uppercase tracking-wide opacity-80 truncate" title="${title}">${title}</span>
-                        <span class="text-[8px] px-1.5 py-0.5 rounded-full uppercase tracking-wider ${badgeClass} flex items-center gap-0.5 font-bold">
+                        <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 truncate" title="${title}">${title}</span>
+                        <span class="text-[8.5px] px-2 py-0.5 rounded-md uppercase tracking-wider ${badgeClass} flex items-center gap-1 font-extrabold">
                             ${iconMarkup} <span>${statusText}</span>
                         </span>
                     </div>
-                    <div class="mt-1 flex flex-col justify-end">
-                        <div class="text-sm font-extrabold tracking-wider font-mono dark:text-white">
+                    <div class="mt-2 flex flex-col justify-end">
+                        <div class="text-sm tracking-wider font-mono ${dateTextClass}">
                             ${formattedDate}
                         </div>
                         ${daysRemainingText}
@@ -4435,10 +4968,11 @@ let isAudioEnabled = true;
             `;
         }
 
+
         function renderCardRow(vehicleId, cardKey, cardData) {
             if (!cardData || !cardData.num || cardData.num === 'Nessuna' || cardData.num === 'Nessuno') {
                 return `
-                    <div class="flex items-center justify-between text-xs p-2 bg-white dark:bg-slate-800 rounded-lg border border-slate-150 dark:border-slate-700 opacity-60">
+                    <div class="flex items-center justify-between text-xs p-2 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
                         <span class="font-semibold text-slate-500 dark:text-slate-400">${cardData?.name || 'Card'}:</span>
                         <span class="text-slate-400 italic text-[11px]">Nessuna</span>
                     </div>
@@ -4476,6 +5010,38 @@ let isAudioEnabled = true;
             });
         }
 
+        function navigateToResourceCard(resourceType, resourceId) {
+            if (resourceType === 'operator' && !showOperatorsModule) {
+                showToast("Il modulo conducenti è disattivato nelle Impostazioni.", "warning");
+                return;
+            }
+
+            const searchInput = document.getElementById('searchInput');
+            const statusFilter = document.getElementById('statusFilter');
+            if (searchInput) searchInput.value = '';
+            if (statusFilter) statusFilter.value = 'all';
+
+            if (resourceType === 'vehicle') {
+                switchTab('vehicles');
+            } else {
+                switchTab('operators');
+            }
+
+            applyFilters();
+
+            setTimeout(() => {
+                const cardId = resourceType === 'vehicle' ? `vehicle-card-${resourceId}` : `operator-card-${resourceId}`;
+                const cardEl = document.getElementById(cardId);
+                if (cardEl) {
+                    cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    cardEl.classList.add('ring-4', 'ring-brand-500', 'shadow-xl', 'scale-[1.02]');
+                    setTimeout(() => {
+                        cardEl.classList.remove('ring-4', 'ring-brand-500', 'shadow-xl', 'scale-[1.02]');
+                    }, 2500);
+                }
+            }, 120);
+        }
+
         function renderTimeline() {
             const timelineContainer = document.getElementById('chronologicalTimeline');
             if (!timelineContainer) return;
@@ -4496,37 +5062,39 @@ let isAudioEnabled = true;
                 }
             });
 
-            operators.forEach(op => {
-                if (op.type === 'driver') {
-                    if (op.expiration) {
+            if (showOperatorsModule) {
+                operators.forEach(op => {
+                    if (op.type === 'driver') {
+                        if (op.expiration) {
+                            allDeadlines.push({
+                                label: `${op.name} (Scadenza Card)`,
+                                date: op.expiration,
+                                state: checkDeadlineState(op.expiration),
+                                resourceType: 'operator',
+                                id: op.id
+                            });
+                        }
+                        if (op.lastDownload) {
+                            const nextDate = calculateNextDownloadDate(op.lastDownload);
+                            allDeadlines.push({
+                                label: `${op.name} (Scarico Conducente)`,
+                                date: nextDate,
+                                state: checkDeadlineState(nextDate),
+                                resourceType: 'operator',
+                                id: op.id
+                            });
+                        }
+                    } else if (op.expiration) {
                         allDeadlines.push({
-                            label: `${op.name} (Scadenza Card)`,
+                            label: `${op.name} (${op.type === 'company' ? 'Aziendale' : 'Mezzo'})`,
                             date: op.expiration,
                             state: checkDeadlineState(op.expiration),
                             resourceType: 'operator',
                             id: op.id
                         });
                     }
-                    if (op.lastDownload) {
-                        const nextDate = calculateNextDownloadDate(op.lastDownload);
-                        allDeadlines.push({
-                            label: `${op.name} (Scarico Conducente)`,
-                            date: nextDate,
-                            state: checkDeadlineState(nextDate),
-                            resourceType: 'operator',
-                            id: op.id
-                        });
-                    }
-                } else if (op.expiration) {
-                    allDeadlines.push({
-                        label: `${op.name} (${op.type === 'company' ? 'Aziendale' : 'Mezzo'})`,
-                        date: op.expiration,
-                        state: checkDeadlineState(op.expiration),
-                        resourceType: 'operator',
-                        id: op.id
-                    });
-                }
-            });
+                });
+            }
 
             allDeadlines.sort((a, b) => new Date(a.date) - new Date(b.date));
             const top5 = allDeadlines.slice(0, 5);
@@ -4542,21 +5110,27 @@ let isAudioEnabled = true;
                 else if (d.state === 'amber') badgeClass = "bg-amber-500 text-white";
                 else if (d.state === 'emerald') badgeClass = "bg-emerald-600 text-white";
 
+                const onClickHandler = `navigateToResourceCard('${d.resourceType}', '${d.id}')`;
+
                 return `
-                    <div class="p-2.5 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+                    <div onclick="${onClickHandler}" class="p-2.5 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col justify-between cursor-pointer hover:border-brand-500 dark:hover:border-brand-500 hover:shadow-md hover:scale-[1.02] transition-all duration-200 group" title="Clicca per visualizzare la scheda di: ${d.label}">
                         <div class="flex items-center justify-between gap-1 mb-1">
                             <span class="text-[9px] px-1.5 py-0.5 rounded-full font-bold uppercase truncate tracking-wider ${badgeClass}">
                                 ${formatDateString(d.date)}
                             </span>
-                            <i data-lucide="${d.resourceType === 'vehicle' ? 'truck' : 'user'}" class="w-3.5 h-3.5 text-slate-400"></i>
+                            <div class="flex items-center gap-1">
+                                <i data-lucide="${d.resourceType === 'vehicle' ? 'truck' : 'user'}" class="w-3.5 h-3.5 text-slate-400 group-hover:text-brand-500 transition-colors"></i>
+                                <i data-lucide="external-link" class="w-3 h-3 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                            </div>
                         </div>
-                        <p class="text-[11px] font-bold text-slate-700 dark:text-slate-300 truncate" title="${d.label}">${d.label}</p>
+                        <p class="text-[11px] font-bold text-slate-700 dark:text-slate-300 group-hover:text-brand-600 dark:group-hover:text-brand-400 truncate transition-colors" title="${d.label}">${d.label}</p>
                     </div>
                 `;
             }).join('');
 
             lucide.createIcons();
         }
+
 
         function getDeadlineFriendlyName(key) {
             const dictionary = {
@@ -4674,7 +5248,7 @@ let isAudioEnabled = true;
             }
 
             buildNotificationPanelList(expired, expiring);
-            if (typeof updateCharts === "function") updateCharts();
+            updateCharts();
             
             // Push Notification trigger
             if (typeof pushNotificationsEnabled !== 'undefined' && pushNotificationsEnabled) {
@@ -4688,6 +5262,284 @@ let isAudioEnabled = true;
                 }
                 lastNotifiedExpiredCount = expired;
                 lastNotifiedExpiringCount = expiring;
+            }
+        }
+
+        var fleetChartInstance = null;
+        var operatorChartInstance = null;
+
+        function updateCharts() {
+            // Calculate Fleet Stats
+            let fRed = 0, fAmber = 0, fOk = 0;
+            vehicles.forEach(v => {
+                const s = getVehicleOverallStatus(v);
+                if (s === 'red') fRed++;
+                else if (s === 'amber') fAmber++;
+                else if (s === 'emerald') fOk++;
+            });
+            const fTotal = vehicles.length;
+            
+            const fGreenPct = fTotal > 0 ? Math.round((fOk / fTotal) * 100) : 100;
+            const fAmberPct = fTotal > 0 ? Math.round((fAmber / fTotal) * 100) : 0;
+            const fRedPct = fTotal > 0 ? Math.round((fRed / fTotal) * 100) : 0;
+
+            const elFTotal = document.getElementById('fleetTotalCenter');
+            if (elFTotal) elFTotal.innerText = fTotal;
+            const elFGreen = document.getElementById('fleetGreenCount');
+            if (elFGreen) elFGreen.innerText = fOk;
+            const elFAmber = document.getElementById('fleetAmberCount');
+            if (elFAmber) elFAmber.innerText = fAmber;
+            const elFRed = document.getElementById('fleetRedCount');
+            if (elFRed) elFRed.innerText = fRed;
+
+            const elFHealthText = document.getElementById('fleetHealthPercentText');
+            if (elFHealthText) elFHealthText.innerText = `${fGreenPct}%`;
+            const elFHealthBar = document.getElementById('fleetHealthPercentBar');
+            if (elFHealthBar) elFHealthBar.style.width = `${fGreenPct}%`;
+
+            const elFGreenLabel = document.getElementById('fleetGreenPercentLabel');
+            if (elFGreenLabel) elFGreenLabel.innerText = `${fGreenPct}% del totale`;
+            const elFAmberLabel = document.getElementById('fleetAmberPercentLabel');
+            if (elFAmberLabel) elFAmberLabel.innerText = fAmber > 0 ? `${fAmberPct}% del totale` : `Entro 30 giorni`;
+            const elFRedLabel = document.getElementById('fleetRedPercentLabel');
+            if (elFRedLabel) elFRedLabel.innerText = fRed > 0 ? `${fRedPct}% del totale (Azione!)` : `Intervenire subito`;
+
+            const elFBadgeText = document.getElementById('fleetReadinessText');
+            const elFBadge = document.getElementById('fleetReadinessBadge');
+            if (elFBadgeText && elFBadge) {
+                if (fRed > 0) {
+                    elFBadgeText.innerText = `${fRed} Scaduti!`;
+                    elFBadge.className = "text-xs font-black px-3 py-1 rounded-xl bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/30 flex items-center gap-1.5 shadow-sm";
+                } else if (fAmber > 0) {
+                    elFBadgeText.innerText = `${fAmber} In Scadenza`;
+                    elFBadge.className = "text-xs font-black px-3 py-1 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 flex items-center gap-1.5 shadow-sm";
+                } else {
+                    elFBadgeText.innerText = `${fGreenPct}% Operativa`;
+                    elFBadge.className = "text-xs font-black px-3 py-1 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5 shadow-sm";
+                }
+            }
+
+            // Calculate Operator Stats
+            let opRed = 0, opAmber = 0, opOk = 0;
+            operators.forEach(op => {
+                const s = getOperatorOverallStatus(op);
+                if (s === 'red') opRed++;
+                else if (s === 'amber') opAmber++;
+                else if (s === 'emerald') opOk++;
+            });
+            const opTotal = operators.length;
+
+            const opGreenPct = opTotal > 0 ? Math.round((opOk / opTotal) * 100) : 100;
+            const opAmberPct = opTotal > 0 ? Math.round((opAmber / opTotal) * 100) : 0;
+            const opRedPct = opTotal > 0 ? Math.round((opRed / opTotal) * 100) : 0;
+
+            const elOpTotal = document.getElementById('operatorTotalCenter');
+            if (elOpTotal) elOpTotal.innerText = opTotal;
+            const elOpGreen = document.getElementById('operatorGreenCount');
+            if (elOpGreen) elOpGreen.innerText = opOk;
+            const elOpAmber = document.getElementById('operatorAmberCount');
+            if (elOpAmber) elOpAmber.innerText = opAmber;
+            const elOpRed = document.getElementById('operatorRedCount');
+            if (elOpRed) elOpRed.innerText = opRed;
+
+            const elOpHealthText = document.getElementById('operatorHealthPercentText');
+            if (elOpHealthText) elOpHealthText.innerText = `${opGreenPct}%`;
+            const elOpHealthBar = document.getElementById('operatorHealthPercentBar');
+            if (elOpHealthBar) elOpHealthBar.style.width = `${opGreenPct}%`;
+
+            const elOpGreenLabel = document.getElementById('operatorGreenPercentLabel');
+            if (elOpGreenLabel) elOpGreenLabel.innerText = `${opGreenPct}% del totale`;
+            const elOpAmberLabel = document.getElementById('operatorAmberPercentLabel');
+            if (elOpAmberLabel) elOpAmberLabel.innerText = opAmber > 0 ? `${opAmberPct}% del totale` : `Entro 30 giorni`;
+            const elOpRedLabel = document.getElementById('operatorRedPercentLabel');
+            if (elOpRedLabel) elOpRedLabel.innerText = opRed > 0 ? `${opRedPct}% del totale` : `Intervenire subito`;
+
+            const elOpBadgeText = document.getElementById('operatorReadinessText');
+            const elOpBadge = document.getElementById('operatorReadinessBadge');
+            if (elOpBadgeText && elOpBadge) {
+                if (opRed > 0) {
+                    elOpBadgeText.innerText = `${opRed} Scaduti!`;
+                    elOpBadge.className = "text-xs font-black px-3 py-1 rounded-xl bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/30 flex items-center gap-1.5 shadow-sm";
+                } else if (opAmber > 0) {
+                    elOpBadgeText.innerText = `${opAmber} In Scadenza`;
+                    elOpBadge.className = "text-xs font-black px-3 py-1 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 flex items-center gap-1.5 shadow-sm";
+                } else {
+                    elOpBadgeText.innerText = `${opGreenPct}% In Regola`;
+                    elOpBadge.className = "text-xs font-black px-3 py-1 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5 shadow-sm";
+                }
+            }
+
+            // Render Chart.js gauges if Chart.js is loaded
+            if (window.Chart) {
+                const isDarkMode = document.documentElement.classList.contains('dark');
+                const bgRingColor = isDarkMode ? 'rgba(51, 65, 85, 0.3)' : 'rgba(226, 232, 240, 0.5)';
+                
+                // Helper: create gradient for chart segments
+                function createGaugeGradient(ctx, colorStart, colorEnd) {
+                    const g = ctx.createLinearGradient(0, 0, ctx.canvas.width, 0);
+                    g.addColorStop(0, colorStart);
+                    g.addColorStop(1, colorEnd);
+                    return g;
+                }
+                
+                const gaugeOptions = {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    circumference: 180,
+                    rotation: -90,
+                    cutout: '68%',
+                    layout: { padding: { bottom: 0 } },
+                    onClick: null, // set per chart
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: isDarkMode ? '#1e293b' : '#ffffff',
+                            titleColor: isDarkMode ? '#f1f5f9' : '#1e293b',
+                            bodyColor: isDarkMode ? '#cbd5e1' : '#475569',
+                            borderColor: isDarkMode ? '#334155' : '#e2e8f0',
+                            borderWidth: 1,
+                            padding: 10,
+                            cornerRadius: 12,
+                            displayColors: true,
+                            boxPadding: 4,
+                            callbacks: {
+                                label: function(context) {
+                                    if (context.datasetIndex === 1) return null; // hide bg ring tooltip
+                                    return ' ' + context.label + ': ' + context.raw;
+                                }
+                            }
+                        }
+                    }
+                };
+
+                // --- Fleet Chart ---
+                const canvasF = document.getElementById('fleetStatusChart');
+                if (canvasF) {
+                    const ctxF = canvasF.getContext('2d');
+                    if (fleetChartInstance) fleetChartInstance.destroy();
+                    
+                    const hasData = fTotal > 0;
+                    const fData = hasData ? [fOk, fAmber, fRed] : [1];
+                    
+                    // Gradient colors
+                    const greenGrad = createGaugeGradient(ctxF, '#10b981', '#34d399');
+                    const amberGrad = createGaugeGradient(ctxF, '#f59e0b', '#fbbf24');
+                    const redGrad = createGaugeGradient(ctxF, '#ef4444', '#f87171');
+                    const emptyColor = isDarkMode ? '#334155' : '#e2e8f0';
+                    
+                    const fColors = hasData ? [greenGrad, amberGrad, redGrad] : [emptyColor];
+                    
+                    fleetChartInstance = new Chart(ctxF, {
+                        type: 'doughnut',
+                        data: {
+                            labels: hasData ? ['In Regola', 'In Scadenza', 'Scaduti'] : ['Nessun Dato'],
+                            datasets: [
+                                {
+                                    data: fData,
+                                    backgroundColor: fColors,
+                                    borderWidth: 0,
+                                    borderRadius: 6,
+                                    hoverOffset: 6,
+                                    spacing: hasData ? 2 : 0,
+                                    weight: 2
+                                },
+                                {
+                                    data: [1],
+                                    backgroundColor: [bgRingColor],
+                                    borderWidth: 0,
+                                    weight: 0.5,
+                                    hoverOffset: 0
+                                }
+                            ]
+                        },
+                        options: {
+                            ...gaugeOptions,
+                            onClick: (e, elements, chart) => {
+                                if (elements.length > 0 && elements[0].datasetIndex === 0) {
+                                    const states = ['ok', 'expiring', 'expired'];
+                                    switchTab('vehicles');
+                                    filterByStatusStat(states[elements[0].index]);
+                                }
+                            }
+                        }
+                    });
+                    
+                    // Update glow color based on status
+                    const fleetGlow = document.getElementById('fleetGaugeGlow');
+                    if (fleetGlow) {
+                        if (fRed > 0) {
+                            fleetGlow.style.background = 'radial-gradient(ellipse at 50% 100%, rgba(239, 68, 68, 0.2) 0%, transparent 70%)';
+                        } else if (fAmber > 0) {
+                            fleetGlow.style.background = 'radial-gradient(ellipse at 50% 100%, rgba(245, 158, 11, 0.15) 0%, transparent 70%)';
+                        } else {
+                            fleetGlow.style.background = 'radial-gradient(ellipse at 50% 100%, rgba(16, 185, 129, 0.15) 0%, transparent 70%)';
+                        }
+                    }
+                }
+
+                // --- Operator Chart ---
+                const canvasOp = document.getElementById('operatorStatusChart');
+                if (canvasOp) {
+                    const ctxOp = canvasOp.getContext('2d');
+                    if (operatorChartInstance) operatorChartInstance.destroy();
+
+                    const hasData = opTotal > 0;
+                    const opData = hasData ? [opOk, opAmber, opRed] : [1];
+                    
+                    const greenGrad2 = createGaugeGradient(ctxOp, '#10b981', '#34d399');
+                    const amberGrad2 = createGaugeGradient(ctxOp, '#f59e0b', '#fbbf24');
+                    const redGrad2 = createGaugeGradient(ctxOp, '#ef4444', '#f87171');
+                    const emptyColor2 = isDarkMode ? '#334155' : '#e2e8f0';
+                    
+                    const opColors = hasData ? [greenGrad2, amberGrad2, redGrad2] : [emptyColor2];
+
+                    operatorChartInstance = new Chart(ctxOp, {
+                        type: 'doughnut',
+                        data: {
+                            labels: hasData ? ['In Regola', 'In Scadenza', 'Scaduti'] : ['Nessun Dato'],
+                            datasets: [
+                                {
+                                    data: opData,
+                                    backgroundColor: opColors,
+                                    borderWidth: 0,
+                                    borderRadius: 6,
+                                    hoverOffset: 6,
+                                    spacing: hasData ? 2 : 0,
+                                    weight: 2
+                                },
+                                {
+                                    data: [1],
+                                    backgroundColor: [bgRingColor],
+                                    borderWidth: 0,
+                                    weight: 0.5,
+                                    hoverOffset: 0
+                                }
+                            ]
+                        },
+                        options: {
+                            ...gaugeOptions,
+                            onClick: (e, elements, chart) => {
+                                if (elements.length > 0 && elements[0].datasetIndex === 0) {
+                                    const states = ['ok', 'expiring', 'expired'];
+                                    switchTab('operators');
+                                    filterByStatusStat(states[elements[0].index]);
+                                }
+                            }
+                        }
+                    });
+                    
+                    // Update glow color based on status
+                    const opGlow = document.getElementById('operatorGaugeGlow');
+                    if (opGlow) {
+                        if (opRed > 0) {
+                            opGlow.style.background = 'radial-gradient(ellipse at 50% 100%, rgba(239, 68, 68, 0.2) 0%, transparent 70%)';
+                        } else if (opAmber > 0) {
+                            opGlow.style.background = 'radial-gradient(ellipse at 50% 100%, rgba(245, 158, 11, 0.15) 0%, transparent 70%)';
+                        } else {
+                            opGlow.style.background = 'radial-gradient(ellipse at 50% 100%, rgba(16, 185, 129, 0.15) 0%, transparent 70%)';
+                        }
+                    }
+                }
             }
         }
 
@@ -5502,142 +6354,8 @@ let isAudioEnabled = true;
         function renderAll() {
             applyFilters();
         }
-    
-        // -- CHARTS LOGIC --
-        let fleetChartInstance = null;
-        let operatorChartInstance = null;
 
-        function updateCharts() {
-            // Count states for vehicles independently
-            let vRed = 0, vAmber = 0, vGreen = 0;
-            vehicles.forEach(v => {
-                let hasRed = false, hasAmber = false, hasAny = false;
-                for (let key in v.deadlines) {
-                    if (key !== 'altroNota' && v.deadlines[key]) {
-                        hasAny = true;
-                        const state = checkDeadlineState(v.deadlines[key]);
-                        if (state === 'red') hasRed = true;
-                        if (state === 'amber') hasAmber = true;
-                    }
-                }
-                if (hasRed) vRed++;
-                if (hasAmber) vAmber++;
-                if (!hasRed && !hasAmber && hasAny) vGreen++;
-            });
-
-            // Count states for operators independently
-            let oRed = 0, oAmber = 0, oGreen = 0;
-            operators.forEach(op => {
-                let hasRed = false, hasAmber = false, hasAny = false;
-                if (op.type === 'driver') {
-                    if (op.expiration) {
-                        hasAny = true;
-                        const s = checkDeadlineState(op.expiration);
-                        if (s === 'red') hasRed = true;
-                        if (s === 'amber') hasAmber = true;
-                    }
-                    if (op.lastDownload) {
-                        hasAny = true;
-                        const s = checkDownloadDeadlineState(op.lastDownload);
-                        if (s === 'red') hasRed = true;
-                        if (s === 'amber') hasAmber = true;
-                    }
-                } else {
-                    if (op.expiration) {
-                        hasAny = true;
-                        const s = checkDeadlineState(op.expiration);
-                        if (s === 'red') hasRed = true;
-                        if (s === 'amber') hasAmber = true;
-                    }
-                }
-                
-                if (hasRed) oRed++;
-                if (hasAmber) oAmber++;
-                if (!hasRed && !hasAmber && hasAny) oGreen++;
-            });
-
-            const isDarkMode = document.documentElement.classList.contains('dark');
-            const textColor = isDarkMode ? '#cbd5e1' : '#475569';
-
-            // Update labels - Total should be the length, not the sum (since a vehicle can be both Red and Amber)
-            if (document.getElementById('fleetTotalCenter')) document.getElementById('fleetTotalCenter').innerText = vehicles.length;
-            if (document.getElementById('fleetRedCount')) document.getElementById('fleetRedCount').innerText = vRed;
-            if (document.getElementById('fleetAmberCount')) document.getElementById('fleetAmberCount').innerText = vAmber;
-            if (document.getElementById('fleetGreenCount')) document.getElementById('fleetGreenCount').innerText = vGreen;
-
-            if (document.getElementById('operatorTotalCenter')) document.getElementById('operatorTotalCenter').innerText = operators.length;
-            if (document.getElementById('operatorRedCount')) document.getElementById('operatorRedCount').innerText = oRed;
-            if (document.getElementById('operatorAmberCount')) document.getElementById('operatorAmberCount').innerText = oAmber;
-            if (document.getElementById('operatorGreenCount')) document.getElementById('operatorGreenCount').innerText = oGreen;
-
-            const chartOptions = {
-                responsive: true,
-                maintainAspectRatio: false,
-                circumference: 180, // Half circle
-                rotation: -90, // Start from left to right (like a speedometer)
-                onClick: (e, elements, chart) => {
-                    if (elements.length > 0) {
-                        const index = elements[0].index;
-                        // index: 0 = Scaduti, 1 = In Scadenza, 2 = In Regola
-                        const states = ['expired', 'expiring', 'ok'];
-                        const isOperatorChart = chart.canvas.id === 'operatorStatusChart';
-                        switchTab(isOperatorChart ? 'operators' : 'vehicles');
-                        filterByStatusStat(states[index]);
-                    }
-                },
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return ' ' + context.label + ': ' + context.raw;
-                            }
-                        }
-                    }
-                },
-                cutout: '75%', 
-                borderWidth: 0,
-                borderRadius: 4
-            };
-
-            const ctxFleet = document.getElementById('fleetStatusChart');
-            if (ctxFleet && window.Chart) {
-                if (fleetChartInstance) fleetChartInstance.destroy();
-                const hasData = vehicles.length > 0;
-                fleetChartInstance = new Chart(ctxFleet, {
-                    type: 'doughnut',
-                    data: {
-                        labels: hasData ? ['Scaduti', 'In Scadenza', 'In Regola'] : ['Nessun dato'],
-                        datasets: [{
-                            data: hasData ? [vRed, vAmber, vGreen] : [1],
-                            backgroundColor: hasData ? ['#ef4444', '#f59e0b', '#10b981'] : [isDarkMode ? '#334155' : '#e2e8f0'],
-                            borderWidth: 0,
-                            hoverOffset: hasData ? 4 : 0
-                        }]
-                    },
-                    options: chartOptions
-                });
-            }
-
-            const ctxOperator = document.getElementById('operatorStatusChart');
-            if (ctxOperator && window.Chart) {
-                if (operatorChartInstance) operatorChartInstance.destroy();
-                const hasData = operators.length > 0;
-                operatorChartInstance = new Chart(ctxOperator, {
-                    type: 'doughnut',
-                    data: {
-                        labels: hasData ? ['Scaduti', 'In Scadenza', 'In Regola'] : ['Nessun dato'],
-                        datasets: [{
-                            data: hasData ? [oRed, oAmber, oGreen] : [1],
-                            backgroundColor: hasData ? ['#ef4444', '#f59e0b', '#10b981'] : [isDarkMode ? '#334155' : '#e2e8f0'],
-                            borderWidth: 0,
-                            hoverOffset: hasData ? 4 : 0
-                        }]
-                    },
-                    options: chartOptions
-                });
-            }
-        }
+        // (Blocco duplicato updateCharts rimosso - la funzione corretta è definita sopra)
         function formatDateForExport(dateStr) {
             if (!dateStr) return '';
             const parts = dateStr.split('-');
