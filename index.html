@@ -5356,22 +5356,48 @@ let isAudioEnabled = true;
 
             let healthScore = 100;
             if (totalResources > 0) {
-                healthScore = Math.max(0, 100 - (expired * 20) - (expiring * 5));
+                healthScore = Math.round((ok / totalResources) * 100);
             }
             
-            document.getElementById('healthScorePercentage').innerText = `${healthScore}%`;
-            document.getElementById('healthScoreBar').style.width = `${healthScore}%`;
+            const healthScorePercentEl = document.getElementById('healthScorePercentage');
+            const healthScoreBarEl = document.getElementById('healthScoreBar');
+            if (healthScorePercentEl) {
+                healthScorePercentEl.innerText = `${healthScore}%`;
+                if (healthScore >= 80) {
+                    healthScorePercentEl.className = "text-2xl font-black text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-3.5 py-1 rounded-xl border border-emerald-200 dark:border-emerald-800/60 shadow-sm";
+                } else if (healthScore >= 50) {
+                    healthScorePercentEl.className = "text-2xl font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 px-3.5 py-1 rounded-xl border border-amber-200 dark:border-amber-800/60 shadow-sm";
+                } else {
+                    healthScorePercentEl.className = "text-2xl font-black text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/60 px-3.5 py-1 rounded-xl border border-red-200 dark:border-red-800/60 shadow-sm";
+                }
+            }
+
+            if (healthScoreBarEl) {
+                healthScoreBarEl.style.width = `${healthScore}%`;
+                if (healthScore >= 80) {
+                    healthScoreBarEl.className = "bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-400 h-full rounded-full transition-all duration-500 shadow-sm";
+                } else if (healthScore >= 50) {
+                    healthScoreBarEl.className = "bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 h-full rounded-full transition-all duration-500 shadow-sm";
+                } else {
+                    healthScoreBarEl.className = "bg-gradient-to-r from-red-500 via-rose-500 to-rose-600 h-full rounded-full transition-all duration-500 shadow-sm";
+                }
+            }
 
             const healthText = document.getElementById('healthEvaluationText');
-            if (healthScore === 100) {
-                healthText.innerText = "Parco risorse ottimizzato 🚀";
-                healthText.className = "text-[11px] text-emerald-500 font-bold";
-            } else if (healthScore >= 75) {
-                healthText.innerText = "Stato buono, attenzione ad alcuni elementi 🟡";
-                healthText.className = "text-[11px] text-amber-500 font-bold";
-            } else {
-                healthText.innerText = "Soglia critica di conformità! Agire subito 🔴";
-                healthText.className = "text-[11px] text-red-500 font-bold";
+            if (healthText) {
+                if (healthScore === 100) {
+                    healthText.innerText = "100% In regola: flotta ottimizzata 🚀";
+                    healthText.className = "text-[11px] text-emerald-500 font-bold truncate";
+                } else if (healthScore >= 75) {
+                    healthText.innerText = "Stato buono, alcune scadenze imminenti 🟡";
+                    healthText.className = "text-[11px] text-amber-500 font-bold truncate";
+                } else if (healthScore >= 50) {
+                    healthText.innerText = `Conformità al ${healthScore}%: pianificare rinnovi 🟡`;
+                    healthText.className = "text-[11px] text-amber-500 font-bold truncate";
+                } else {
+                    healthText.innerText = "Soglia critica di conformità! Agire subito 🔴";
+                    healthText.className = "text-[11px] text-red-500 font-bold truncate";
+                }
             }
 
             const cardScaduti = document.getElementById('cardScaduti');
