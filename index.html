@@ -337,6 +337,31 @@
             animation: modal-pop-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
         
+        /* ========================================================
+           GC CODELAB: AURORA WIDESCREEN HD SPLASH ANIMATIONS
+           ======================================================== */
+        @keyframes aurora-float-1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(45px, 35px) scale(1.15); }
+        }
+        @keyframes aurora-float-2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-40px, -30px) scale(1.12); }
+        }
+        @keyframes aurora-pulse-glow {
+            0%, 100% { opacity: 0.22; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.38; transform: translate(-50%, -50%) scale(1.1); }
+        }
+        .animate-aurora-1 {
+            animation: aurora-float-1 8s ease-in-out infinite;
+        }
+        .animate-aurora-2 {
+            animation: aurora-float-2 10s ease-in-out infinite;
+        }
+        .animate-aurora-pulse {
+            animation: aurora-pulse-glow 5s ease-in-out infinite;
+        }
+        
         @media print {
             body.printing-modal > *:not(#diaryModal) {
                 display: none !important;
@@ -367,6 +392,96 @@
 </head>
 
 <body class="bg-slate-50 dark:bg-slate-900 min-h-screen text-slate-800 dark:text-slate-100 font-sans pb-4 transition-colors duration-200 flex flex-col justify-between relative">
+
+    <!-- ========================================================
+         GC CODELAB: SPLASH SCREEN AURORA WIDESCREEN HD (16:9)
+         ======================================================== -->
+    <div id="gcSplashScreen" class="fixed inset-0 z-[99999] flex items-center justify-center bg-[#060913] p-4 sm:p-6 overflow-hidden select-none transition-all duration-700 ease-out" style="cursor: pointer;" title="Fai clic per accedere subito">
+        <!-- Globi di luce al neon fluorescente Aurora Glow -->
+        <div class="absolute -top-24 -left-24 w-80 sm:w-96 h-80 sm:h-96 bg-cyan-500/25 rounded-full filter blur-[90px] sm:blur-[110px] pointer-events-none animate-aurora-1"></div>
+        <div class="absolute -bottom-24 -right-24 w-80 sm:w-96 h-80 sm:h-96 bg-indigo-500/25 rounded-full filter blur-[90px] sm:blur-[110px] pointer-events-none animate-aurora-2"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] sm:w-[580px] h-[220px] sm:h-[340px] bg-emerald-500/15 rounded-full filter blur-[100px] sm:blur-[130px] pointer-events-none animate-aurora-pulse"></div>
+
+        <!-- Pattern matrice tech ad alta definizione in trasparenza -->
+        <div class="absolute inset-0 opacity-15 pointer-events-none" style="background-image: radial-gradient(rgba(255,255,255,0.2) 1px, transparent 1px); background-size: 22px 22px;"></div>
+
+        <!-- Cornice Widescreen 16:9 in Glassmorphism e Neon Border -->
+        <div class="relative w-[94vw] max-w-4xl sm:aspect-[16/9] min-h-[390px] sm:min-h-[440px] max-h-[92vh] bg-slate-900/85 backdrop-blur-2xl border border-cyan-500/30 rounded-3xl shadow-[0_0_70px_rgba(6,182,212,0.25),0_30px_60px_-15px_rgba(0,0,0,0.95)] p-5 sm:p-8 md:p-10 flex flex-col justify-between overflow-hidden">
+            
+            <!-- Fascio superiore di luce al neon Aurora continuo -->
+            <div class="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-cyan-400 via-indigo-500 to-emerald-400 shadow-[0_0_15px_rgba(6,182,212,0.9)]"></div>
+
+            <!-- Topbar interna della cornice Widescreen -->
+            <div class="flex items-center justify-between gap-2 z-10">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] sm:text-[10px] font-extrabold uppercase tracking-widest bg-cyan-500/15 text-cyan-300 border border-cyan-500/40 shadow-[0_0_10px_rgba(6,182,212,0.2)]">
+                    <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
+                    GC-SPLASH • AURORA WIDESCREEN HD
+                </span>
+                <span class="text-[10px] sm:text-xs font-mono text-slate-400 font-semibold tracking-wider flex items-center gap-1.5">
+                    <i data-lucide="shield-alert" class="w-3.5 h-3.5 text-brand-400"></i> VI.CLA FUTURE S.R.L.
+                </span>
+            </div>
+
+            <!-- Centro: Logo Software HD, Brand & Barra Fluida -->
+            <div class="my-auto py-3 text-center flex flex-col items-center justify-center z-10">
+                <!-- Badge Logo 3D con bagliore neon e icona alta definizione -->
+                <div class="relative mb-3.5 sm:mb-4">
+                    <div class="absolute -inset-1.5 rounded-2xl bg-gradient-to-r from-cyan-400 via-brand-500 to-emerald-400 opacity-75 blur-md animate-pulse"></div>
+                    <div class="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-950 border border-cyan-300/40 shadow-2xl flex items-center justify-center">
+                        <i data-lucide="shield-check" class="w-8 h-8 sm:w-11 sm:h-11 text-cyan-400 drop-shadow-[0_0_14px_rgba(6,182,212,0.9)]"></i>
+                    </div>
+                </div>
+
+                <!-- Denominazione Software & Brand -->
+                <h1 class="text-2xl sm:text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-100 to-slate-200 tracking-tight leading-tight">
+                    VI.CLA FUTURE S.R.L.
+                </h1>
+                
+                <!-- Badge Subtitle -->
+                <div class="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 mt-2">
+                    <span class="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider bg-brand-500/20 text-brand-300 border border-brand-500/40">
+                        FLEET PRO MANAGEMENT
+                    </span>
+                    <span class="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-wider bg-slate-800/90 text-slate-300 border border-slate-700">
+                        ENTERPRISE EDITION
+                    </span>
+                </div>
+
+                <p class="text-[11px] sm:text-xs md:text-sm text-slate-400 mt-2 max-w-lg font-medium px-2">
+                    Controllo Avanzato Parco Mezzi d'Opera &amp; Conducenti • Cloud Telemetry 2026
+                </p>
+
+                <!-- Barra di Caricamento Fluida al Neon Aurora -->
+                <div class="w-full max-w-xs sm:max-w-md mt-5 sm:mt-7 space-y-2">
+                    <div class="flex justify-between items-center text-[10px] sm:text-xs font-mono">
+                        <span id="splashStatusText" class="flex items-center gap-1.5 text-cyan-300 font-semibold truncate">
+                            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span> Inizializzazione flotta...
+                        </span>
+                        <span id="splashPercentage" class="font-bold text-cyan-400 ml-2">0%</span>
+                    </div>
+                    <div class="h-2 sm:h-2.5 w-full bg-slate-950/90 rounded-full overflow-hidden p-0.5 border border-slate-700/80 shadow-inner relative">
+                        <div id="splashProgressBar" class="h-full bg-gradient-to-r from-cyan-400 via-indigo-500 to-emerald-400 rounded-full w-0 transition-all duration-150 ease-out shadow-[0_0_16px_rgba(6,182,212,0.9)] relative">
+                            <div class="absolute inset-0 bg-white/25 animate-pulse"></div>
+                        </div>
+                    </div>
+                    <div class="text-[9px] sm:text-[10px] text-slate-500 text-center font-mono pt-1">
+                        Fai clic ovunque per accedere istantaneamente
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer: Firma Copyright Ufficiale GC CodeLab -->
+            <div class="pt-3 border-t border-slate-800/80 flex flex-col sm:flex-row justify-between items-center gap-1.5 sm:gap-2 text-[10px] sm:text-[11px] text-slate-400 font-medium z-10">
+                <div class="flex items-center gap-1.5 text-center sm:text-left">
+                    <i data-lucide="code-2" class="w-3.5 h-3.5 text-cyan-400 shrink-0"></i>
+                    <span>&copy; 2026 <strong class="text-slate-200">GC CodeLab</strong> • Sviluppato da <strong class="text-slate-200">Giovanni Cavallo</strong> • Tutti i diritti riservati.</span>
+                </div>
+                <span class="text-[10px] text-slate-500 font-mono flex items-center gap-1.5 shrink-0">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#34d399]"></span> ENGINE READY • v1.9.6
+                </span>
+            </div>
+        </div>
+    </div>
 
 
     <div class="relative z-10">
@@ -1540,6 +1655,22 @@
                         <input type="checkbox" id="settingProCardDesign" checked class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500 cursor-pointer">
                     </label>
                     <p class="text-[11px] text-slate-400 mt-1">Attiva/disattiva il bordo di evidenziazione superiore ed il sollevamento 3D al passaggio del mouse sulle schede.</p>
+                </div>
+
+                <!-- SEZIONE SPLASH SCREEN AURORA WIDESCREEN HD -->
+                <div class="border-t border-slate-150 dark:border-slate-700 pt-4">
+                    <div class="flex items-center justify-between">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="settingSplashScreen" checked class="w-4 h-4 text-brand-600 rounded focus:ring-brand-500 cursor-pointer">
+                            <span class="text-xs font-bold text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
+                                <i data-lucide="sparkle" class="w-3.5 h-3.5 text-cyan-500"></i> Splash Screen Aurora Widescreen HD all'avvio
+                            </span>
+                        </label>
+                        <button type="button" onclick="previewSplashScreen()" class="text-[11px] font-bold text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 flex items-center gap-1 bg-cyan-50 dark:bg-cyan-950/50 px-2 py-1 rounded-lg border border-cyan-200 dark:border-cyan-800 transition active:scale-95">
+                            <i data-lucide="play" class="w-3 h-3 text-cyan-500"></i> Anteprima
+                        </button>
+                    </div>
+                    <p class="text-[11px] text-slate-400 mt-1">Mostra l'animazione di avvio widescreen con alone neon Aurora fluorescente e firma GC CodeLab.</p>
                 </div>
             </div>
 
@@ -3362,6 +3493,96 @@ let isAudioEnabled = true;
         let confirmCallback = null;
         let selectedVehicleForRenew = null; 
 
+        // ========================================================
+        // GC CODELAB: SPLASH SCREEN AURORA WIDESCREEN HD LOGIC
+        // ========================================================
+        let isSplashScreenEnabled = localStorage.getItem('fleet_splash_aurora_vicla') !== 'false';
+        let splashDismissed = false;
+
+        function initSplashScreen() {
+            const splash = document.getElementById('gcSplashScreen');
+            if (!splash) return;
+
+            // Se disattivato dalle preferenze utente, nascondi immediatamente
+            if (!isSplashScreenEnabled) {
+                splash.style.display = 'none';
+                return;
+            }
+
+            splashDismissed = false;
+            delete splash.dataset.dismissed;
+            splash.style.display = 'flex';
+            splash.style.opacity = '1';
+            splash.style.transform = 'scale(1)';
+            splash.style.pointerEvents = 'auto';
+
+            if (typeof lucide !== 'undefined' && lucide.createIcons) {
+                lucide.createIcons();
+            }
+
+            const bar = document.getElementById('splashProgressBar');
+            const percentText = document.getElementById('splashPercentage');
+            const statusText = document.getElementById('splashStatusText');
+
+            let progress = 0;
+            const startTime = performance.now();
+            const duration = 1400; // 1.4s progression
+
+            function updateProgress(now) {
+                if (splashDismissed) return;
+                const elapsed = now - startTime;
+                progress = Math.min(100, Math.round((elapsed / duration) * 100));
+
+                if (bar) bar.style.width = progress + '%';
+                if (percentText) percentText.textContent = progress + '%';
+
+                if (statusText) {
+                    if (progress < 25) {
+                        statusText.innerHTML = '<span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span> Inizializzazione flotta...';
+                    } else if (progress < 55) {
+                        statusText.innerHTML = '<span class="w-2 h-2 rounded-full bg-indigo-400 animate-ping"></span> Sincronizzazione telemetria e scadenze...';
+                    } else if (progress < 85) {
+                        statusText.innerHTML = '<span class="w-2 h-2 rounded-full bg-brand-400 animate-ping"></span> Caricamento lettore DDD & moduli Pro...';
+                    } else {
+                        statusText.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_6px_#34d399]"></span> Sistema Pronto! Benvenuto in Fleet Pro';
+                    }
+                }
+
+                if (progress < 100) {
+                    requestAnimationFrame(updateProgress);
+                } else {
+                    setTimeout(() => {
+                        dismissSplashScreen();
+                    }, 280);
+                }
+            }
+
+            requestAnimationFrame(updateProgress);
+
+            // Permetti chiusura immediata al click
+            splash.onclick = () => dismissSplashScreen();
+        }
+
+        function dismissSplashScreen() {
+            if (splashDismissed) return;
+            splashDismissed = true;
+            const splash = document.getElementById('gcSplashScreen');
+            if (!splash) return;
+            splash.dataset.dismissed = 'true';
+            splash.style.opacity = '0';
+            splash.style.transform = 'scale(1.03)';
+            splash.style.pointerEvents = 'none';
+            setTimeout(() => {
+                splash.style.display = 'none';
+            }, 700);
+        }
+
+        function previewSplashScreen() {
+            closeSettingsModal();
+            splashDismissed = false;
+            initSplashScreen();
+        }
+
         // GESTORE PIN DI SICUREZZA
         let masterPin = localStorage.getItem('fleet_master_pin_vicla') || ''; 
         let pinCallback = null; 
@@ -3374,6 +3595,7 @@ let isAudioEnabled = true;
         let isPinProtectionActive = _storedPin ? (_storedPinActive !== 'false') : false;
 
         window.addEventListener('DOMContentLoaded', () => {
+            initSplashScreen();
             loadTheme();
             loadSettingsFromStorage();
             loadLogisticsPreference();
@@ -3608,6 +3830,14 @@ let isAudioEnabled = true;
                 elProDesign.checked = showProCardDesign;
             }
             updateProCardDesignUI();
+
+            const savedSplash = localStorage.getItem('fleet_splash_aurora_vicla');
+            isSplashScreenEnabled = savedSplash === null ? true : (savedSplash === 'true');
+            const elSplash = document.getElementById('settingSplashScreen');
+            if (elSplash) {
+                elSplash.checked = isSplashScreenEnabled;
+            }
+
             applyOperatorsModuleVisibility();
         }
 
@@ -3735,6 +3965,12 @@ let isAudioEnabled = true;
                 localStorage.setItem('fleet_pro_card_design_vicla', showProCardDesign ? 'true' : 'false');
             }
             updateProCardDesignUI();
+
+            const elSplash = document.getElementById('settingSplashScreen');
+            if (elSplash) {
+                isSplashScreenEnabled = elSplash.checked;
+                localStorage.setItem('fleet_splash_aurora_vicla', isSplashScreenEnabled ? 'true' : 'false');
+            }
 
             updateThresholdLabels();
             closeSettingsModal();
