@@ -4491,8 +4491,8 @@ let isAudioEnabled = true;
                     if (k !== 'altroNota' && v.deadlines[k]) {
                         const state = checkDeadlineState(v.deadlines[k]);
                         const friendlyName = getDeadlineFriendlyName(k);
-                        if (state === 'red') expiredVehicles.push(`il mezzo ${v.plate} ha la scadenza di ${friendlyName} già scaduta`);
-                        else if (state === 'amber') expiringVehicles.push(`il mezzo ${v.plate} ha la scadenza di ${friendlyName} in arrivo`);
+                        if (state === 'red') expiredVehicles.push(`il mezzo ${escapeHTML(v.plate)} ha la scadenza di ${friendlyName} già scaduta`);
+                        else if (state === 'amber') expiringVehicles.push(`il mezzo ${escapeHTML(v.plate)} ha la scadenza di ${friendlyName} in arrivo`);
                     }
                 }
             });
@@ -4500,14 +4500,14 @@ let isAudioEnabled = true;
                 if (op.type === 'driver') {
                     if (op.expiration) {
                         const state = checkDeadlineState(op.expiration);
-                        if (state === 'red') expiredVehicles.push(`la card del conducente ${op.name} è scaduta`);
-                        else if (state === 'amber') expiringVehicles.push(`la card del conducente ${op.name} è in scadenza`);
+                        if (state === 'red') expiredVehicles.push(`la card del conducente ${escapeHTML(op.name)} è scaduta`);
+                        else if (state === 'amber') expiringVehicles.push(`la card del conducente ${escapeHTML(op.name)} è in scadenza`);
                     }
                     if (op.lastDownload) {
                         const nextDl = calculateNextDownloadDate(op.lastDownload);
                         const state = checkDeadlineState(nextDl);
-                        if (state === 'red') expiredVehicles.push(`lo scarico dati per ${op.name} è scaduto`);
-                        else if (state === 'amber') expiringVehicles.push(`lo scarico dati per ${op.name} è in scadenza`);
+                        if (state === 'red') expiredVehicles.push(`lo scarico dati per ${escapeHTML(op.name)} è scaduto`);
+                        else if (state === 'amber') expiringVehicles.push(`lo scarico dati per ${escapeHTML(op.name)} è in scadenza`);
                     }
                 }
             });
@@ -4543,6 +4543,7 @@ let isAudioEnabled = true;
             }
         }
 
+        function escapeHTML(str) { return str ? String(str).replace(/[&<>'"]/g, match => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[match])) : ''; }
         let isFirebaseLoaded = false;
         function loadFromStorage() {
             // First load from local storage to show UI quickly without blank screen
@@ -4850,8 +4851,8 @@ let isAudioEnabled = true;
                     htmlContent += `
                         <tr>
                             <td>
-                                <span class="plate-box">${v.plate}</span>
-                                <div style="margin-top:6px; font-weight:bold;">${v.model}</div>
+                                <span class="plate-box">${escapeHTML(v.plate)}</span>
+                                <div style="margin-top:6px; font-weight:bold;">${escapeHTML(v.model)}</div>
                                 <div style="font-size:10px; color:#64748b; margin-top:2px;">Portata: ${v.payload ? v.payload + ' Kg' : 'N/D'}</div>
                                 <div style="margin-top:6px;"><span class="badge ${badgeClass}">${badgeLabel}</span></div>
                             </td>
@@ -4907,9 +4908,9 @@ let isAudioEnabled = true;
 
                     htmlContent += `
                         <tr>
-                            <td><strong>${op.name}</strong></td>
+                            <td><strong>${escapeHTML(op.name)}</strong></td>
                             <td>${tipoCard}</td>
-                            <td style="font-family:monospace; font-weight:bold;">${op.cardNum}</td>
+                            <td style="font-family:monospace; font-weight:bold;">${escapeHTML(op.cardNum)}</td>
                             <td>${scadenzeHTML}</td>
                         </tr>
                     `;
@@ -5001,7 +5002,7 @@ let isAudioEnabled = true;
         function getVehicleOverallStatus(vehicle) {
             let statuses = [];
             for (let d in vehicle.deadlines) {
-                if (d !== 'altroNota' && vehicle.deadlines[d]) {
+                if (d !== 'altroNota' && d !== 'lastDownloadTachigrafo' && vehicle.deadlines[d]) {
                     statuses.push(checkDeadlineState(vehicle.deadlines[d]));
                 }
             }
@@ -5144,10 +5145,10 @@ let isAudioEnabled = true;
                             <div class="flex items-center space-x-2.5 sm:space-x-3 min-w-0 max-w-full">
                                 <div class="text-xs sm:text-sm font-black text-slate-300 dark:text-slate-600 shrink-0">#${index + 1}</div>
                                 <div class="bg-brand-100 dark:bg-slate-900 text-brand-700 dark:text-brand-300 font-extrabold px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg text-base sm:text-lg tracking-wider border border-brand-200/40 dark:border-brand-800/80 shadow-sm uppercase shrink-0">
-                                    ${v.plate}
+                                    ${escapeHTML(v.plate)}
                                 </div>
                                 <div class="min-w-0">
-                                    <h4 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base truncate">${v.model}</h4>
+                                    <h4 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base truncate">${escapeHTML(v.model)}</h4>
                                     ${payloadHTML}
                                 </div>
                             </div>
@@ -5288,8 +5289,8 @@ let isAudioEnabled = true;
                                 <i data-lucide="${iconName}" class="w-6 h-6"></i>
                             </div>
                             <div class="flex-1 min-w-0">
-                                <h3 class="text-sm font-bold text-slate-900 dark:text-white truncate" title="${op.name}">${op.name}</h3>
-                                <p class="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5 truncate">${op.cardNum}</p>
+                                <h3 class="text-sm font-bold text-slate-900 dark:text-white truncate" title="${escapeHTML(op.name)}">${escapeHTML(op.name)}</h3>
+                                <p class="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5 truncate">${escapeHTML(op.cardNum)}</p>
                                 <span class="inline-block mt-2 px-2 py-0.5 text-[10px] font-bold rounded-md bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">${badgeText}</span>
                             </div>
                             <!-- Menu Azioni -->
@@ -5504,7 +5505,7 @@ let isAudioEnabled = true;
                 for (let key in v.deadlines) {
                     if (key !== 'altroNota' && v.deadlines[key]) {
                         allDeadlines.push({
-                            label: `${v.plate} - ${getDeadlineFriendlyName(key)}`,
+                            label: `${escapeHTML(v.plate)} - ${getDeadlineFriendlyName(key)}`,
                             date: v.deadlines[key],
                             state: checkDeadlineState(v.deadlines[key]),
                             resourceType: 'vehicle',
@@ -5519,7 +5520,7 @@ let isAudioEnabled = true;
                     if (op.type === 'driver') {
                         if (op.expiration) {
                             allDeadlines.push({
-                                label: `${op.name} (Scadenza Card)`,
+                                label: `${escapeHTML(op.name)} (Scadenza Card)`,
                                 date: op.expiration,
                                 state: checkDeadlineState(op.expiration),
                                 resourceType: 'operator',
@@ -5529,7 +5530,7 @@ let isAudioEnabled = true;
                         if (op.lastDownload) {
                             const nextDate = calculateNextDownloadDate(op.lastDownload);
                             allDeadlines.push({
-                                label: `${op.name} (Scarico Conducente)`,
+                                label: `${escapeHTML(op.name)} (Scarico Conducente)`,
                                 date: nextDate,
                                 state: checkDeadlineState(nextDate),
                                 resourceType: 'operator',
@@ -5538,7 +5539,7 @@ let isAudioEnabled = true;
                         }
                     } else if (op.expiration) {
                         allDeadlines.push({
-                            label: `${op.name} (${op.type === 'company' ? 'Aziendale' : 'Mezzo'})`,
+                            label: `${escapeHTML(op.name)} (${op.type === 'company' ? 'Aziendale' : 'Mezzo'})`,
                             date: op.expiration,
                             state: checkDeadlineState(op.expiration),
                             resourceType: 'operator',
@@ -5883,7 +5884,7 @@ let isAudioEnabled = true;
 
             vehicles.forEach(v => {
                 for (let k in v.deadlines) {
-                    if (k !== 'altroNota' && v.deadlines[k]) {
+                    if (k !== 'altroNota' && k !== 'lastDownloadTachigrafo' && v.deadlines[k]) {
                         const state = checkDeadlineState(v.deadlines[k]);
                         if (state === 'red' || state === 'amber') {
                             addIssue(state, {
@@ -6034,12 +6035,12 @@ let isAudioEnabled = true;
                 
                 showCustomConfirm(
                     "Aggiornare Scadenza?", 
-                    `Vuoi registrare l'avvenuto rinnovo della validità della card di "${op.name}"?\nLa nuova data sarà impostata al ${formatDateString(newDateStr)}.`, 
+                    `Vuoi registrare l'avvenuto rinnovo della validità della card di "${escapeHTML(op.name)}"?\nLa nuova data sarà impostata al ${formatDateString(newDateStr)}.`, 
                     () => {
                         operators[index].expiration = newDateStr;
                         saveToStorage();
                         applyFilters();
-                        showToast(`Scadenza card per ${op.name} aggiornata con successo!`, "success");
+                        showToast(`Scadenza card per ${escapeHTML(op.name)} aggiornata con successo!`, "success");
                         if (isAudioEnabled) speakText("Scadenza aggiornata correttamente.");
                     }
                 );
@@ -6061,12 +6062,12 @@ let isAudioEnabled = true;
                 
                 showCustomConfirm(
                     "Registrare Scarico Progressivo?", 
-                    `L'ultimo scarico salvato per "${op.name}" è il ${formatDateString(baseDateStr)}.\n\nPremendo conferma, sposterai l'ultimo scarico effettivo al ${formatDateString(updatedDownloadStr)}.\nLa successiva data limite calcolata sarà il ${formatDateString(finalNextDlCalculated)}.`, 
+                    `L'ultimo scarico salvato per "${escapeHTML(op.name)}" è il ${formatDateString(baseDateStr)}.\n\nPremendo conferma, sposterai l'ultimo scarico effettivo al ${formatDateString(updatedDownloadStr)}.\nLa successiva data limite calcolata sarà il ${formatDateString(finalNextDlCalculated)}.`, 
                     () => {
                         operators[index].lastDownload = updatedDownloadStr;
                         saveToStorage();
                         applyFilters();
-                        showToast(`Scarico esteso a catena per ${op.name}!`, "success");
+                        showToast(`Scarico esteso a catena per ${escapeHTML(op.name)}!`, "success");
                         if (isAudioEnabled) speakText("Scarico progressivo registrato.");
                     }
                 );
@@ -6276,7 +6277,7 @@ let isAudioEnabled = true;
                 const v = vehicles.find(item => item.id === id);
                 if (!v) return;
 
-                document.getElementById('modalTitle').innerHTML = `<i data-lucide="edit-3" class="w-5 h-5 text-brand-600"></i> <span class="dark:text-white">Modifica / Rinnova Mezzo ${v.plate}</span>`;
+                document.getElementById('modalTitle').innerHTML = `<i data-lucide="edit-3" class="w-5 h-5 text-brand-600"></i> <span class="dark:text-white">Modifica / Rinnova Mezzo ${escapeHTML(v.plate)}</span>`;
                 document.getElementById('vehicleId').value = v.id;
                 document.getElementById('formPlate').value = v.plate;
                 document.getElementById('formModel').value = v.model;
@@ -6382,7 +6383,7 @@ let isAudioEnabled = true;
 
                 showCustomConfirm(
                     "Rimuovere veicolo?", 
-                    `Sei sicuro di voler eliminare definitivamente il veicolo ${v.plate} dalla flotta?`, 
+                    `Sei sicuro di voler eliminare definitivamente il veicolo ${escapeHTML(v.plate)} dalla flotta?`, 
                     () => {
                         vehicles = vehicles.filter(item => item.id !== id);
                         saveToStorage();
@@ -6514,7 +6515,7 @@ let isAudioEnabled = true;
 
                 showCustomConfirm(
                     "Eliminare record card?", 
-                    `Vuoi rimuovere definitivamente la card associata a ${op.name}?`, 
+                    `Vuoi rimuovere definitivamente la card associata a ${escapeHTML(op.name)}?`, 
                     () => {
                         operators = operators.filter(item => item.id !== id);
                         saveToStorage();
@@ -6619,9 +6620,9 @@ let isAudioEnabled = true;
                         if (status === 'red' || status === 'amber') {
                             const friendlyName = getDeadlineFriendlyName(k);
                             generateEvent(
-                                `[SCADENZA MEZZO] ${v.plate} - ${friendlyName}`,
+                                `[SCADENZA MEZZO] ${escapeHTML(v.plate)} - ${friendlyName}`,
                                 v.deadlines[k],
-                                `Controllo veicolo ${v.model} (${v.plate}). Scadenza per il servizio: ${friendlyName}.`
+                                `Controllo veicolo ${escapeHTML(v.model)} (${escapeHTML(v.plate)}). Scadenza per il servizio: ${friendlyName}.`
                             );
                         }
                     }
@@ -6634,9 +6635,9 @@ let isAudioEnabled = true;
                         const status = checkDeadlineState(op.expiration);
                         if (status === 'red' || status === 'amber') {
                             generateEvent(
-                                `[SCADENZA CARD CONDUCENTE] ${op.name} - Validità`,
+                                `[SCADENZA CARD CONDUCENTE] ${escapeHTML(op.name)} - Validità`,
                                 op.expiration,
-                                `Rinnovo della validità della carta del conducente per ${op.name}. ID: ${op.cardNum}.`
+                                `Rinnovo della validità della carta del conducente per ${escapeHTML(op.name)}. ID: ${escapeHTML(op.cardNum)}.`
                             );
                         }
                     }
@@ -6645,9 +6646,9 @@ let isAudioEnabled = true;
                         const status = checkDeadlineState(nextDate);
                         if (status === 'red' || status === 'amber') {
                             generateEvent(
-                                `[SCADENZA SCARICO 28GG] ${op.name}`,
+                                `[SCADENZA SCARICO 28GG] ${escapeHTML(op.name)}`,
                                 nextDate,
-                                `Scarico dati obbligatorio (28 giorni) per ${op.name}.`
+                                `Scarico dati obbligatorio (28 giorni) per ${escapeHTML(op.name)}.`
                             );
                         }
                     }
@@ -6656,9 +6657,9 @@ let isAudioEnabled = true;
                     if (status === 'red' || status === 'amber') {
                         const tipoCard = op.type === 'company' ? 'Scarico Dati Aziendali' : 'Scarico Dati Mezzo';
                         generateEvent(
-                            `[SCADENZA CARD/SCARICO] ${op.name} - ${tipoCard}`,
+                            `[SCADENZA CARD/SCARICO] ${escapeHTML(op.name)} - ${tipoCard}`,
                             op.expiration,
-                            `Rinnovo o scarico dati necessario per ${op.name}. Numero identificativo: ${op.cardNum}.`
+                            `Rinnovo o scarico dati necessario per ${escapeHTML(op.name)}. Numero identificativo: ${escapeHTML(op.cardNum)}.`
                         );
                     }
                 }
@@ -6708,7 +6709,7 @@ let isAudioEnabled = true;
                         }
                     }
                 }
-                const vehicleReport = `* MEZZO: ${v.plate} (${v.model})\n` + (errors.length > 0 ? errors.join('\n') : `  🟢 Tutto in regola`) + `\n`;
+                const vehicleReport = `* MEZZO: ${escapeHTML(v.plate)} (${escapeHTML(v.model)})\n` + (errors.length > 0 ? errors.join('\n') : `  🟢 Tutto in regola`) + `\n`;
                 if (status === 'red') criticalMezzi.push(vehicleReport);
                 else if (status === 'amber') warningMezzi.push(vehicleReport);
                 else perfectMezzi.push(vehicleReport);
@@ -6722,7 +6723,7 @@ let isAudioEnabled = true;
                 const opState = getOperatorOverallStatus(op);
                 const tipoDescr = op.type === 'company' ? 'Card Aziendale' : (op.type === 'vehicle_company' ? 'Scarico Dati Mezzi' : 'Card Conducente');
                 
-                let desc = `* RISORSA: ${op.name} (${tipoDescr})\n  N. Identificativo: ${op.cardNum}\n`;
+                let desc = `* RISORSA: ${escapeHTML(op.name)} (${tipoDescr})\n  N. Identificativo: ${escapeHTML(op.cardNum)}\n`;
                 if (op.type === 'driver') {
                     desc += `  Validità Fisica Card: ${formatDateString(op.expiration)} (${checkDeadlineState(op.expiration).toUpperCase()})\n`;
                     desc += `  Prossimo Scarico (28gg): ${formatDateString(calculateNextDownloadDate(op.lastDownload))} (${checkDownloadDeadlineState(op.lastDownload).toUpperCase()})`;
@@ -7061,7 +7062,7 @@ let isAudioEnabled = true;
             if (expiredVehicles.length) {
                 body += `SCADENZE SUPERATE - MEZZI (${expiredVehicles.length}):\n`;
                 expiredVehicles.forEach(({ v, items }) => {
-                    body += `\n  - ${v.plate || ''} ${v.model || ''}:\n`;
+                    body += `\n  - ${escapeHTML(v.plate || "")} ${escapeHTML(v.model || "")}:\n`;
                     items.forEach(i => body += `      * ${i.label}: scaduto il ${fmtDate(i.date)}\n`);
                 });
                 body += '\n';
@@ -7069,19 +7070,19 @@ let isAudioEnabled = true;
             if (expiringVehicles.length) {
                 body += `IN SCADENZA entro 30 giorni - MEZZI (${expiringVehicles.length}):\n`;
                 expiringVehicles.forEach(({ v, items }) => {
-                    body += `\n  - ${v.plate || ''} ${v.model || ''}:\n`;
+                    body += `\n  - ${escapeHTML(v.plate || "")} ${escapeHTML(v.model || "")}:\n`;
                     items.forEach(i => body += `      * ${i.label}: scade il ${fmtDate(i.date)}\n`);
                 });
                 body += '\n';
             }
             if (expiredOps.length) {
                 body += `CARD/DOCUMENTI SCADUTI - CONDUCENTI (${expiredOps.length}):\n`;
-                expiredOps.forEach(op => body += `  - ${op.name} (${op.type || 'Card'}): scaduto il ${fmtDate(op.expiration)}\n`);
+                expiredOps.forEach(op => body += `  - ${escapeHTML(op.name)} (${op.type || 'Card'}): scaduto il ${fmtDate(op.expiration)}\n`);
                 body += '\n';
             }
             if (expiringOps.length) {
                 body += `IN SCADENZA entro 30 giorni - CONDUCENTI (${expiringOps.length}):\n`;
-                expiringOps.forEach(op => body += `  - ${op.name} (${op.type || 'Card'}): scade il ${fmtDate(op.expiration)}\n`);
+                expiringOps.forEach(op => body += `  - ${escapeHTML(op.name)} (${op.type || 'Card'}): scade il ${fmtDate(op.expiration)}\n`);
                 body += '\n';
             }
 
@@ -7107,7 +7108,7 @@ let isAudioEnabled = true;
             document.getElementById('diaryNewKm').value = '';
             document.getElementById('diaryNewCost').value = '';
             document.getElementById('diaryNewCategory').value = 'Tagliando Ordinario';
-            document.getElementById('diaryModalTitle').textContent = `Storico Officina & Manutenzioni - ${v.plate || ''} (${v.model || ''})`;
+            document.getElementById('diaryModalTitle').textContent = `Storico Officina & Manutenzioni - ${escapeHTML(v.plate || "")} (${escapeHTML(v.model || "")})`;
             
             // Populate top stats
             document.getElementById('diaryCurrentKm').value = v.currentKm || 0;
@@ -7201,7 +7202,7 @@ let isAudioEnabled = true;
                     </td>
                     <td class="px-4 py-3 text-slate-600 dark:text-slate-400">${kmText}</td>
                     <td class="px-4 py-3 font-semibold text-slate-800 dark:text-slate-200">${costText}</td>
-                    <td class="px-4 py-3 text-slate-600 dark:text-slate-400 max-w-xs truncate" title="${entry.description || ''}">${entry.description || '\u2014'}</td>
+                    <td class="px-4 py-3 text-slate-600 dark:text-slate-400 max-w-xs truncate" title="${escapeHTML(entry.description || '')}">${escapeHTML(entry.description || '\u2014')}</td>
                     <td class="px-4 py-3 text-center">
                         <button onclick="deleteDiaryEntry('${v.id}','${entry.id}')" class="text-red-400 hover:text-red-600 p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/40 transition" title="Elimina">
                             <i data-lucide="trash-2" class="w-4 h-4 mx-auto"></i>
