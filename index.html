@@ -4488,7 +4488,7 @@ let isAudioEnabled = true;
             let expiringVehicles = [];
             vehicles.forEach(v => {
                 for (let k in v.deadlines) {
-                    if (k !== 'altroNota' && v.deadlines[k]) {
+                    if (k !== 'altroNota' && k !== 'lastDownloadTachigrafo' && v.deadlines[k]) {
                         const state = checkDeadlineState(v.deadlines[k]);
                         const friendlyName = getDeadlineFriendlyName(k);
                         if (state === 'red') expiredVehicles.push(`il mezzo ${escapeHTML(v.plate)} ha la scadenza di ${friendlyName} già scaduta`);
@@ -5503,7 +5503,7 @@ let isAudioEnabled = true;
 
             vehicles.forEach(v => {
                 for (let key in v.deadlines) {
-                    if (key !== 'altroNota' && v.deadlines[key]) {
+                    if (key !== 'altroNota' && key !== 'lastDownloadTachigrafo' && v.deadlines[key]) {
                         allDeadlines.push({
                             label: `${escapeHTML(v.plate)} - ${getDeadlineFriendlyName(key)}`,
                             date: v.deadlines[key],
@@ -5527,6 +5527,24 @@ let isAudioEnabled = true;
                                 id: op.id
                             });
                         }
+                        if (op.patenteExpiration) {
+                            allDeadlines.push({
+                                label: `${escapeHTML(op.name)} (Patente)`,
+                                date: op.patenteExpiration,
+                                state: checkDeadlineState(op.patenteExpiration),
+                                resourceType: 'operator',
+                                id: op.id
+                            });
+                        }
+                        if (op.cqcExpiration) {
+                            allDeadlines.push({
+                                label: `${escapeHTML(op.name)} (CQC)`,
+                                date: op.cqcExpiration,
+                                state: checkDeadlineState(op.cqcExpiration),
+                                resourceType: 'operator',
+                                id: op.id
+                            });
+                        }
                         if (op.lastDownload) {
                             const nextDate = calculateNextDownloadDate(op.lastDownload);
                             allDeadlines.push({
@@ -5537,14 +5555,26 @@ let isAudioEnabled = true;
                                 id: op.id
                             });
                         }
-                    } else if (op.expiration) {
-                        allDeadlines.push({
-                            label: `${escapeHTML(op.name)} (${op.type === 'company' ? 'Aziendale' : 'Mezzo'})`,
-                            date: op.expiration,
-                            state: checkDeadlineState(op.expiration),
-                            resourceType: 'operator',
-                            id: op.id
-                        });
+                    } else {
+                        if (op.expiration) {
+                            allDeadlines.push({
+                                label: `${escapeHTML(op.name)} (${op.type === 'company' ? 'Aziendale' : 'Mezzo'})`,
+                                date: op.expiration,
+                                state: checkDeadlineState(op.expiration),
+                                resourceType: 'operator',
+                                id: op.id
+                            });
+                        }
+                        if (op.lastDownload) {
+                            const nextDate = calculateNextCompanyDownloadDate(op.lastDownload);
+                            allDeadlines.push({
+                                label: `${escapeHTML(op.name)} (Scarico ${op.type === 'company' ? 'Aziendale' : 'Mezzo'})`,
+                                date: nextDate,
+                                state: checkCompanyDownloadDeadlineState(op.lastDownload),
+                                resourceType: 'operator',
+                                id: op.id
+                            });
+                        }
                     }
                 });
             }
@@ -6615,7 +6645,7 @@ let isAudioEnabled = true;
 
             vehicles.forEach(v => {
                 for (let k in v.deadlines) {
-                    if (k !== 'altroNota' && v.deadlines[k]) {
+                    if (k !== 'altroNota' && k !== 'lastDownloadTachigrafo' && v.deadlines[k]) {
                         const status = checkDeadlineState(v.deadlines[k]);
                         if (status === 'red' || status === 'amber') {
                             const friendlyName = getDeadlineFriendlyName(k);
@@ -6700,7 +6730,7 @@ let isAudioEnabled = true;
                 const status = getVehicleOverallStatus(v);
                 let errors = [];
                 for (let k in v.deadlines) {
-                    if (k !== 'altroNota' && v.deadlines[k]) {
+                    if (k !== 'altroNota' && k !== 'lastDownloadTachigrafo' && v.deadlines[k]) {
                         const state = checkDeadlineState(v.deadlines[k]);
                         if (state === 'red') {
                             errors.push(`🔴 ${getDeadlineFriendlyName(k)} SCADUTA il ${formatDateString(v.deadlines[k])}`);
@@ -6913,7 +6943,7 @@ let isAudioEnabled = true;
                 // Trova la prima scadenza
                 let nextDate = null;
                 for (let d in v.deadlines) {
-                    if (d !== 'altroNota' && v.deadlines[d]) {
+                    if (d !== 'altroNota' && d !== 'lastDownloadTachigrafo' && v.deadlines[d]) {
                         if (!nextDate || new Date(v.deadlines[d]) < new Date(nextDate)) {
                             nextDate = v.deadlines[d];
                         }
