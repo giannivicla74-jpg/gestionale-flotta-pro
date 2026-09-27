@@ -3868,6 +3868,15 @@ let isAudioEnabled = true;
             const tabOperatorsBtn = document.getElementById('tabOperatorsBtn');
             const operatorChartCard = document.getElementById('operatorChartCard');
             const chartsContainerGrid = document.getElementById('chartsContainerGrid');
+            const dddInlineReader = document.getElementById('dddInlineReader');
+
+            if (dddInlineReader) {
+                if (showOperatorsModule) {
+                    dddInlineReader.classList.remove('hidden');
+                } else {
+                    dddInlineReader.classList.add('hidden');
+                }
+            }
 
             if (tabOperatorsBtn) {
                 if (showOperatorsModule) {
