@@ -1,7 +1,8 @@
-const CACHE_NAME = 'fleet-deadline-v2.0.25';
+const CACHE_NAME = 'fleet-deadline-v2.0.26';
 const ASSETS_TO_CACHE = [
   './',
   'index.html',
+  'company-logo.png',
   'manifest.json',
   'logo-192.png',
   'logo-512.png',
