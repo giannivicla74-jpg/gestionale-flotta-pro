@@ -3208,7 +3208,8 @@
             });
             
             // Autisti
-            operators.forEach(op => {
+            if (showOperatorsModule) {
+                operators.forEach(op => {
                 const addExp = (dateStr, type, name) => {
                     if(!dateStr) return;
                     if(!calendarDataMap[dateStr]) calendarDataMap[dateStr] = [];
@@ -3231,6 +3232,7 @@
                     addExp(nextDownload.toISOString().split('T')[0], 'Scadenza Scarico Dati', op.name);
                 }
             });
+            }
         }
 
         function renderCalendar() {
@@ -4056,7 +4058,9 @@ let isAudioEnabled = true;
             const inactiveClasses = "flex-1 py-3 px-4 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition duration-200 bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800";
 
             if (tabVehiclesBtn) tabVehiclesBtn.className = tabName === 'vehicles' ? activeClasses : inactiveClasses;
-            if (tabOperatorsBtn) tabOperatorsBtn.className = tabName === 'operators' ? activeClasses : inactiveClasses;
+            if (tabOperatorsBtn) {
+                tabOperatorsBtn.className = (tabName === 'operators' ? activeClasses : inactiveClasses) + (!showOperatorsModule ? ' hidden' : '');
+            }
             if (tabCalendarBtn) tabCalendarBtn.className = tabName === 'calendar' ? activeClasses : inactiveClasses;
 
             if (tabName === 'vehicles') {
@@ -4078,6 +4082,7 @@ let isAudioEnabled = true;
             if(tabName !== 'calendar') {
                 applyFilters();
             }
+            applyOperatorsModuleVisibility();
         }
 
         function openAddModal() {
