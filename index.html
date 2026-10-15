@@ -3381,6 +3381,7 @@
         function closeDayModal() {
             document.getElementById('dayModal').classList.add('hidden');
             currentOpenCalendarDate = null;
+            editingCalendarNoteId = null;
         }
 
         function openDayModal(dateStr) {
@@ -3431,6 +3432,8 @@
             }
         }
 
+        let editingCalendarNoteId = null;
+
         function renderDayModalNotes(dateStr) {
             const listEl = document.getElementById('dayModalNotesList');
             const countBadge = document.getElementById('dayModalNotesCount');
@@ -3454,28 +3457,99 @@
 
             let htmlStr = '';
             dayNotes.forEach(note => {
-                const isDone = !!note.done;
-                htmlStr += `
-                    <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/80 dark:bg-slate-900/50 flex items-center justify-between gap-2.5 transition">
-                        <div class="flex items-center gap-2.5 flex-1 min-w-0">
-                            <button type="button" onclick="toggleCalendarNoteStatus('${dateStr}', '${note.id}')" title="${isDone ? 'Segna come da fare' : 'Segna come completato'}" class="text-slate-400 hover:text-emerald-500 flex-shrink-0 transition">
-                                <i data-lucide="${isDone ? 'check-circle-2' : 'circle'}" class="w-4 h-4 ${isDone ? 'text-emerald-500' : 'text-slate-400'}"></i>
-                            </button>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-xs sm:text-sm text-slate-800 dark:text-slate-200 break-words ${isDone ? 'line-through opacity-60' : 'font-medium'}">${escapeHTML(note.text)}</p>
-                                ${note.time ? `<span class="text-[10px] text-slate-400 dark:text-slate-500 font-mono">Ore ${note.time}</span>` : ''}
+                const isEditing = editingCalendarNoteId === note.id;
+                if (isEditing) {
+                    htmlStr += `
+                        <div class="p-3 rounded-xl border border-brand-400 dark:border-brand-600 bg-brand-50/70 dark:bg-brand-950/60 shadow-sm space-y-2 transition">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-bold text-brand-700 dark:text-brand-300 flex items-center gap-1">
+                                    <i data-lucide="pencil" class="w-3.5 h-3.5"></i> Modifica Nota
+                                </span>
+                                ${note.time ? `<span class="text-[10px] text-slate-400 font-mono">Ore ${note.time}</span>` : ''}
+                            </div>
+                            <textarea id="editNoteInput_${note.id}" rows="2" class="w-full px-3 py-2 text-xs sm:text-sm rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none" onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); saveEditCalendarNote('${dateStr}', '${note.id}'); }">${escapeHTML(note.text)}</textarea>
+                            <div class="flex items-center justify-between gap-2 pt-1">
+                                <span class="text-[10px] text-slate-400 italic">Invio per salvare</span>
+                                <div class="flex items-center gap-1.5">
+                                    <button type="button" onclick="cancelEditCalendarNote()" class="px-2.5 py-1 text-xs font-semibold rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition">Annulla</button>
+                                    <button type="button" onclick="saveEditCalendarNote('${dateStr}', '${note.id}')" class="px-3 py-1 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-lg shadow-sm transition flex items-center gap-1">
+                                        <i data-lucide="check" class="w-3.5 h-3.5"></i> Salva
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                        <button type="button" onclick="deleteCalendarNote('${dateStr}', '${note.id}')" title="Elimina nota" class="p-1 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 flex-shrink-0 transition">
-                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                        </button>
-                    </div>
-                `;
+                    `;
+                } else {
+                    const isDone = !!note.done;
+                    htmlStr += `
+                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/80 dark:bg-slate-900/50 flex items-center justify-between gap-2.5 transition group hover:border-slate-300 dark:hover:border-slate-600">
+                            <div class="flex items-center gap-2.5 flex-1 min-w-0">
+                                <button type="button" onclick="toggleCalendarNoteStatus('${dateStr}', '${note.id}')" title="${isDone ? 'Segna come da fare' : 'Segna come completato'}" class="text-slate-400 hover:text-emerald-500 flex-shrink-0 transition">
+                                    <i data-lucide="${isDone ? 'check-circle-2' : 'circle'}" class="w-4 h-4 ${isDone ? 'text-emerald-500' : 'text-slate-400'}"></i>
+                                </button>
+                                <div class="flex-1 min-w-0 cursor-pointer" onclick="startEditCalendarNote('${note.id}')" title="Clicca per modificare la nota">
+                                    <p class="text-xs sm:text-sm text-slate-800 dark:text-slate-200 break-words ${isDone ? 'line-through opacity-60' : 'font-medium'}">${escapeHTML(note.text)}</p>
+                                    ${note.time ? `<span class="text-[10px] text-slate-400 dark:text-slate-500 font-mono">Ore ${note.time}</span>` : ''}
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-1 flex-shrink-0">
+                                <button type="button" onclick="startEditCalendarNote('${note.id}')" title="Modifica nota" class="p-1.5 rounded-lg text-slate-400 hover:text-brand-600 hover:bg-brand-50 dark:hover:bg-brand-950/40 transition">
+                                    <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
+                                </button>
+                                <button type="button" onclick="deleteCalendarNote('${dateStr}', '${note.id}')" title="Elimina nota" class="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 transition">
+                                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
             });
             listEl.innerHTML = htmlStr;
             if (window.lucide) {
                 window.lucide.createIcons();
             }
+        }
+
+        function startEditCalendarNote(noteId) {
+            editingCalendarNoteId = noteId;
+            if (currentOpenCalendarDate) {
+                renderDayModalNotes(currentOpenCalendarDate);
+                setTimeout(() => {
+                    const el = document.getElementById('editNoteInput_' + noteId);
+                    if (el) {
+                        el.focus();
+                        el.selectionStart = el.selectionEnd = el.value.length;
+                    }
+                }, 50);
+            }
+        }
+
+        function cancelEditCalendarNote() {
+            editingCalendarNoteId = null;
+            if (currentOpenCalendarDate) {
+                renderDayModalNotes(currentOpenCalendarDate);
+            }
+        }
+
+        function saveEditCalendarNote(dateStr, noteId) {
+            const input = document.getElementById('editNoteInput_' + noteId);
+            if (!input) return;
+            const newText = input.value.trim();
+            if (!newText) {
+                if (typeof showToast === 'function') showToast("Il testo della nota non può essere vuoto", "warning");
+                return;
+            }
+            if (calendarNotes[dateStr]) {
+                const note = calendarNotes[dateStr].find(n => n.id === noteId);
+                if (note) {
+                    note.text = newText;
+                    saveCalendarNotes();
+                    if (typeof showToast === 'function') showToast("Nota aggiornata con successo!", "success");
+                }
+            }
+            editingCalendarNoteId = null;
+            renderDayModalNotes(dateStr);
+            renderCalendar();
         }
 
         function addCalendarNoteCurrentDay() {
