@@ -1017,9 +1017,9 @@
                     <div class="flex items-center gap-0.5 shrink-0"><i data-lucide="users" class="w-4 h-4 sm:w-5 sm:h-5"></i><i data-lucide="credit-card" class="w-3.5 h-3.5 sm:w-4 sm:h-4 hidden xs:inline"></i></div>
                     <span class="truncate"><span class="hidden sm:inline">Card Tachigrafiche & Conducenti</span><span class="sm:hidden">Conducenti</span> (<span id="badgeOperatorsCount">0</span>)</span>
                 </button>
-                <button onclick="switchTab('calendar')" id="tabCalendarBtn" class="py-2 sm:py-3 px-2.5 sm:px-4 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 transition duration-200 bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 shrink-0">
+                <button onclick="switchTab('calendar')" id="tabCalendarBtn" class="flex-1 py-2 sm:py-3 px-2 sm:px-4 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 transition duration-200 bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 min-w-0">
                     <i data-lucide="calendar" class="w-4 h-4 sm:w-5 sm:h-5 shrink-0"></i>
-                    <span class="hidden sm:inline">Calendario</span>
+                    <span class="truncate"><span class="hidden sm:inline">Calendario</span><span class="sm:hidden">Cal.</span></span>
                 </button>
             </div>
 
@@ -1186,6 +1186,17 @@
                     <!-- Griglia Calendario -->
                     <div id="calendarGrid" class="grid grid-cols-7 gap-1 sm:gap-2">
                         <!-- Giorni generati da JS -->
+                    </div>
+
+                    <!-- Legenda Calendario -->
+                    <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-700/60 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400">
+                        <div class="flex flex-wrap items-center gap-3 sm:gap-4 font-medium">
+                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-red-500 pulse-alert"></span> Scaduto / Critico</span>
+                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span> In Scadenza (≤ 30 gg)</span>
+                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span> In Regola</span>
+                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-indigo-500 shadow-[0_0_6px_rgba(99,102,241,0.7)]"></span> Note / Promemoria (📝)</span>
+                        </div>
+                        <span class="text-[11px] italic opacity-80">💡 Clicca su qualsiasi giorno per visualizzare o inserire note e promemoria</span>
                     </div>
                 </div>
             </div>
@@ -1914,10 +1925,10 @@
     </div>
 
     
-    <!-- DAY MODAL (Dettagli Scadenze del Giorno) -->
+    <!-- DAY MODAL (Dettagli Scadenze del Giorno & Note) -->
     <div id="dayModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-slate-900/40 dark:bg-slate-900/60 backdrop-blur-sm" onclick="closeDayModal()"></div>
-        <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 w-full max-w-md relative z-10 shadow-2xl border border-slate-200 dark:border-slate-700 max-h-[90vh] flex flex-col">
+        <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 w-full max-w-lg relative z-10 shadow-2xl border border-slate-200 dark:border-slate-700 max-h-[90vh] flex flex-col">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                     <i data-lucide="calendar" class="w-5 h-5 text-brand-500"></i>
@@ -1928,12 +1939,49 @@
                 </button>
             </div>
             
-            <div id="dayModalContent" class="overflow-y-auto space-y-3 pb-2 flex-1">
-                <!-- Voci del giorno generate da JS -->
+            <div class="overflow-y-auto space-y-4 pb-2 flex-1 pr-1 custom-scrollbar">
+                <!-- Sezione Scadenze Mezzi & Conducenti -->
+                <div>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2 flex items-center gap-1.5">
+                        <i data-lucide="alert-triangle" class="w-3.5 h-3.5 text-amber-500"></i>
+                        Scadenze Mezzi & Conducenti
+                    </h4>
+                    <div id="dayModalContent" class="space-y-2">
+                        <!-- Voci del giorno generate da JS -->
+                    </div>
+                </div>
+
+                <!-- Sezione Note & Promemoria del Giorno -->
+                <div class="pt-3 border-t border-slate-200 dark:border-slate-700">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                            <i data-lucide="notebook-pen" class="w-3.5 h-3.5 text-indigo-500"></i>
+                            Note & Promemoria del Giorno
+                        </h4>
+                        <span id="dayModalNotesCount" class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 hidden"></span>
+                    </div>
+                    
+                    <!-- Lista delle Note -->
+                    <div id="dayModalNotesList" class="space-y-2 mb-3 max-h-48 overflow-y-auto pr-1">
+                        <!-- Note generate dinamicamente -->
+                    </div>
+
+                    <!-- Input Rapido Aggiunta Nota -->
+                    <div class="flex gap-2">
+                        <input type="text" id="dayModalNewNoteInput" placeholder="Aggiungi una nota (es: cambio gomme, tagliando, promemoria)..." 
+                               class="flex-1 px-3 py-2 text-xs sm:text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/60 text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500"
+                               onkeydown="if(event.key === 'Enter') addCalendarNoteCurrentDay()">
+                        <button type="button" onclick="addCalendarNoteCurrentDay()" 
+                                class="px-3.5 py-2 bg-brand-600 hover:bg-brand-700 active:scale-95 text-white text-xs sm:text-sm font-bold rounded-xl flex items-center gap-1.5 shadow-sm transition">
+                            <i data-lucide="plus" class="w-4 h-4"></i>
+                            <span>Aggiungi</span>
+                        </button>
+                    </div>
+                </div>
             </div>
             
-            <div class="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700 flex justify-end">
-                <button onclick="closeDayModal()" class="px-5 py-2.5 rounded-xl text-sm font-bold bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 transition">Chiudi</button>
+            <div class="mt-4 pt-3 border-t border-slate-200 dark:border-slate-700 flex justify-end">
+                <button onclick="closeDayModal()" class="px-5 py-2 rounded-xl text-sm font-bold bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 transition">Chiudi</button>
             </div>
         </div>
     </div>
@@ -3161,6 +3209,12 @@
         // --- CALENDAR LOGIC ---
         let currentCalendarDate = new Date();
         let calendarDataMap = {}; 
+        let calendarNotes = {};
+        let currentOpenCalendarDate = null;
+        try {
+            const _storedNotesInit = localStorage.getItem('fleet_calendar_notes_vicla');
+            if (_storedNotesInit) calendarNotes = JSON.parse(_storedNotesInit) || {};
+        } catch(e) {} 
 
         function changeMonth(dir) {
             currentCalendarDate.setMonth(currentCalendarDate.getMonth() + dir);
@@ -3278,6 +3332,7 @@
                 const isToday = dStr === todayStr;
                 
                 const exps = calendarDataMap[dStr] || [];
+                const dayNotes = calendarNotes[dStr] || [];
                 
                 let hasRed = false;
                 let hasAmber = false;
@@ -3289,20 +3344,32 @@
                 
                 let dotsHtml = "";
                 if (hasRed) {
-                    dotsHtml = `<div class="w-3 h-3 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)] pulse-alert mx-auto mt-1"></div>`;
+                    dotsHtml = `<div class="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)] pulse-alert" title="Scadenza scaduta / critica"></div>`;
                 } else if (hasAmber) {
-                    dotsHtml = `<div class="w-2.5 h-2.5 rounded-full bg-amber-400 mx-auto mt-1"></div>`;
+                    dotsHtml = `<div class="w-2.5 h-2.5 rounded-full bg-amber-400" title="Scadenza in avvicinamento"></div>`;
                 } else if (exps.length > 0) {
-                    dotsHtml = `<div class="w-2 h-2 rounded-full bg-emerald-400 mx-auto mt-1"></div>`;
+                    dotsHtml = `<div class="w-2 h-2 rounded-full bg-emerald-400" title="Scadenza in regola"></div>`;
+                }
+
+                let notesDotHtml = "";
+                if (dayNotes.length > 0) {
+                    notesDotHtml = `<div class="w-2.5 h-2.5 rounded-full bg-indigo-500 shadow-[0_0_6px_rgba(99,102,241,0.7)]" title="${dayNotes.length} note o promemoria"></div>`;
                 }
                 
-                const todayClass = isToday ? 'bg-brand-50 dark:bg-brand-900/30 border-brand-300 dark:border-brand-700' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700';
+                const todayClass = isToday ? 'bg-brand-50 dark:bg-brand-900/30 border-brand-300 dark:border-brand-700 ring-2 ring-brand-500/30' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700';
                 
+                const notesBadge = dayNotes.length > 0 ? `<span class="absolute top-1 left-1 sm:left-1.5 text-[9px] font-bold text-indigo-600 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/90 border border-indigo-200 dark:border-indigo-800 rounded-full px-1.5 py-0.5 flex items-center gap-0.5 shadow-sm leading-none" title="${dayNotes.length} note salvate"><span class="text-[9px]">📝</span><span>${dayNotes.length}</span></span>` : '';
+                const expsBadge = exps.length > 0 ? `<span class="absolute top-1 right-1 text-[9px] font-bold text-slate-400 bg-slate-100 dark:bg-slate-700 rounded-full w-4 h-4 flex items-center justify-center">${exps.length}</span>` : '';
+
                 grid.innerHTML += `
                     <div onclick="openDayModal('${dStr}')" class="p-2 sm:p-4 rounded-2xl border cursor-pointer transition-all duration-200 text-center relative ${todayClass}">
+                        ${notesBadge}
                         <span class="text-sm sm:text-base font-bold ${isToday ? 'text-brand-600 dark:text-brand-400' : 'text-slate-700 dark:text-slate-300'}">${day}</span>
-                        ${dotsHtml}
-                        ${exps.length > 0 ? `<span class="absolute top-1 right-1 text-[9px] font-bold text-slate-400 bg-slate-100 dark:bg-slate-700 rounded-full w-4 h-4 flex items-center justify-center">${exps.length}</span>` : ''}
+                        <div class="flex items-center justify-center gap-1.5 mx-auto mt-1 min-h-[12px]">
+                            ${dotsHtml}
+                            ${notesDotHtml}
+                        </div>
+                        ${expsBadge}
                     </div>
                 `;
             }
@@ -3313,9 +3380,11 @@
 
         function closeDayModal() {
             document.getElementById('dayModal').classList.add('hidden');
+            currentOpenCalendarDate = null;
         }
 
         function openDayModal(dateStr) {
+            currentOpenCalendarDate = dateStr;
             const exps = calendarDataMap[dateStr] || [];
             
             const parts = dateStr.split('-');
@@ -3323,7 +3392,7 @@
             
             const content = document.getElementById('dayModalContent');
             if(exps.length === 0) {
-                content.innerHTML = '<p class="text-slate-500 dark:text-slate-400 text-sm italic text-center w-full py-4">Nessuna scadenza in questa data.</p>';
+                content.innerHTML = '<p class="text-slate-400 dark:text-slate-500 text-xs italic text-center w-full py-2 bg-slate-50 dark:bg-slate-900/30 rounded-xl border border-dashed border-slate-200 dark:border-slate-800">Nessuna scadenza tecnica veicolo/autista in questa data.</p>';
             } else {
                 let htmlStr = "";
                 exps.forEach(e => {
@@ -3339,8 +3408,8 @@
                     }
 
                     htmlStr += `
-                        <div class="p-3 rounded-xl border ${colorClass} flex items-start gap-3">
-                            <i data-lucide="${icon}" class="w-5 h-5 flex-shrink-0 mt-0.5"></i>
+                        <div class="p-2.5 rounded-xl border ${colorClass} flex items-start gap-2.5">
+                            <i data-lucide="${icon}" class="w-4 h-4 flex-shrink-0 mt-0.5"></i>
                             <div>
                                 <p class="text-[10px] sm:text-xs font-bold uppercase tracking-wider opacity-80 mb-0.5">${e.type}</p>
                                 <p class="text-xs sm:text-sm font-semibold">${e.entity}</p>
@@ -3349,12 +3418,131 @@
                     `;
                 });
                 content.innerHTML = htmlStr;
-                if (window.lucide) {
-                    window.lucide.createIcons();
-                }
             }
             
+            renderDayModalNotes(dateStr);
+            
+            const inputNote = document.getElementById('dayModalNewNoteInput');
+            if (inputNote) inputNote.value = '';
+
             document.getElementById('dayModal').classList.remove('hidden');
+            if (window.lucide) {
+                window.lucide.createIcons();
+            }
+        }
+
+        function renderDayModalNotes(dateStr) {
+            const listEl = document.getElementById('dayModalNotesList');
+            const countBadge = document.getElementById('dayModalNotesCount');
+            if (!listEl) return;
+
+            const dayNotes = calendarNotes[dateStr] || [];
+
+            if (countBadge) {
+                if (dayNotes.length > 0) {
+                    countBadge.innerText = `${dayNotes.length} ${dayNotes.length === 1 ? 'nota' : 'note'}`;
+                    countBadge.classList.remove('hidden');
+                } else {
+                    countBadge.classList.add('hidden');
+                }
+            }
+
+            if (dayNotes.length === 0) {
+                listEl.innerHTML = '<p class="text-xs text-slate-400 dark:text-slate-500 italic py-2 text-center bg-slate-50 dark:bg-slate-900/30 rounded-xl border border-dashed border-slate-200 dark:border-slate-800">Nessun appunto per questo giorno. Scrivine uno qui sotto!</p>';
+                return;
+            }
+
+            let htmlStr = '';
+            dayNotes.forEach(note => {
+                const isDone = !!note.done;
+                htmlStr += `
+                    <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/80 dark:bg-slate-900/50 flex items-center justify-between gap-2.5 transition">
+                        <div class="flex items-center gap-2.5 flex-1 min-w-0">
+                            <button type="button" onclick="toggleCalendarNoteStatus('${dateStr}', '${note.id}')" title="${isDone ? 'Segna come da fare' : 'Segna come completato'}" class="text-slate-400 hover:text-emerald-500 flex-shrink-0 transition">
+                                <i data-lucide="${isDone ? 'check-circle-2' : 'circle'}" class="w-4 h-4 ${isDone ? 'text-emerald-500' : 'text-slate-400'}"></i>
+                            </button>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs sm:text-sm text-slate-800 dark:text-slate-200 break-words ${isDone ? 'line-through opacity-60' : 'font-medium'}">${escapeHTML(note.text)}</p>
+                                ${note.time ? `<span class="text-[10px] text-slate-400 dark:text-slate-500 font-mono">Ore ${note.time}</span>` : ''}
+                            </div>
+                        </div>
+                        <button type="button" onclick="deleteCalendarNote('${dateStr}', '${note.id}')" title="Elimina nota" class="p-1 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 flex-shrink-0 transition">
+                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+                `;
+            });
+            listEl.innerHTML = htmlStr;
+            if (window.lucide) {
+                window.lucide.createIcons();
+            }
+        }
+
+        function addCalendarNoteCurrentDay() {
+            if (!currentOpenCalendarDate) return;
+            const inputEl = document.getElementById('dayModalNewNoteInput');
+            if (!inputEl) return;
+            const text = inputEl.value.trim();
+            if (!text) {
+                if (typeof showToast === 'function') showToast("Scrivi del testo prima di aggiungere la nota", "warning");
+                return;
+            }
+
+            if (!calendarNotes[currentOpenCalendarDate]) {
+                calendarNotes[currentOpenCalendarDate] = [];
+            }
+
+            const now = new Date();
+            const timeStr = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+            const noteObj = {
+                id: 'note_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+                text: text,
+                time: timeStr,
+                done: false
+            };
+
+            calendarNotes[currentOpenCalendarDate].push(noteObj);
+            inputEl.value = '';
+
+            saveCalendarNotes();
+            renderDayModalNotes(currentOpenCalendarDate);
+            renderCalendar();
+            if (typeof showToast === 'function') showToast("Nota salvata nel calendario!", "success");
+        }
+
+        function toggleCalendarNoteStatus(dateStr, noteId) {
+            if (!calendarNotes[dateStr]) return;
+            const note = calendarNotes[dateStr].find(n => n.id === noteId);
+            if (note) {
+                note.done = !note.done;
+                saveCalendarNotes();
+                renderDayModalNotes(dateStr);
+            }
+        }
+
+        function deleteCalendarNote(dateStr, noteId) {
+            if (!calendarNotes[dateStr]) return;
+            calendarNotes[dateStr] = calendarNotes[dateStr].filter(n => n.id !== noteId);
+            if (calendarNotes[dateStr].length === 0) {
+                delete calendarNotes[dateStr];
+            }
+            saveCalendarNotes();
+            renderDayModalNotes(dateStr);
+            renderCalendar();
+            if (typeof showToast === 'function') showToast("Nota rimossa", "info");
+        }
+
+        function saveCalendarNotes() {
+            localStorage.setItem('fleet_calendar_notes_vicla', JSON.stringify(calendarNotes));
+            try {
+                if (typeof db !== 'undefined' && db && db.collection) {
+                    db.collection('vicla_data').doc('calendar_notes').set({ notes: calendarNotes }).catch(err => {
+                        console.warn("Firebase sync calendar_notes:", err);
+                    });
+                }
+            } catch(e) {
+                console.warn("Firebase non connesso o offline:", e);
+            }
         }
 
         // --- NOTIFICHE PUSH ---
@@ -4054,8 +4242,8 @@ let isAudioEnabled = true;
             const tabCalendarContent = document.getElementById('tabCalendarContent');
             const mainAddBtnText = document.getElementById('mainAddBtnText');
             
-            const activeClasses = "flex-1 py-3 px-4 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition duration-200 bg-brand-600 text-white shadow-md";
-            const inactiveClasses = "flex-1 py-3 px-4 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition duration-200 bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800";
+            const activeClasses = "flex-1 py-2 sm:py-3 px-2 sm:px-4 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 transition duration-200 bg-brand-600 text-white shadow-md min-w-0";
+            const inactiveClasses = "flex-1 py-2 sm:py-3 px-2 sm:px-4 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 transition duration-200 bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 min-w-0";
 
             if (tabVehiclesBtn) tabVehiclesBtn.className = tabName === 'vehicles' ? activeClasses : inactiveClasses;
             if (tabOperatorsBtn) {
@@ -4588,12 +4776,16 @@ let isAudioEnabled = true;
             if (!isFirebaseLoaded) {
                 const storedVehicles = localStorage.getItem('fleet_manager_data_vicla');
                 const storedOperators = localStorage.getItem('fleet_manager_operators_vicla');
+                const storedNotes = localStorage.getItem('fleet_calendar_notes_vicla');
 
                 let parsedV = null;
                 let parsedOp = null;
 
                 try { if (storedVehicles) parsedV = JSON.parse(storedVehicles); } catch(e) {}
                 try { if (storedOperators) parsedOp = JSON.parse(storedOperators); } catch(e) {}
+                if (storedNotes) {
+                    try { calendarNotes = JSON.parse(storedNotes) || {}; } catch(e) {}
+                }
 
                 if (Array.isArray(parsedV) && parsedV.length > 0) {
                     vehicles = parsedV;
@@ -4639,6 +4831,19 @@ let isAudioEnabled = true;
                         saveToStorage();
                     }
                 }, error => console.error("Firebase listen error:", error));
+
+                db.collection('vicla_data').doc('calendar_notes').onSnapshot(doc => {
+                    if (doc.exists && doc.data() && doc.data().notes) {
+                        calendarNotes = doc.data().notes;
+                        localStorage.setItem('fleet_calendar_notes_vicla', JSON.stringify(calendarNotes));
+                        if (activeTab === 'calendar') {
+                            renderCalendar();
+                            if (currentOpenCalendarDate && !document.getElementById('dayModal').classList.contains('hidden')) {
+                                renderDayModalNotes(currentOpenCalendarDate);
+                            }
+                        }
+                    }
+                }, error => console.warn("Firebase calendar_notes warning/offline:", error));
             }
         }
 
@@ -6606,7 +6811,7 @@ let isAudioEnabled = true;
         }
 
         function exportJSON() {
-            const dataToExport = { vehicles, operators };
+            const dataToExport = { vehicles, operators, calendarNotes };
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataToExport, null, 2));
             const downloadAnchor = document.createElement('a');
             downloadAnchor.setAttribute("href", dataStr);
@@ -6643,6 +6848,10 @@ let isAudioEnabled = true;
 
                         vehicles = parsed.vehicles;
                         operators = repairedOperators;
+                        if (parsed.calendarNotes && typeof parsed.calendarNotes === 'object') {
+                            calendarNotes = parsed.calendarNotes;
+                            saveCalendarNotes();
+                        }
                         
                         saveToStorage(); 
                         loadFromStorage();
